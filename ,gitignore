@@ -1,0 +1,17 @@
+# Ignore Composer dependencies
+/vendor/
+# Ignore Drupal scaffolding
+/web/core/
+/web/modules/contrib/
+/web/profiles/contrib/
+/web/themes/contrib/
+# Ignore configuration overrides
+/web/sites/*/settings.local.php
+/web/sites/*/services.local.yml
+/web/sites/*/development.services.yml
+# Ignore sync and private files (if needed)
+/config/sync/
+/private/
+/files/
+# Ignore DDEV
+.ddev/

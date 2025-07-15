@@ -1,3 +1,0 @@
-services:
-  staff_data.manager:
-    class: Drupal\staff_data\StaffDataService

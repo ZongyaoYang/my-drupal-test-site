@@ -15,3 +15,5 @@
 /files/
 # Ignore DDEV
 .ddev/
+
+web/sites/default/files/

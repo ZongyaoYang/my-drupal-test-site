@@ -1,0 +1,10 @@
+name: Staff Data
+type: module
+description: 'Auto-populate the Person content type from HR data.'
+configure: 'staff_data.settings'
+package: Staff Data
+version: '9.x-1.0'
+core_version_requirement: ^9 || ^10
+
+dependencies:
+  - ucar_profile:people

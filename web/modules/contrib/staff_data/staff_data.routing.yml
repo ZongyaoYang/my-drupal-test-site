@@ -1,0 +1,7 @@
+staff_data.settings:
+  path: '/admin/config/people/staff_data_settings'
+  defaults:
+    _form: '\Drupal\staff_data\Form\StaffDataSettingsForm'
+    _title: 'Staff Data Settings'
+  requirements:
+    _permission: 'administer site configuration'

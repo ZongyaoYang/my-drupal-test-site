@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * @file
+ * This is the module populates the Person content type from HR.
+ */
+
+/**
+ * Runs cron.
+ *
+ * @return void
+ *   Does not return a value.
+ */
+function staff_data_cron() {
+  /** @var \Drupal\staff_data\StaffDataService $staff */
+  $staff = \Drupal::service('staff_data.manager');
+
+  $staff->retrieveAndSync();
+}

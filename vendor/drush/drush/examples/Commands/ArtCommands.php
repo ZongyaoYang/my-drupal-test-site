@@ -9,13 +9,14 @@ use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Attributes as CLI;
+use Drush\Style\DrushStyle;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Run these commands using the --include option - e.g. `drush --include=/path/to/drush/examples art sandwich`
  *
- * See [Drush Test Traits](https://github.com/drush-ops/drush/blob/13.x/docs/contribute/unish.md#about-the-test-suites) for info on testing Drush commands.
+ * See [Drush Test Traits](https://github.com/drush-ops/drush/blob/12.x/docs/contribute/unish.md#about-the-test-suites) for info on testing Drush commands.
  */
 
 class ArtCommands extends DrushCommands implements CustomEventAwareInterface
@@ -100,12 +101,14 @@ class ArtCommands extends DrushCommands implements CustomEventAwareInterface
     #[CLI\Hook(type: HookManager::INTERACT, target: 'artwork:show')]
     public function interact(InputInterface $input, OutputInterface $output, AnnotationData $annotationData)
     {
+        $io = new DrushStyle($input, $output);
+
         // If the user did not specify any artwork, then prompt for one.
         $art = $input->getArgument('art');
         if (empty($art)) {
             $data = $this->getArt();
             $selections = $this->convertArtListToKeyValue($data);
-            $selection = $this->io()->select('Select art to display', $selections);
+            $selection = $io->choice('Select art to display', $selections);
             $input->setArgument('art', $selection);
         }
     }

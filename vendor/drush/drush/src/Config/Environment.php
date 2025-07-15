@@ -17,8 +17,8 @@ class Environment
 {
     protected string $homeDir;
     protected string $originalCwd;
-    protected string $etcPrefix = '';
-    protected string $sharePrefix = '';
+    protected string $etcPrefix;
+    protected string $sharePrefix;
     protected string $drushBasePath;
     protected string $vendorDir;
 
@@ -38,7 +38,9 @@ class Environment
     {
         $this->homeDir = $homeDir;
         $this->originalCwd = Path::canonicalize(FsUtils::realpath($cwd));
-        $this->drushBasePath = Path::canonicalize(dirname(__DIR__, 2));
+        $this->etcPrefix = '';
+        $this->sharePrefix = '';
+        $this->drushBasePath = Path::canonicalize(dirname(dirname(__DIR__)));
         $this->vendorDir = FsUtils::realpath(dirname($autoloadFile));
     }
 
@@ -77,10 +79,12 @@ class Environment
         // Operating system specific dirs.
         if (self::isWindows()) {
             $windir = getenv('WINDIR');
-            // WINDIR itself is not writable, but it always contains a /Temp dir,
-            // which is the system-wide temporary directory on older versions. Newer
-            // versions only allow system processes to use it.
-            $directories[] = Path::join($windir, 'Temp');
+            if (isset($windir)) {
+                // WINDIR itself is not writable, but it always contains a /Temp dir,
+                // which is the system-wide temporary directory on older versions. Newer
+                // versions only allow system processes to use it.
+                $directories[] = Path::join($windir, 'Temp');
+            }
         } else {
             $directories[] = Path::canonicalize('/tmp');
         }
@@ -96,7 +100,7 @@ class Environment
         if (empty($temporary_directory)) {
             // If no directory has been found, create one in cwd.
             $temporary_directory = Path::join(Drush::config()->cwd(), 'tmp');
-            drush_mkdir($temporary_directory);
+            drush_mkdir($temporary_directory, true);
             if (!is_dir($temporary_directory)) {
                 throw new \Exception(dt("Unable to create a temporary directory."));
             }
@@ -227,6 +231,8 @@ class Environment
 
     /**
      * Set the class loader from the autload.php file, if available.
+     *
+     * @param ClassLoader $loader
      */
     public function setLoader(ClassLoader $loader): void
     {
@@ -265,8 +271,10 @@ class Environment
      */
     public function setSharePrefix(string $sharePrefix): self
     {
-        $this->sharePrefix = $sharePrefix;
-        $this->docPrefix = null;
+        if (isset($sharePrefix)) {
+            $this->sharePrefix = $sharePrefix;
+            $this->docPrefix = null;
+        }
         return $this;
     }
 

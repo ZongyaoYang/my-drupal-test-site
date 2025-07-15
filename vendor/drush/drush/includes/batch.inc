@@ -147,7 +147,7 @@ function _drush_backend_batch_process($command = 'batch-process', $args = [], $o
     $finished = FALSE;
 
     while (!$finished) {
-      $process = Drush::drush(Drush::aliasManager()->getSelf(), $command, $args, Drush::redispatchOptions() + ['strict' => 0]);
+      $process = Drush::drush(Drush::aliasManager()->getSelf(), $command, $args);
       // We already re-spawn when memory is low so no need for timeout.
       $process->setTimeout(null);
       // Suppress printing stdout since a JSON array is returned to us here.
@@ -183,7 +183,7 @@ function _drush_batch_command($id) {
 
   $data = Database::getConnection()->select('batch', 'b')
     ->fields('b', ['batch'])
-    ->condition('bid', (int) $id)
+    ->condition('bid', $id)
     ->execute()
     ->fetchField();
 

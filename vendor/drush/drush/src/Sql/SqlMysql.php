@@ -4,14 +4,10 @@ declare(strict_types=1);
 
 namespace Drush\Sql;
 
-use Drush\Drush;
-use Drush\Exec\ExecTrait;
 use PDO;
 
 class SqlMysql extends SqlBase
 {
-    use ExecTrait;
-
     protected string $version;
 
     public string $queryExtra = '-A';
@@ -21,19 +17,15 @@ class SqlMysql extends SqlBase
      */
     public static function make(array $dbSpec, array $options)
     {
-        // If the mysql version reports that it is MariaDB, use MariaDB as client.
-        $process = Drush::shell('mysql --version');
-        $process->setSimulated(false);
-        $process->run();
-        if ((!$process->isSuccessful() || str_contains($process->getOutput(), 'MariaDB')) && self::programExists('mariadb') && self::programExists('mariadb-dump')) {
-            $instance = new SqlMariaDB($dbSpec, $options);
-        } else {
-            $instance = new self($dbSpec, $options);
-        }
-
+        // First get a MySQL instance
+        $instance = new static($dbSpec, $options);
         $sql = 'SELECT VERSION();"';
         $instance->alwaysQuery($sql);
         $out = trim($instance->getProcess()->getOutput());
+        if (str_contains($out, 'MariaDB')) {
+            // Replace with a MariaDB driver.
+            $instance = new SqlMariaDB($dbSpec, $options);
+        }
         $instance->setVersion($out);
         return $instance;
     }

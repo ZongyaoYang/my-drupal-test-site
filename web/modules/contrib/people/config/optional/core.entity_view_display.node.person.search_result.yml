@@ -1,0 +1,72 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.search_result
+    - field.field.node.person.field_email
+    - field.field.node.person.field_employee_page
+    - field.field.node.person.field_employee_site
+    - field.field.node.person.field_first_name
+    - field.field.node.person.field_job_title
+    - field.field.node.person.field_last_name
+    - field.field.node.person.field_main_content
+    - field.field.node.person.field_organization
+    - field.field.node.person.field_phone
+    - field.field.node.person.field_primary_image
+    - image.style.large
+    - node.type.person
+  module:
+    - layout_builder
+    - media
+    - user
+    - site_search
+third_party_settings:
+  layout_builder:
+    allow_custom: false
+    enabled: false
+id: node.person.search_result
+targetEntityType: node
+bundle: person
+mode: search_result
+content:
+  field_job_title:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_organization:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 3
+    region: content
+  field_primary_image:
+    type: media_thumbnail
+    label: hidden
+    settings:
+      image_link: content
+      image_style: large
+      image_loading:
+        attribute: lazy
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  search_api_excerpt:
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  field_email: true
+  field_employee_page: true
+  field_employee_site: true
+  field_first_name: true
+  field_last_name: true
+  field_main_content: true
+  field_phone: true
+  links: true

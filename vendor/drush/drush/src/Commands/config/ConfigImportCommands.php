@@ -4,35 +4,34 @@ declare(strict_types=1);
 
 namespace Drush\Commands\config;
 
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\core\DocsCommands;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Drush\Attributes as CLI;
+use Drupal\Core\Config\ImportStorageTransformer;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
-use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\config\StorageReplaceDataWrapper;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Config\ConfigException;
 use Drupal\Core\Config\ConfigImporter;
 use Drupal\Core\Config\ConfigManagerInterface;
 use Drupal\Core\Config\FileStorage;
-use Drupal\Core\Config\ImportStorageTransformer;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\StorageInterface;
 use Drupal\Core\Config\TypedConfigManagerInterface;
 use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Extension\ModuleInstallerInterface;
-use Drupal\Core\Extension\ThemeExtensionList;
 use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drupal\Core\Lock\LockBackendInterface;
 use Drupal\Core\Site\Settings;
 use Drupal\Core\StringTranslation\TranslationInterface;
-use Drush\Attributes as CLI;
-use Drush\Boot\DrupalBootLevels;
-use Drush\Commands\core\DocsCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
-use Psr\Container\ContainerInterface;
 use Symfony\Component\Filesystem\Path;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ConfigImportCommands extends DrushCommands
 {
@@ -120,11 +119,6 @@ class ConfigImportCommands extends DrushCommands
         return $this->moduleExtensionList;
     }
 
-    public function getThemeExtensionList(): ThemeExtensionList
-    {
-        return $this->themeExtensionList;
-    }
-
     public function __construct(
         protected ConfigManagerInterface $configManager,
         protected StorageInterface $configStorage,
@@ -136,15 +130,14 @@ class ConfigImportCommands extends DrushCommands
         protected ModuleInstallerInterface $moduleInstaller,
         protected ThemeHandlerInterface $themeHandler,
         protected TranslationInterface $stringTranslation,
-        protected ModuleExtensionList $moduleExtensionList,
-        protected ThemeExtensionList $themeExtensionList
+        protected ModuleExtensionList $moduleExtensionList
     ) {
         parent::__construct();
     }
 
     public static function create(ContainerInterface $container): self
     {
-        $commandHandler = new self(
+        $commandHandler = new static(
             $container->get('config.manager'),
             $container->get('config.storage'),
             $container->get('cache.config'),
@@ -156,7 +149,6 @@ class ConfigImportCommands extends DrushCommands
             $container->get('theme_handler'),
             $container->get('string_translation'),
             $container->get('extension.list.module'),
-            $container->get('extension.list.theme')
         );
 
         if ($container->has('config.import_transformer')) {
@@ -210,7 +202,10 @@ class ConfigImportCommands extends DrushCommands
             $source_storage = $this->getImportTransformer()->transform($source_storage);
         }
 
-        $storage_comparer = new StorageComparer($source_storage, $active_storage);
+        $config_manager = $this->getConfigManager();
+        $storage_comparer = new StorageComparer($source_storage, $active_storage, $config_manager);
+
+
         if (!$storage_comparer->createChangelist()->hasChanges()) {
             $this->logger()->notice(('There are no changes to import.'));
             return;
@@ -248,8 +243,7 @@ class ConfigImportCommands extends DrushCommands
             $this->getModuleInstaller(),
             $this->getThemeHandler(),
             $this->getStringTranslation(),
-            $this->getModuleExtensionList(),
-            $this->getThemeExtensionList()
+            $this->getModuleExtensionList()
         );
         if ($config_importer->alreadyImporting()) {
             $this->logger()->warning('Another request may be synchronizing configuration already.');
@@ -264,21 +258,25 @@ class ConfigImportCommands extends DrushCommands
                         do {
                             $config_importer->doSyncStep($step, $context);
                             if (isset($context['message'])) {
-                                $this->logger()->notice(
-                                    str_replace('Synchronizing', 'Synchronized', (string)$context['message'])
-                                );
+                                $this->logger()->notice(str_replace('Synchronizing', 'Synchronized', (string)$context['message']));
+                            }
+
+                            // Installing and uninstalling modules might trigger
+                            // batch operations. Let's process them here.
+                            // @see \Drush\Commands\pm\PmCommands::install()
+                            if ($step === 'processExtensions' && batch_get()) {
+                                drush_backend_batch_process();
                             }
                         } while ($context['finished'] < 1);
                     }
                     // Clear the cache of the active config storage.
                     $this->getConfigCache()->deleteAll();
                 }
-
                 if ($config_importer->getErrors()) {
                     throw new ConfigException('Errors occurred during import');
+                } else {
+                    $this->logger()->success('The configuration was imported successfully.');
                 }
-
-                $this->logger()->success('The configuration was imported successfully.');
             } catch (ConfigException $e) {
                 // Return a negative result for UI purposes. We do not differentiate
                 // between an actual synchronization error and a failed lock, because
@@ -288,14 +286,8 @@ class ConfigImportCommands extends DrushCommands
                 $message = 'The import failed due to the following reasons:' . "\n";
                 $message .= implode("\n", $config_importer->getErrors());
 
+                watchdog_exception('config_import', $e);
                 throw new \Exception($message, $e->getCode(), $e);
-            } finally {
-                // Importing config might trigger batch operations (such as when installing and uninstalling modules).
-                // @see \Drush\Commands\pm\PmCommands::install()
-                if (batch_get()) {
-                    $this->logger()->notice('Running batch operations...');
-                    drush_backend_batch_process();
-                }
             }
         }
     }

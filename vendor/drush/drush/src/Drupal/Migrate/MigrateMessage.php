@@ -18,6 +18,8 @@ class MigrateMessage implements MigrateMessageInterface, LoggerAwareInterface
 
     /**
      * Constructs a migrate message class.
+     *
+     * @param LoggerInterface $logger
      */
     public function __construct(LoggerInterface $logger)
     {

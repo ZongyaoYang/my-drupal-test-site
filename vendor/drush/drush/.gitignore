@@ -1,5 +1,3 @@
-# Drush uses highest/lowest testing so no use for a lock file.
-composer.lock
 tests/phpunit.xml
 .ddev/config.personal.yaml
 vendor

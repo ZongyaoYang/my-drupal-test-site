@@ -1,0 +1,14 @@
+{
+    "name": "ncar/people",
+    "description": "This module provides a content type for person pages, such as a staff detail page, on Drupal websites.",
+    "type": "drupal-module",
+    "authors": [
+        {
+            "name": "EIP Web",
+            "email": "eip-web@ucar.edu"
+        }
+    ],
+    "require": {
+        "php": ">=8.3"
+    }
+}

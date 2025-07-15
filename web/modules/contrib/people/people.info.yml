@@ -1,0 +1,18 @@
+type: module
+name: People
+description: Provides a content type for person pages, such as a staff detail page.
+package: Content types
+core_version_requirement: ^9 || ^10
+
+dependencies:
+  - drupal:menu_link_content
+  - drupal:node
+  - drupal:path
+  - drupal:telephone
+  - drupal:views
+  - drupal:auto_entitylabel
+  - paragraph_accordion:paragraph_accordion
+  - paragraph_rich_text:paragraph_rich_text
+
+test_dependencies:
+  - unity_profile:unity_profile

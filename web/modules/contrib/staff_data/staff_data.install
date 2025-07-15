@@ -1,0 +1,18 @@
+<?php
+
+/**
+ * Implements hook_install().
+ */
+function staff_data_install($is_syncing) {
+  if ($is_syncing) {
+    return;
+  }
+
+  $acronym = \Drupal::config('unity_profile.settings')->get('acronym');
+  if($acronym)
+  {
+    \Drupal::configFactory()->getEditable('staff_data.settings')
+      ->set('org', strtoupper($acronym))->save();
+  }
+
+}

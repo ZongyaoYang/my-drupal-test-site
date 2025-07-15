@@ -25,7 +25,8 @@ class DrupalBootLevels
     const NONE = 0;
 
     /**
-     * Set up and test for a valid drupal root.
+     * Set up and test for a valid drupal root, either through the -r/--root options,
+     * or evaluated based on the current working directory.
      *
      * Any code that interacts with an entire Drupal installation, and not a specific
      * site on the Drupal installation should use this bootstrap phase.

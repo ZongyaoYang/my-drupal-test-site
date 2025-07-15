@@ -5,6 +5,7 @@ namespace Drush\Commands;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drush\Attributes as CLI;
+use Drush\Commands\DrushCommands;
 use Drush\Commands\sql\SqlSyncCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
@@ -80,7 +81,7 @@ class SyncViaHttpCommands extends DrushCommands
                 $args = array_merge($args, ['-o', $destination_tmp, $url]);
             }
         }
-        $process = $this->processManager()->process($args);
+        $process = Drush::process($args);
         $process->mustRun();
 
         if (!Drush::simulate()) {

@@ -16,6 +16,8 @@ class MigrateUtils
      * separated by a colon (":").
      *
      * @param string|null $idlist
+     *
+     * @return array
      */
     public static function parseIdList(?string $idlist): array
     {

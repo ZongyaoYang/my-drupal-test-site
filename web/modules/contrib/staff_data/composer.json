@@ -1,0 +1,14 @@
+{
+    "name": "ncar/staff_data",
+    "description": "A Drupal module that auto-populates the Person content type from HR data",
+    "type": "drupal-module",
+    "authors": [
+        {
+            "name": "EIP Web",
+            "email": "eip-web@ucar.edu"
+        }
+    ],
+    "require": {
+        "php": ">=8.3"
+    }
+}

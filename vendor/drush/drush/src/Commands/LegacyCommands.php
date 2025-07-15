@@ -9,15 +9,6 @@ use Drush\Attributes as CLI;
 final class LegacyCommands extends DrushCommands
 {
     /**
-     * archive:restore has been removed. A replacement may be available from your web host.
-     */
-    #[CLI\Command(name: 'archive:restore', aliases: ['arr'])]
-    #[CLI\Obsolete]
-    public function archiveRestore(): void
-    {
-    }
-
-    /**
      * site:alias-convert has been removed. Please use Drush 11 or convert by hand.
      */
     #[CLI\Command(name: 'site:alias-convert', aliases: ['sa-convert', 'sac'])]
@@ -41,15 +32,6 @@ final class LegacyCommands extends DrushCommands
     #[CLI\Command(name: 'pm:security', aliases: ['sec', 'pm-security'])]
     #[CLI\Obsolete]
     public function sec(): void
-    {
-    }
-
-    /**
-     * twig:debug has been removed. Please use the `theme:dev` command.
-     */
-    #[CLI\Command(name: 'twig:debug', aliases: ['twig-debug'])]
-    #[CLI\Obsolete]
-    public function twigDebug(): void
     {
     }
 }

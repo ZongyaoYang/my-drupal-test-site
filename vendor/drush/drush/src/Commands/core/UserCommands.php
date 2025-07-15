@@ -4,25 +4,23 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drupal\Core\Datetime\DateFormatterInterface;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
-use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
-use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
 use Drush\Attributes as CLI;
-use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class UserCommands extends DrushCommands
 {
-    use AutowireTrait;
-
     const INFORMATION = 'user:information';
     const BLOCK = 'user:block';
     const UNBLOCK = 'user:unblock';
@@ -61,6 +59,15 @@ final class UserCommands extends DrushCommands
     {
     }
 
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('date.formatter')
+        );
+
+        return $commandHandler;
+    }
+
     /**
      * Print information about the specified user(s).
      */
@@ -97,7 +104,7 @@ final class UserCommands extends DrushCommands
                 }
             }
         }
-        if ($accounts === []) {
+        if (empty($accounts)) {
             throw new \Exception(dt('Unable to find a matching user'));
         }
 
@@ -134,7 +141,7 @@ final class UserCommands extends DrushCommands
         foreach ($accounts as $id => $account) {
             $account->block();
             $account->save();
-            $this->logger()->success(dt('Blocked user(s): !user', ['!user' => $account->getAccountName()]));
+            $this->logger->success(dt('Blocked user(s): !user', ['!user' => $account->getAccountName()]));
         }
     }
 
@@ -152,7 +159,7 @@ final class UserCommands extends DrushCommands
         foreach ($accounts as $id => $account) {
             $account->activate();
             $account->save();
-            $this->logger()->success(dt('Unblocked user(s): !user', ['!user' => $account->getAccountName()]));
+            $this->logger->success(dt('Unblocked user(s): !user', ['!user' => $account->getAccountName()]));
         }
     }
 
@@ -173,7 +180,7 @@ final class UserCommands extends DrushCommands
         foreach ($accounts as $id => $account) {
             $account->addRole($role);
             $account->save();
-            $this->logger()->success(dt('Added !role role to !user', [
+            $this->logger->success(dt('Added !role role to !user', [
             '!role' => $role,
             '!user' => $account->getAccountName(),
             ]));
@@ -184,7 +191,7 @@ final class UserCommands extends DrushCommands
      * Remove a role from the specified user accounts.
      */
     #[CLI\Command(name: self::ROLE_REMOVE, aliases: ['urrol', 'user-remove-role'])]
-    #[CLI\Argument(name: 'role', description: 'The machine name of the role to remove.')]
+    #[CLI\Argument(name: 'role', description: 'The machine name of the role to add.')]
     #[CLI\Argument(name: 'names', description: 'A comma delimited list of user names.')]
     #[CLI\Option(name: 'uid', description: 'A comma delimited list of user ids to lookup (an alternative to names).')]
     #[CLI\Option(name: 'mail', description: 'A comma delimited list of emails to lookup (an alternative to names).')]
@@ -197,7 +204,7 @@ final class UserCommands extends DrushCommands
         foreach ($accounts as $id => $account) {
             $account->removeRole($role);
             $account->save();
-            $this->logger()->success(dt('Removed !role role from !user', [
+            $this->logger->success(dt('Removed !role role from !user', [
             '!role' => $role,
             '!user' => $account->getAccountName(),
             ]));
@@ -225,7 +232,6 @@ final class UserCommands extends DrushCommands
             'status' => 1,
         ];
         if (!$this->getConfig()->simulate()) {
-            // @phpstan-ignore if.alwaysTrue
             if ($account = User::create($new_user)) {
                 $account->save();
                 $this->logger()->success(dt('Created a new user with uid !uid', ['!uid' => $account->id()]));
@@ -341,6 +347,7 @@ final class UserCommands extends DrushCommands
     /**
      * Get accounts from name variables or uid & mail options.
      *
+     * @param string $names
      * @param array $options
      *
      *   A array of loaded accounts.
@@ -376,7 +383,7 @@ final class UserCommands extends DrushCommands
                 }
             }
         }
-        if ($accounts === []) {
+        if (empty($accounts)) {
             throw new \Exception(dt('Unable to find any matching user'));
         }
 

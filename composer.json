@@ -10,6 +10,18 @@
     },
     "repositories": [
         {
+            "type": "vcs",
+            "url": "https://github.com/NCAR/people"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/NCAR/staff_data"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/NCAR/unity-dev-modules"
+        },
+        {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
         }
@@ -20,7 +32,17 @@
         "drupal/core-project-message": "^10",
         "drupal/core-recipe-unpack": "^11.2",
         "drupal/core-recommended": "10.5.*",
-        "drush/drush": "^13.6"
+        "drush/drush": "^13.6",
+        "drupal/admin_toolbar": "3.6.0",
+        "drupal/anchor_link": "3.0.0",
+        "drupal/animated_gif": "2.0.2",
+        "drupal/asset_injector": "2.21.0",
+        "drupal/paragraphs": "1.19.0",
+        "drupal/gin": "4.0.6",
+        "drupal/pathauto": "1.13.0",
+        "drush/drush": "^11 || ^12",
+        "ncar/people": "1.0.0",
+        "ncar/staff_data": "1.0.3"
     },
     "conflict": {
         "drupal/drupal": "*"

@@ -3,23 +3,21 @@
 
 namespace Drupal\{{ machine_name }}\Drush\Commands;
 
-{% apply sort_namespaces %}
+{% sort %}
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
   {% if services %}
-use Drush\Commands\AutowireTrait;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 {{ di.use(services) }}
   {% endif %}
-{% endapply %}
+{% endsort %}
 
 /**
  * A Drush commandfile.
  */
 final class {{ class }} extends DrushCommands {
 {% if services %}
-
-  use AutowireTrait;
 
   /**
    * Constructs {{ class|article }} object.
@@ -28,6 +26,15 @@ final class {{ class }} extends DrushCommands {
 {{ di.signature(services) }}
   ) {
     parent::__construct();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+{{ di.container(services) }}
+    );
   }
 {% endif %}
 

@@ -5,28 +5,36 @@ declare(strict_types=1);
 namespace Drush\Commands\core;
 
 use Composer\Autoload\ClassLoader;
-use Drupal\Core\DrupalKernel;
-use Drupal\Core\Site\Settings;
+use Consolidation\SiteAlias\SiteAliasManager;
 use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
-use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
+use Drupal\Core\DrupalKernel;
+use Drupal\Core\Site\Settings;
 use Drush\Drupal\DrushLoggerServiceProvider;
-use Drush\Drupal\Migrate\MigrateRunnerServiceProvider;
+use Drush\Drush;
+use Psr\Container\ContainerInterface as DrushContainer;
 
-#[CLI\Bootstrap(DrupalBootLevels::NONE)]
 final class CacheRebuildCommands extends DrushCommands
 {
-    use AutowireTrait;
-
     const REBUILD = 'cache:rebuild';
 
     public function __construct(
-        private readonly BootstrapManager $bootstrapManager,
+        private BootstrapManager $bootstrapManager,
         private ClassLoader $autoloader
     ) {
         parent::__construct();
+    }
+
+    public static function createEarly(DrushContainer $drush_container): self
+    {
+        $commandHandler = new static(
+            $drush_container->get('bootstrap.manager'),
+            $drush_container->get('loader')
+        );
+
+        return $commandHandler;
     }
 
     /**
@@ -57,9 +65,6 @@ final class CacheRebuildCommands extends DrushCommands
 
         // Coax \Drupal\Core\DrupalKernel::discoverServiceProviders to add our logger.
         $GLOBALS['conf']['container_service_providers'][] = DrushLoggerServiceProvider::class;
-        // Implement a hook in behalf of 'system' module until #2952291 lands.
-        // @see https://www.drupal.org/project/drupal/issues/2952291
-        $GLOBALS['conf']['container_service_providers'][] = MigrateRunnerServiceProvider::class;
 
         // drupal_rebuild() calls drupal_flush_all_caches() itself, so we don't do it manually.
         drupal_rebuild($this->autoloader, $request);

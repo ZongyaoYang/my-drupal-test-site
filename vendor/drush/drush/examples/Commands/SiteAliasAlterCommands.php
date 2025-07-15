@@ -4,24 +4,17 @@ namespace Drush\Commands;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
-use Consolidation\SiteAlias\SiteAliasManagerInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Attributes as CLI;
-use Drush\Boot\DrupalBootLevels;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**
  * Load this example by using the --include option - e.g. `drush --include=/path/to/drush/examples`
  */
-#[CLI\Bootstrap(DrupalBootLevels::NONE)]
-class SiteAliasAlterCommands extends DrushCommands
+class SiteAliasAlterCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
-    use AutowireTrait;
-
-    public function __construct(
-        private readonly SiteAliasManagerInterface $siteAliasManager
-    ) {
-        parent::__construct();
-    }
+    use SiteAliasManagerAwareTrait;
 
     /**
      * A few example alterations to site aliases.
@@ -29,7 +22,7 @@ class SiteAliasAlterCommands extends DrushCommands
     #[CLI\Hook(type: HookManager::PRE_INITIALIZE, target: '*')]
     public function alter(InputInterface $input, AnnotationData $annotationData)
     {
-        $self = $this->siteAliasManager->getSelf();
+        $self = $this->siteAliasManager()->getSelf();
         if ($self->isRemote()) {
             // Always pass along ssh keys.
             if (!$self->has('ssh.options')) {

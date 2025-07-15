@@ -11,5 +11,5 @@ use Drupal\Core\DrupalKernel as DrupalDrupalKernel;
  */
 class DrupalKernel extends DrupalDrupalKernel
 {
-    // Nothing here anymore, but kept in case we need it later.
+    use DrupalKernelTrait;
 }

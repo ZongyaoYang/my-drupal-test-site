@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Utils;
 
-final class StringUtils
+class StringUtils
 {
     /**
      * Convert a csv string, or an array of items which
@@ -44,7 +44,7 @@ final class StringUtils
     public static function interpolate(string $message, array $context = []): string
     {
         // Take no action if there is no context
-        if ($context === []) {
+        if (empty($context)) {
             return $message;
         }
 

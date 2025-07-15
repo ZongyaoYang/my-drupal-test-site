@@ -4,11 +4,17 @@ declare(strict_types=1);
 
 namespace Drush\Runtime;
 
+use Drush\Log\Logger;
 use League\Container\Container;
+use Drush\Drush;
+use Symfony\Component\Console\Application;
+use Composer\Autoload\ClassLoader;
+use Drush\Command\DrushCommandInfoAlterer;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 use Symfony\Component\Yaml\Yaml;
+use Robo\Robo;
+use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 
 /**
  * Use the Symfony Dependency Injection Container to instantiate services.
@@ -74,9 +80,14 @@ class LegacyServiceInstantiator
             $this->logger->info(dt('Autowire not supported; skipping @file', ['@file' => $serviceFile]));
             return false;
         }
+
         // Every entry in services must have a 'class' entry
+        if (!$this->allServicesHaveClassElement($serviceFile, $serviceFileData['services'])) {
+            return false;
+        }
+
         // If we didn't find anything wrong, then assume it's probably okay
-        return $this->allServicesHaveClassElement($serviceFile, $serviceFileData['services']);
+        return true;
     }
 
     /**
@@ -103,7 +114,7 @@ class LegacyServiceInstantiator
      * The services created may be retrieved via the `taggedServices()`
      * method.
      *
-     * @param array $services List of drush services
+     * @param array $serviceFiles List of drush.services.yml files
      */
     public function instantiateServices(array $services)
     {
@@ -119,10 +130,6 @@ class LegacyServiceInstantiator
                 $info['arguments'] ?? [],
                 $info['calls'] ?? []
             );
-            if (empty($service)) {
-                $this->logger->debug("Could not instantiate {class} for '{service_name}' service", ['class' => $info['class'], 'service_name' => $serviceName]);
-                continue;
-            }
 
             $this->instantiatedDrushServices[$serviceName] = $service;
 
@@ -157,17 +164,14 @@ class LegacyServiceInstantiator
      *
      * @param string $class Class containing implementation
      * @param string[] $arguments Parameters to class constructor
-     * @param array $calls Method names and arguments to call after object is instantiated
+     * @param array Method names and arguments to call after object is instantiated
      *
-     * @return object|null
-     *   Instantiated command handler from the service file or empty result
+     * @return object
+     *   Instantiated command handler from the service file
      */
-    public function create(string $class, array $arguments, array $calls)
+    public function create($class, array $arguments, array $calls)
     {
         $instance = $this->instantiateObject($class, $arguments);
-        if (empty($instance)) {
-            return null;
-        }
         foreach ($calls as $callInfo) {
             $this->call($instance, $callInfo[0], $callInfo[1]);
         }
@@ -185,11 +189,7 @@ class LegacyServiceInstantiator
      */
     public function instantiateObject($class, array $arguments)
     {
-        try {
-            $refl = new \ReflectionClass($class);
-        } catch (\Throwable $e) {
-            return;
-        }
+        $refl = new \ReflectionClass($class);
         return $refl->newInstanceArgs($this->resolveArguments($arguments));
     }
 
@@ -227,12 +227,12 @@ class LegacyServiceInstantiator
      * Look up one argument in the appropriate container, or
      * return it as-is.
      *
-     * @param $arg Argument to resolve
+     * @param array $argument Argument to resolve
      *
-     * @return mixed
+     * @return object
      *   Argument after it has been resolved by DI container
      */
-    protected function resolveArgument($arg): mixed
+    protected function resolveArgument($arg)
     {
         if (!is_string($arg)) {
             return $arg;
@@ -241,7 +241,7 @@ class LegacyServiceInstantiator
         // Instantiate references to services, either in the
         // Drupal container, or other services created earlier by
         // some drush.services.yml file.
-        if ($arg[0] === '@') {
+        if ($arg[0] == '@') {
             // Check to see if a previous drush.services.yml instantiated
             // this service; return any service found.
             $drushServiceName = ltrim(substr($arg, 1), '?');
@@ -270,8 +270,7 @@ class LegacyServiceInstantiator
      * @param Container $container Drupal DI container
      * @param string $arg Argument to resolve
      *
-     * @return ?object
-     *   Resolved object from DI container
+     * @param object Resolved object from DI container
      */
     protected function resolveFromContainer($container, string $arg)
     {
@@ -293,15 +292,16 @@ class LegacyServiceInstantiator
      * Check to see if the provided argument begins with a `?`;
      * those that do not are required.
      *
+     * @param string $arg
      *
-     * @return array{bool, string}
+     * @return bool, string
      *   Boolean indicating whether the object is required to be in the container,
      *   and a string with the name of the object to look up (passed input with
      *   any leading ? removed).
      */
-    protected function isRequired(string $arg): array
+    protected function isRequired(string $arg)
     {
-        if ($arg[0] === '?') {
+        if ($arg[0] == '?') {
             return [false, substr($arg, 1)];
         }
 
@@ -313,12 +313,12 @@ class LegacyServiceInstantiator
      * resolved. `set` methods with non-required DI container references
      * are not called at all if the optional references are not in the container.
      *
-     * @param array $args Names of references
+     * @param string $arg Name of reference
      *
      * @return bool
      *   True if at least one argument is not empty
      */
-    protected function atLeastOneValue(array $args): bool
+    protected function atLeastOneValue($args)
     {
         foreach ($args as $arg) {
             if ($arg) {

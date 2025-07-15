@@ -1,0 +1,59 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.highlighted
+    - field.field.node.person.field_email
+    - field.field.node.person.field_employee_page
+    - field.field.node.person.field_employee_site
+    - field.field.node.person.field_first_name
+    - field.field.node.person.field_job_title
+    - field.field.node.person.field_last_name
+    - field.field.node.person.field_organization
+    - field.field.node.person.field_phone
+    - field.field.node.person.field_primary_image
+    - field.field.node.person.field_teaser_summary
+    - image.style.large
+    - node.type.person
+  module:
+    - layout_builder
+    - media
+    - text
+    - user
+third_party_settings:
+  layout_builder:
+    allow_custom: false
+    enabled: false
+id: node.person.highlighted
+targetEntityType: node
+bundle: person
+mode: highlighted
+content:
+  field_primary_image:
+    type: media_thumbnail
+    weight: 0
+    region: content
+    label: hidden
+    settings:
+      image_style: large
+      image_link: content
+    third_party_settings: {  }
+  field_teaser_summary:
+    type: text_default
+    weight: 1
+    region: content
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  field_email: true
+  field_employee_page: true
+  field_employee_site: true
+  field_first_name: true
+  field_job_title: true
+  field_last_name: true
+  field_organization: true
+  field_phone: true
+  links: true
+  page_contacts_contacts: true
+  search_api_excerpt: true

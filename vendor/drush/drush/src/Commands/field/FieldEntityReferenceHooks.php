@@ -6,19 +6,27 @@ use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Attributes as CLI;
-use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-final class FieldEntityReferenceHooks extends DrushCommands
+class FieldEntityReferenceHooks extends DrushCommands
 {
-    use AutowireTrait;
     use EntityTypeBundleValidationTrait;
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
         protected EntityTypeBundleInfoInterface $entityTypeBundleInfo,
     ) {
+    }
+
+    public static function create(ContainerInterface $container): static
+    {
+        return new static(
+            $container->get('entity_type.manager'),
+            $container->get('entity_type.bundle.info'),
+        );
     }
 
     #[CLI\Hook(type: HookManager::ON_EVENT, target: 'field-create-field-storage')]
@@ -97,7 +105,7 @@ final class FieldEntityReferenceHooks extends DrushCommands
             $choices[$name] = $label;
         }
 
-        return $this->io()->select('Referenced entity type', $choices);
+        return $this->io()->choice('Referenced entity type', $choices);
     }
 
     protected function askReferencedBundles(string $targetType): ?array
@@ -114,6 +122,9 @@ final class FieldEntityReferenceHooks extends DrushCommands
             $choices[$bundle] = $label;
         }
 
-        return $this->io()->multiselect('Referenced bundles', $choices);
+        $question = (new ChoiceQuestion('Referenced bundles', $choices))
+            ->setMultiselect(true);
+
+        return $this->io()->askQuestion($question) ?: null;
     }
 }

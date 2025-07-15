@@ -13,21 +13,26 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class GenerateCommands extends DrushCommands
 {
     const GENERATE = 'generate';
 
     protected function __construct(
-        private readonly DrushContainer $drush_container,
+        private ContainerInterface $container,
+        private DrushContainer $drush_container,
     ) {
     }
 
-    public static function create(DrushContainer $container): self
+    public static function create(ContainerInterface $container, DrushContainer $drush_container): self
     {
-        return new self(
+        $commandHandler = new static(
             $container,
+            $drush_container,
         );
+
+        return $commandHandler;
     }
 
     /**
@@ -52,9 +57,9 @@ final class GenerateCommands extends DrushCommands
     #[CLI\Complete(method_name_or_callable: 'generatorNameComplete')]
     public function generate(string $generator = '', $options = ['replace' => false, 'working-dir' => self::REQ, 'answer' => [], 'destination' => self::REQ, 'dry-run' => false]): int
     {
-        $application = (new ApplicationFactory($this->drush_container, $this->logger()))->create();
+        $application = (new ApplicationFactory($this->container, $this->drush_container, $this->logger()))->create();
 
-        if (!$generator || $generator === 'list') {
+        if (!$generator || $generator == 'list') {
             $all = $application->all();
             unset($all['help'], $all['list'], $all['completion']);
             $namespaced = ListCommands::categorize($all);
@@ -106,7 +111,8 @@ final class GenerateCommands extends DrushCommands
     public function generatorNameComplete(CompletionInput $input, CompletionSuggestions $suggestions): void
     {
         if ($input->mustSuggestArgumentValuesFor('generator')) {
-            $application = (new ApplicationFactory($this->drush_container, $this->logger()))->create();
+            $application = (new ApplicationFactory($this->container, $this->drush_container, $this->logger()))->create(
+            );
             foreach ($application->all() as $name => $command) {
                 if ($command->isEnabled() && !$command->isHidden()) {
                     $suggestions->suggestValue($name);

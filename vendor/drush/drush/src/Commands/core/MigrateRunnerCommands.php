@@ -19,38 +19,53 @@ use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
 use Drupal\migrate\Plugin\RequirementsInterface;
 use Drush\Attributes as CLI;
-use Drush\Commands\AutowireTrait;
+use Drush\Commands\core\DocsCommands;
 use Drush\Commands\DrushCommands;
+use Drush\Config\ConfigAwareTrait;
+use Drush\Drupal\Migrate;
 use Drush\Drupal\Migrate\MigrateExecutable;
 use Drush\Drupal\Migrate\MigrateMessage;
 use Drush\Drupal\Migrate\MigrateUtils;
-use Drush\Drupal\Migrate\ValidateMigrationId;
-use Drush\Drush;
 use Drush\Utils\StringUtils;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Robo\Contract\ConfigAwareInterface;
 use Symfony\Component\Filesystem\Path;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-final class MigrateRunnerCommands extends DrushCommands
+/**
+ * Migrate runner commands.
+ */
+class MigrateRunnerCommands extends DrushCommands implements ConfigAwareInterface
 {
-    use AutowireTrait;
+    use ConfigAwareTrait;
 
-    protected ?MigrationPluginManagerInterface $migrationPluginManager = null;
+    /**
+     * The key-value store service.
+     */
     protected KeyValueStoreInterface $keyValue;
-    private MigrateMessage $migrateMessage;
+    protected ?MigrationPluginManagerInterface $migrationPluginManager = null;
 
     public function __construct(
         protected DateFormatterInterface $dateFormatter,
-        // @todo Can we avoid the autowire attribute here?
-        #[Autowire(service: 'keyvalue')]
-        protected KeyValueFactoryInterface $keyValueFactory
+        KeyValueFactoryInterface $keyValueFactory
     ) {
         parent::__construct();
         $this->keyValue = $keyValueFactory->get('migrate_last_imported');
+    }
 
-        $container = Drush::getContainer();
+    public static function create(ContainerInterface $container): self
+    {
+        $migrationPluginManager = null;
+
+        $commandHandler = new static(
+            $container->get('date.formatter'),
+            $container->get('keyvalue')
+        );
+
         if ($container->has('plugin.manager.migration')) {
-            $this->setMigrationPluginManager($container->get('plugin.manager.migration'));
+            $commandHandler->setMigrationPluginManager($container->get('plugin.manager.migration'));
         }
+
+        return $commandHandler;
     }
 
     /**
@@ -99,7 +114,6 @@ final class MigrateRunnerCommands extends DrushCommands
       'format' => 'table'
     ]): RowsOfFields
     {
-        $fields = [];
         if ($options['field']) {
             $fields = [$options['field']];
         } elseif ($options['fields']) {
@@ -201,7 +215,7 @@ final class MigrateRunnerCommands extends DrushCommands
      * @param MigrationInterface $migration
      *   The migration plugin instance.
      *
-     * @return int
+     * @return int|null
      *   The number of items that needs update.
      */
     protected function getMigrationNeedingUpdateCount(MigrationInterface $migration): int
@@ -347,13 +361,11 @@ final class MigrateRunnerCommands extends DrushCommands
             'execute_dependencies' => $options['execute-dependencies'],
         ];
 
-        if (version_compare(\Drupal::VERSION, '11.1.0', '<')) {
-            // Include the migrate_prepare_row hook implementation.
-            require_once Path::join($this->getConfig()->get('drush.base-dir'), 'src/Drupal/Migrate/migrate_runner.inc');
-            // If the 'migrate_prepare_row' hook implementations are already
-            // cached, make sure that system_migrate_prepare_row() is picked-up.
-            \Drupal::moduleHandler()->resetImplementations();
-        }
+        // Include the file providing a migrate_prepare_row hook implementation.
+        require_once Path::join($this->config->get('drush.base-dir'), 'src/Drupal/Migrate/migrate_runner.inc');
+        // If the 'migrate_prepare_row' hook implementations are already cached,
+        // make sure that system_migrate_prepare_row() is picked-up.
+        \Drupal::moduleHandler()->resetImplementations();
 
         foreach ($list as $migrations) {
             array_walk($migrations, [static::class, 'executeMigration'], $userData);
@@ -390,10 +402,6 @@ final class MigrateRunnerCommands extends DrushCommands
             }
         }
         if (!empty($userData['options']['force'])) {
-            // @todo Use the new MigrationInterface::setRequirements() method,
-            //   instead of Migration::set() and remove the PHPStan exception
-            //   from phpstan-baseline.neon when #2796755 lands in Drupal core.
-            // @see https://www.drupal.org/i/2796755
             $migration->set('requirements', []);
         }
         if (!empty($userData['options']['update'])) {
@@ -478,7 +486,7 @@ final class MigrateRunnerCommands extends DrushCommands
     #[CLI\Argument(name: 'migrationId', description: 'The ID of migration to stop.')]
     #[CLI\Topics(topics: [DocsCommands::MIGRATE])]
     #[CLI\ValidateModulesEnabled(modules: ['migrate'])]
-    #[ValidateMigrationId()]
+    #[Migrate\ValidateMigrationId()]
     #[CLI\Version(version: '10.4')]
     public function stop(string $migrationId): void
     {
@@ -510,7 +518,7 @@ final class MigrateRunnerCommands extends DrushCommands
     #[CLI\Argument(name: 'migrationId', description: 'The ID of migration to reset.')]
     #[CLI\Topics(topics: [DocsCommands::MIGRATE])]
     #[CLI\ValidateModulesEnabled(modules: ['migrate'])]
-    #[ValidateMigrationId()]
+    #[Migrate\ValidateMigrationId()]
     #[CLI\Version(version: '10.4')]
     public function resetStatus(string $migrationId): void
     {
@@ -538,7 +546,7 @@ final class MigrateRunnerCommands extends DrushCommands
     #[CLI\Usage(name: 'migrate:messages custom_node_revision --idlist=1:"r:1",2:"r:3"', description: 'Show messages related to node revision records with source IDs [1,"r:1"], and [2,"r:3"].')]
     #[CLI\Topics(topics: [DocsCommands::MIGRATE])]
     #[CLI\ValidateModulesEnabled(modules: ['migrate'])]
-    #[ValidateMigrationId()]
+    #[Migrate\ValidateMigrationId()]
     #[CLI\FieldLabels(labels: [
         'level' => 'Level',
         'source_ids' => 'Source ID(s)',
@@ -561,7 +569,7 @@ final class MigrateRunnerCommands extends DrushCommands
         $idMap = $migration->getIdMap();
         $sourceIdKeys = $this->getSourceIdKeys($idMap);
         $table = [];
-        if ($sourceIdKeys === []) {
+        if (empty($sourceIdKeys)) {
             // Cannot find one item to extract keys from, no need to process
             // messages on an empty ID map.
             return new RowsOfFields($table);
@@ -637,7 +645,7 @@ final class MigrateRunnerCommands extends DrushCommands
     #[CLI\Usage(name: 'migrate:fields-source article', description: 'List fields for the source in the article migration.')]
     #[CLI\Topics(topics: ['docs:migrate'])]
     #[CLI\ValidateModulesEnabled(modules: ['migrate'])]
-    #[ValidateMigrationId()]
+    #[Migrate\ValidateMigrationId()]
     #[CLI\FieldLabels(labels: [
         'machine_name' => 'Field name',
         'description' => 'Description',

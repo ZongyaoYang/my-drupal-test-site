@@ -4,27 +4,26 @@ declare(strict_types=1);
 
 namespace Drush\Commands\config;
 
-use Consolidation\AnnotatedCommand\CommandData;
-use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drupal\Core\Config\ConfigDirectoryNotDefinedException;
+use Drupal\Core\Config\ImportStorageTransformer;
+use Consolidation\AnnotatedCommand\CommandError;
+use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
 use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
-use Consolidation\SiteAlias\SiteAliasManagerInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Consolidation\SiteProcess\Util\Escape;
-use Drupal\Core\Config\ConfigDirectoryNotDefinedException;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\FileStorage;
-use Drupal\Core\Config\ImportStorageTransformer;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\StorageInterface;
-use Drupal\Core\Config\StorageManagerInterface;
 use Drupal\Core\Site\Settings;
 use Drush\Attributes as CLI;
-use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Drush\Utils\FsUtils;
 use Drush\Utils\StringUtils;
 use JetBrains\PhpStorm\Deprecated;
@@ -32,15 +31,15 @@ use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Parser;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-final class ConfigCommands extends DrushCommands implements StdinAwareInterface
+final class ConfigCommands extends DrushCommands implements StdinAwareInterface, SiteAliasManagerAwareInterface
 {
-    use AutowireTrait;
     use StdinAwareTrait;
     use ExecTrait;
+    use SiteAliasManagerAwareTrait;
 
     const INTERACT_CONFIG_NAME = 'interact-config-name';
     const VALIDATE_CONFIG_NAME = 'validate-config-name';
@@ -50,20 +49,59 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface
     const DELETE = 'config:delete';
     const STATUS = 'config:status';
 
+    protected ?StorageInterface $configStorageExport;
+
+    protected ?ImportStorageTransformer $importStorageTransformer;
+
     public function getConfigFactory(): ConfigFactoryInterface
     {
         return $this->configFactory;
     }
 
-    public function __construct(
-        protected ConfigFactoryInterface $configFactory,
-        #[Autowire(service: 'config.storage')]
-        protected StorageInterface $configStorage,
-        protected SiteAliasManagerInterface $siteAliasManager,
-        protected StorageManagerInterface $configStorageExport,
-        protected ImportStorageTransformer $importStorageTransformer,
-    ) {
+    protected function __construct(protected ConfigFactoryInterface $configFactory, protected StorageInterface $configStorage)
+    {
         parent::__construct();
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('config.factory'),
+            $container->get('config.storage')
+        );
+
+        if ($container->has('config.storage.export')) {
+            $commandHandler->setExportStorage($container->get('config.storage.export'));
+        }
+        if ($container->has('config.import_transformer')) {
+            $commandHandler->setImportTransformer($container->get('config.import_transformer'));
+        }
+
+        return $commandHandler;
+    }
+
+    /**
+     * @param StorageInterface $exportStorage
+     */
+    public function setExportStorage(StorageInterface $exportStorage): void
+    {
+        $this->configStorageExport = $exportStorage;
+    }
+
+    /**
+     * @return StorageInterface
+     */
+    public function getConfigStorageExport()
+    {
+        if (isset($this->configStorageExport)) {
+            return $this->configStorageExport;
+        }
+        return $this->configStorage;
+    }
+
+    public function setImportTransformer(ImportStorageTransformer $importStorageTransformer): void
+    {
+        $this->importStorageTransformer = $importStorageTransformer;
     }
 
     public function hasImportTransformer(): bool
@@ -130,7 +168,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface
         }
 
         // Special handling for null.
-        if (strtolower($data) === 'null') {
+        if (strtolower($data) == 'null') {
             $data = null;
         }
 
@@ -204,7 +242,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface
         // Perform import operation if user did not immediately exit editor.
         if (!$options['bg']) {
             $redispatch_options = Drush::redispatchOptions() + ['strict' => 0, 'partial' => true, 'source' => $temp_dir];
-            $self = $this->siteAliasManager->getSelf();
+            $self = $this->siteAliasManager()->getSelf();
             $process = $this->processManager()->drush($self, ConfigImportCommands::IMPORT, [], $redispatch_options);
             $process->mustRun($process->showRealtime());
         }
@@ -436,13 +474,12 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface
         }
     }
 
-    #[Deprecated('Use CLI/InteractConfigName Attribute instead')]
     #[CLI\Hook(type: HookManager::INTERACT, selector: self::INTERACT_CONFIG_NAME)]
     public function interactConfigName($input, $output): void
     {
         if (empty($input->getArgument('config_name'))) {
             $config_names = $this->getConfigFactory()->listAll();
-            $choice = $this->io()->suggest('Choose a configuration', array_combine($config_names, $config_names), scroll: 200, required: true);
+            $choice = $this->io()->choice('Choose a configuration', array_combine($config_names, $config_names));
             $input->setArgument('config_name', $choice);
         }
     }

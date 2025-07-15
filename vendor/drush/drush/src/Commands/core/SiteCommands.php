@@ -4,27 +4,18 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
-use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drush\Attributes as CLI;
-use Drush\Boot\DrupalBootLevels;
-use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
-use Symfony\Component\Filesystem\Filesystem;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 
-#[CLI\Bootstrap(DrupalBootLevels::NONE)]
-final class SiteCommands extends DrushCommands
+final class SiteCommands extends DrushCommands implements SiteAliasManagerAwareInterface
 {
-    use AutowireTrait;
+    use SiteAliasManagerAwareTrait;
 
     const SET = 'site:set';
     const ALIAS = 'site:alias';
-
-    public function __construct(
-        private readonly SiteAliasManagerInterface $siteAliasManager
-    ) {
-        parent::__construct();
-    }
 
     /**
      * Set a site alias that will persist for the current session.
@@ -47,7 +38,7 @@ final class SiteCommands extends DrushCommands
         $filename = $this->getConfig()->get('runtime.site-file-current');
         if ($filename) {
             $last_site_filename = $this->getConfig()->get('runtime.site-file-previous');
-            if ($site === '-') {
+            if ($site == '-') {
                 if (file_exists($last_site_filename)) {
                     $site = file_get_contents($last_site_filename);
                 } else {
@@ -67,19 +58,19 @@ final class SiteCommands extends DrushCommands
                 }
                 // Using 'site:set @self' is quiet if there is no change.
                 $current = is_file($filename) ? trim(file_get_contents($filename)) : "@none";
-                if ($current === $site) {
+                if ($current == $site) {
                     return;
                 }
             }
             // Alias record lookup exists.
-            $aliasRecord = $this->siteAliasManager->get($site);
+            $aliasRecord = $this->siteAliasManager()->get($site);
             if ($aliasRecord) {
                 if (file_exists($filename)) {
                     @unlink($last_site_filename);
                     @rename($filename, $last_site_filename);
                 }
                 $success_message = dt('Site set to @site', ['@site' => $site]);
-                $fs = new Filesystem();
+                $fs = new \Symfony\Component\Filesystem\Filesystem();
                 if ($site == '@none' || $site == '') {
                     $fs->remove($filename);
                     $this->logger()->success(dt('Site unset.'));
@@ -109,13 +100,13 @@ final class SiteCommands extends DrushCommands
     {
         // First check to see if the user provided a specification that matches
         // multiple sites.
-        $aliasList = $this->siteAliasManager->getMultiple($site);
-        if (is_array($aliasList) && $aliasList !== []) {
+        $aliasList = $this->siteAliasManager()->getMultiple($site);
+        if (is_array($aliasList) && !empty($aliasList)) {
             return new UnstructuredListData($this->siteAliasExportList($aliasList, $options));
         }
 
         // Next check for a specific alias or a site specification.
-        $aliasRecord = $this->siteAliasManager->get($site);
+        $aliasRecord = $this->siteAliasManager()->get($site);
         if ($aliasRecord !== false) {
             return new UnstructuredListData([$aliasRecord->name() => $aliasRecord->export()]);
         }
@@ -130,11 +121,12 @@ final class SiteCommands extends DrushCommands
 
     protected function siteAliasExportList(array $aliasList, $options): array
     {
-        return array_map(
+        $result = array_map(
             function ($aliasRecord) {
                 return $aliasRecord->export();
             },
             $aliasList
         );
+        return $result;
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Drupal\Migrate;
 
+use Drupal\migrate\MigrateException;
 use Drupal\Component\Utility\Timer;
 use Drupal\migrate\Event\MigrateEvents;
 use Drupal\migrate\Event\MigrateImportEvent;
@@ -21,7 +22,6 @@ use Drupal\migrate\Plugin\MigrationInterface;
 use Drush\Drupal\Migrate\MigrateEvents as MigrateRunnerEvents;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class MigrateExecutable extends MigrateExecutableBase
 {
@@ -53,7 +53,7 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * Frequency (in items) at which progress messages should be emitted.
      */
-    protected ?int $feedback;
+    protected ?string $feedback;
 
     /**
      * Show timestamp in progress message.
@@ -136,7 +136,7 @@ class MigrateExecutable extends MigrateExecutableBase
 
         $this->output = $output;
         $this->limit = $options['limit'];
-        $this->feedback = $options['feedback'] ? intval($options['feedback']) : null;
+        $this->feedback = $options['feedback'];
         $this->showTimestamp = $options['timestamp'];
         $this->showTotal = $options['total'];
         // Deleting the missing source rows is not compatible with options that
@@ -145,7 +145,7 @@ class MigrateExecutable extends MigrateExecutableBase
         // - `--idlist` option is used,
         // - `--limit` option is used,
         // - The migration source plugin has high_water_property set.
-        $this->deleteMissingSourceRows = $options['delete'] && !($this->limit || $this->idlist !== [] || !empty($migration->getSourceConfiguration()['high_water_property']));
+        $this->deleteMissingSourceRows = $options['delete'] && !($this->limit || !empty($this->idlist) || !empty($migration->getSourceConfiguration()['high_water_property']));
         // Cannot use the progress bar when:
         // - `--no-progress` option is used,
         // - `--feedback` option is used,
@@ -164,10 +164,8 @@ class MigrateExecutable extends MigrateExecutableBase
         $this->listeners[MigrateRunnerEvents::DRUSH_MIGRATE_PREPARE_ROW] = [$this, 'onPrepareRow'];
         $this->listeners[MigrateMissingSourceRowsEvent::class] = [$this, 'onMissingSourceRows'];
 
-        $eventDispatcher = $this->getEventDispatcher();
-        assert($eventDispatcher instanceof EventDispatcherInterface);
         foreach ($this->listeners as $event => $listener) {
-            $eventDispatcher->addListener($event, $listener);
+            $this->getEventDispatcher()->addListener($event, $listener);
         }
     }
 
@@ -231,6 +229,7 @@ class MigrateExecutable extends MigrateExecutableBase
      * propagation, thus avoiding the destination object rollback, even when
      * the`--delete` option has been passed.
      *
+     * @param MigrationInterface $migration
      *
      * @see \Drush\Drupal\Migrate\MigrateExecutable::onMissingSourceRows()
      */
@@ -465,7 +464,7 @@ class MigrateExecutable extends MigrateExecutableBase
         $row = $event->getRow();
         $sourceId = $row->getSourceIdValues();
 
-        if ($this->idlist !== []) {
+        if (!empty($this->idlist)) {
             $skip = true;
             foreach ($this->idlist as $id) {
                 if (array_values($sourceId) == $id) {
@@ -505,6 +504,8 @@ class MigrateExecutable extends MigrateExecutableBase
 
     /**
      * Returns the number of items created.
+     *
+     * @return int
      */
     public function getCreatedCount(): int
     {
@@ -513,6 +514,8 @@ class MigrateExecutable extends MigrateExecutableBase
 
     /**
      * Returns the number of items updated.
+     *
+     * @return int
      */
     public function getUpdatedCount(): int
     {
@@ -521,6 +524,8 @@ class MigrateExecutable extends MigrateExecutableBase
 
     /**
      * Returns the number of items ignored.
+     *
+     * @return int
      */
     public function getIgnoredCount(): int
     {
@@ -529,6 +534,8 @@ class MigrateExecutable extends MigrateExecutableBase
 
     /**
      * Returns the number of items that failed.
+     *
+     * @return int
      */
     public function getFailedCount(): int
     {
@@ -540,6 +547,8 @@ class MigrateExecutable extends MigrateExecutableBase
      *
      * Note that STATUS_NEEDS_UPDATE is not counted, since this is typically set
      * on stubs created as side effects, not on the primary item being imported.
+     *
+     * @return int
      */
     public function getProcessedCount(): int
     {
@@ -551,6 +560,8 @@ class MigrateExecutable extends MigrateExecutableBase
 
     /**
      * Returns the number of items rolled back.
+     *
+     * @return int
      */
     public function getRollbackCount(): int
     {
@@ -614,10 +625,8 @@ class MigrateExecutable extends MigrateExecutableBase
      */
     public function unregisterListeners(): void
     {
-        $eventDispatcher = $this->getEventDispatcher();
-        assert($eventDispatcher instanceof EventDispatcherInterface);
         foreach ($this->listeners as $event => $listener) {
-            $eventDispatcher->removeListener($event, $listener);
+            $this->getEventDispatcher()->removeListener($event, $listener);
         }
     }
 }

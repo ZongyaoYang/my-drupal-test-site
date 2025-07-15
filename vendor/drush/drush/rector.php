@@ -16,7 +16,7 @@ use Rector\Set\ValueObject\SetList;
 
 return static function (RectorConfig $config): void {
     $config->importNames();
-    $config->importShortClasses(false);
+    $config->disableImportShortClasses();
 
     $config->paths([
         __DIR__ . '/src',
@@ -25,7 +25,6 @@ return static function (RectorConfig $config): void {
     $config->sets([
         SetList::CODE_QUALITY,
         SetList::PHP_81,
-        SetList::DEAD_CODE
     ]);
 
     $config->skip([
@@ -38,10 +37,5 @@ return static function (RectorConfig $config): void {
         SimplifyIfElseToTernaryRector::class,
         FinalizePublicClassConstantRector::class,
         NullToStrictStringFuncCallArgRector::class,
-        \Rector\Php81\Rector\Array_\FirstClassCallableRector::class,
-        \Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector::class,
-        \Rector\DeadCode\Rector\ClassMethod\RemoveEmptyClassMethodRector::class,
-        \Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector::class,
-        \Rector\DeadCode\Rector\Foreach_\RemoveUnusedForeachKeyRector::class
     ]);
 };

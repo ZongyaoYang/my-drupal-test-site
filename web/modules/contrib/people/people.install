@@ -1,0 +1,188 @@
+<?php
+
+declare(strict_types=1);
+
+use Drupal\block\Entity\Block;
+use Drupal\menu_link_content\Entity\MenuLinkContent;
+use Drupal\node\Entity\Node;
+use Drupal\paragraphs\Entity\Paragraph;
+use Drupal\Core\File\FileSystemInterface;
+use Drupal\media\Entity\Media;
+use Drupal\Core\Config\FileStorage;
+use Drupal\Core\Entity\Entity\EntityFormDisplay;
+use Drupal\Core\Entity\Entity\EntityViewDisplay;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\layout_builder\Section;
+use Drupal\layout_builder\SectionComponent;
+use Drupal\user\Entity\Role;
+use Drupal\views\Entity\View;
+
+
+/**
+ * Implements hook_install().
+ *
+ * This install hook creates a People page and places it in the site's main
+ * navigation. It also adds permissions to the writer role
+ */
+function people_install($is_syncing)
+{
+  if($is_syncing) {
+    return;
+  }
+
+  $people_paragraph = Paragraph::create([
+    'type' => 'automatic_content_list',
+  ]);
+  $people_paragraph->field_block_ref = Block::load('views_block__people');
+  $people_paragraph->save();
+
+  $node = Node::create([
+    'type' => 'listing_page',
+    'title' => 'People',
+    'status' => 1,
+    'path' => '/directory',
+  ]);
+  $node->field_main_content = [
+    $people_paragraph,
+  ];
+  $node->save();
+
+  $about_menu_item = MenuLinkContent::create([
+    'id' => 'about',
+    'title' => 'About',
+    'link' => 'route:<nolink>',
+    'weight' => 0,
+    'menu_name' => 'main',
+  ]);
+  $about_menu_item->save();
+
+  MenuLinkContent::create([
+    'id' => 'people',
+    'title' => 'People',
+    'description' => 'A directory listing of people.',
+    'link' => $node->toUrl()->toUriString(),
+    'weight' => 0,
+    'menu_name' => 'main',
+    'parent' => $about_menu_item->getPluginId(),
+  ])->save();
+
+  $writer_permissions = [
+    'create person content',
+    'edit own person content',
+    'view person revisions'
+  ];
+
+  if (Role::load('writer')) {
+    user_role_grant_permissions('writer', $writer_permissions);
+  }
+}
+
+/**
+ * Add a "field_main_content" rich text paragraph reference field to the People module/Person content type
+ */
+function people_update_9101(&$sandbox) {
+  $config_path = \Drupal::service('extension.list.module')->getPath('people') . '/config/install';
+  $source = new FileStorage($config_path);
+  FieldConfig::create($source->read('field.field.node.person.field_main_content'))->save();
+
+  $view_mode = EntityViewDisplay::load('node.person.default');
+  $view_mode_config = $source->read('core.entity_view_display.node.person.default');
+  $main_content_component = SectionComponent::fromArray($view_mode_config['third_party_settings']['layout_builder']['sections'][0]['components']['e0dc1593-de28-4d95-86a0-45307f45cc51']);
+
+  $sections = $view_mode->getThirdPartySetting('layout_builder', 'sections') ?? [];
+  foreach ($sections as $section) {
+    if($section instanceof Section && $section->getLayoutId() == 'two_column')
+    {
+      $section->appendComponent($main_content_component);
+    }
+  }
+  $view_mode->save();
+
+  $form_display = EntityFormDisplay::load('node.person.default');
+  $form_config = $source->read('core.entity_form_display.node.person.default');
+  $form_display->setComponent('field_main_content', $form_config['content']['field_main_content']);
+  $form_display->save();
+
+  //create and add a new default image for people nodes
+//  $file_data = file_get_contents(dirname(DRUPAL_ROOT) . '/unity-profile/themes/unity/img/icons/user.png');
+//  $file_repository = \Drupal::service('file.repository');
+//  $file = $file_repository->writeData($file_data, 'public://user-placeholder-thumb.png', FileSystemInterface::EXISTS_REPLACE);
+//  if($file)
+//  {
+//    $media = Media::create([
+//      'bundle' => 'document',
+//      'uid' => \Drupal::currentUser()->id(),
+//      'field_media_document' => [
+//        'target_id' => $file->id(),
+//      ],
+//    ]);
+//
+//    $media->setName('User Placeholder Thumbnail')
+//      ->setPublished(TRUE)
+//      ->save();
+//
+//    \Drupal::configFactory()
+//      ->getEditable('field.field.node.person.field_primary_image')
+//      ->set('default_value', [['target_uuid' => $media->get('uuid'), 'weight' => 0]])
+//      ->save(TRUE);
+//  }
+}
+
+/**
+ * Fix the display of person search results by using the search result view mode instead of the default view mode
+ */
+function people_update_9102(&$sandbox) {
+
+  // update the search view to use the search_result view mode for the person results
+  $view = View::load('site_search');
+  // make sure it exists first
+  if($view instanceof View)
+  {
+    $view_config = \Drupal::configFactory()->getEditable('views.view.site_search');
+    $view_config->set('display.default.display_options.row.options.view_modes.entity:node.person', 'search_result');
+    $view_config->save();
+  }
+
+  // update the search result view display for the person content type to include fields specified in config
+  _reset_content_display_mode('people', 'node', 'person', 'search_result');
+}
+
+/**
+ * Adds the layout builder field to the person content type and imports/resets the featured_primary and featured_secondary display modes.
+ */
+function people_update_10000(&$sandbox) {
+  if (!FieldConfig::loadByName('node', 'person', 'layout_builder__layout')) {
+    $config_path = \Drupal::service('extension.list.module')->getPath('people') . '/config/install';
+    $source = new FileStorage($config_path);
+    FieldConfig::create($source->read('field.field.node.person.layout_builder__layout'))->save();
+  }
+
+  _reset_content_display_mode('people', 'node', 'person', 'featured_primary');
+  _reset_content_display_mode('people', 'node', 'person', 'featured_secondary');
+}
+
+/**
+ * Add the teaser_summary field to the people content type and add it to the form display.
+ */
+function people_update_10001(&$sandbox) {
+  $config_path = \Drupal::service('extension.list.module')->getPath('people') . '/config/install';
+  $source = new FileStorage($config_path);
+
+  if (!FieldConfig::loadByName('node', 'event_series', 'field_teaser_summary')) {
+    FieldConfig::create($source->read('field.field.node.person.field_teaser_summary'))->save();
+  }
+    $form_display = EntityFormDisplay::load('node.person.default');
+
+  if (!$form_display->getComponent('field_teaser_summary')) {
+    $form_config = $source->read('core.entity_form_display.node.person.default');
+    $form_display->setComponent('field_teaser_summary', $form_config['content']['field_teaser_summary']);
+    $form_display->save();
+  }
+}
+
+/**
+ * Imports/resets the people highlighted display mode.
+ */
+function people_update_10002(&$sandbox) {
+  _reset_content_display_mode('people', 'node', 'person', 'highlighted');
+}

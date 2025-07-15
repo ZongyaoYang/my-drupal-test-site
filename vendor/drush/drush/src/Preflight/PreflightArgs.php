@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Drush\Preflight;
 
-use Consolidation\Config\Config;
-use Consolidation\Config\ConfigInterface;
-use Drush\Symfony\LessStrictArgvInput;
-use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
+use Consolidation\Config\Config;
+use Consolidation\Config\ConfigInterface;
+use Drush\Utils\StringUtils;
+use Drush\Symfony\LessStrictArgvInput;
 
 /**
  * Storage for arguments preprocessed during preflight.
@@ -399,8 +399,10 @@ class PreflightArgs extends Config implements PreflightArgsInterface
 
     /**
      * Set simulated mode
+     *
+     * @param bool $simulated
      */
-    public function setSimulate(bool $simulate): self
+    public function setSimulate($simulate): self
     {
         return $this->set(self::SIMULATE, $simulate);
     }
@@ -415,8 +417,10 @@ class PreflightArgs extends Config implements PreflightArgsInterface
 
     /**
      * Set the coverage file path.
+     *
+     * @param string
      */
-    public function setCoverageFile(string $coverageFile): self
+    public function setCoverageFile($coverageFile): self
     {
         return $this->set(self::COVERAGE_FILE, StringUtils::replaceTilde($coverageFile, $this->homeDir()));
     }

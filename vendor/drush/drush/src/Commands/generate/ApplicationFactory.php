@@ -8,22 +8,21 @@ use DrupalCodeGenerator\Application;
 use DrupalCodeGenerator\Event\GeneratorInfoAlter;
 use Drush\Commands\generate\Generators\Drush\DrushAliasFile;
 use Drush\Commands\generate\Generators\Drush\DrushCommandFile;
-use Drush\Commands\generate\Generators\Drush\DrushGeneratorFile;
 use Drush\Runtime\ServiceManager;
 use Psr\Container\ContainerInterface as DrushContainer;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ApplicationFactory
 {
-    private readonly ServiceManager $serviceManager;
-    private readonly \Symfony\Component\DependencyInjection\ContainerInterface $container;
+    private ServiceManager $serviceManager;
 
     public function __construct(
-        private readonly DrushContainer $drush_container,
-        private readonly LoggerInterface $logger
+        private ContainerInterface $container,
+        private DrushContainer $drush_container,
+        private LoggerInterface $logger
     ) {
         $this->serviceManager = $this->drush_container->get('service.manager');
-        $this->container = $this->drush_container->get('service_container');
     }
 
     /**
@@ -37,8 +36,7 @@ class ApplicationFactory
         $application->setAutoExit(false);
 
         $generators = $this->discover();
-        // Listen to this event in order to alter generator info.
-        $application->addCommands($application->dispatch(new GeneratorInfoAlter($generators))->generators);
+        $application->addCommands($generators);
         // Hide default Symfony console commands.
         foreach (['help', 'list', 'completion', '_complete'] as $name) {
             $application->get($name)->setHidden(true);
@@ -59,21 +57,25 @@ class ApplicationFactory
         $module_generators = $this->serviceManager->instantiateServices($module_generator_classes, $this->drush_container, $this->container);
 
         $global_generator_classes = $this->serviceManager->discoverPsr4Generators();
-        $global_generator_classes = $this->filterClassExists($global_generator_classes);
+        $global_generator_classes = $this->filterCLassExists($global_generator_classes);
         $global_generators = $this->serviceManager->instantiateServices($global_generator_classes, $this->drush_container, $this->container);
-        return [
+
+        $generators = [
             new DrushCommandFile(),
             new DrushAliasFile(),
-            new DrushGeneratorFile(),
             ...$global_generators,
             ...$module_generators,
         ];
+        return $generators;
     }
 
     /**
      * Check each class for existence.
+     *
+     * @param array $classes
+     * @return array
      */
-    public function filterClassExists(array $classes): array
+    public function filterCLassExists(array $classes): array
     {
         $exists = [];
         foreach ($classes as $class) {
@@ -91,18 +93,11 @@ class ApplicationFactory
 
     /**
      * Implements hook GeneratorInfoAlter.
-     *
-     * This gets called twice: first for the DCG core generators and then for all Drush+Drupal generators.
      */
     public static function alterGenerators(GeneratorInfoAlter $event): void
     {
-        // Alter DCG core generator names to match ours.
-        if (isset($event->generators['plugin-manager'])) {
-            $event->generators['plugin-manager']->setName('plugin:manager');
-        }
-        if (isset($event->generators['theme-settings'])) {
-            $event->generators['theme-settings']->setName('theme:settings');
-        }
+        $event->generators['theme-settings']->setName('theme:settings');
+        $event->generators['plugin-manager']->setName('plugin:manager');
     }
 
     public function logger(): LoggerInterface

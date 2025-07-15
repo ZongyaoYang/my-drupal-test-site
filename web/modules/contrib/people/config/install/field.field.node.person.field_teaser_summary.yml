@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_teaser_summary
+    - node.type.person
+  module:
+    - text
+id: node.person.field_teaser_summary
+field_name: field_teaser_summary
+entity_type: node
+bundle: person
+label: 'Teaser summary'
+description: 'Provide a summary of this content to be displayed in teasers for this page.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

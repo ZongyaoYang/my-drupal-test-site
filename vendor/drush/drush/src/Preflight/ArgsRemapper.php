@@ -33,7 +33,9 @@ class ArgsRemapper
         $sawCommand = false;
         foreach ($argv as $arg) {
             $arg = $this->checkRemap($arg, $sawCommand);
-            $result[] = $arg;
+            if (isset($arg)) {
+                $result[] = $arg;
+            }
         }
         return $result;
     }
@@ -90,6 +92,6 @@ class ArgsRemapper
             return true;
         }
 
-        return $arg[strlen($candidate)] === '=';
+        return $arg[strlen($candidate)] == '=';
     }
 }

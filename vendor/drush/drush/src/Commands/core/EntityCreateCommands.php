@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\SiteProcess\Util\Escape;
 use Drupal\Core\Entity\ContentEntityInterface;
@@ -14,15 +15,13 @@ use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Session\AccountSwitcherInterface;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drush\Attributes as CLI;
-use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Utils\StringUtils;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Yaml\Yaml;
 
 final class EntityCreateCommands extends DrushCommands
 {
-    use AutowireTrait;
-
     const CREATE = 'entity:create';
 
     public function __construct(
@@ -31,6 +30,17 @@ final class EntityCreateCommands extends DrushCommands
         protected AccountSwitcherInterface $accountSwitcher
     ) {
         parent::__construct();
+    }
+
+    public static function create(ContainerInterface $container): self
+    {
+        $commandHandler = new static(
+            $container->get('entity_type.manager'),
+            $container->get('entity_field.manager'),
+            $container->get('account_switcher')
+        );
+
+        return $commandHandler;
     }
 
     /**
@@ -55,7 +65,6 @@ final class EntityCreateCommands extends DrushCommands
     public function createEntity(string $entity_type, $bundle, array $options = ['validate' => true, 'uid' => self::REQ, 'skip-fields' => self::REQ]): string
     {
         $bundleKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('bundle');
-        /** @var ContentEntityInterface $entity */
         $entity = $this->entityTypeManager->getStorage($entity_type)->create([$bundleKey => $bundle]);
         $instances = $this->entityFieldManager->getFieldDefinitions($entity_type, $bundle);
         $skip_fields = StringUtils::csvToArray($options['skip-fields']);
@@ -121,7 +130,7 @@ final class EntityCreateCommands extends DrushCommands
     /**
      * Build initial YAML including comments with authoring hints.
      *
-     * @param FieldDefinitionInterface[] $instances
+     * @param \Drupal\Core\Field\FieldDefinitionInterface[] $instances
      */
     private function getInitialYaml(array $instances, ContentEntityInterface $entity, array $options): string
     {
@@ -185,7 +194,7 @@ final class EntityCreateCommands extends DrushCommands
     }
 
     #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR)]
-    public function validate(): void
+    private function validate(CommandData $commandData): void
     {
         if (!$this->input()->isInteractive()) {
             throw new \RuntimeException('entity:create is designed for an interactive terminal.');
@@ -211,7 +220,7 @@ final class EntityCreateCommands extends DrushCommands
         }
     }
 
-    protected function setValue(ContentEntityInterface $entity, int|string $name, mixed $value): void
+    protected function setValue(\Drupal\Core\Entity\EntityInterface $entity, int|string $name, mixed $value): void
     {
         switch ($entity->get($name)->getFieldDefinition()->getType()) {
             case 'timestamp':

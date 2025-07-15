@@ -1,5 +1,0 @@
-staff_data.admin:
-  title: 'Staff Data Settings'
-  description: 'Configure the top-level organization for Staff Data. The module will populate the Person Content Type from within this top-level organization.'
-  parent: system.admin_config_services
-  route_name: staff_data.settings

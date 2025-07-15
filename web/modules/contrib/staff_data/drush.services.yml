@@ -1,7 +1,0 @@
-services:
-  staff_data.commands:
-    class: \Drupal\staff_data\Commands\StaffDataCommands
-    arguments:
-      - '@staff_data.manager'
-    tags:
-      - { name: drush.command }

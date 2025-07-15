@@ -93,7 +93,6 @@ class ResultTest extends UnitTestCase {
    * Data provider for testResultArea.
    *
    * @return array
-   *   An array of test cases.
    */
   public static function providerTestResultArea() {
     return [
@@ -123,7 +122,7 @@ class ResultTest extends UnitTestCase {
    * @param int $items_per_page
    *   The value to return from getItemsPerPage().
    */
-  protected function setupViewPager($items_per_page = 0): void {
+  protected function setupViewPager($items_per_page = 0) {
     $pager = $this->prophesize(PagerPluginBase::class);
     $pager->getItemsPerPage()
       ->willReturn($items_per_page)

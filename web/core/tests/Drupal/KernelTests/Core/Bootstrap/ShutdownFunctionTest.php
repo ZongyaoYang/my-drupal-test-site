@@ -51,7 +51,7 @@ class ShutdownFunctionTest extends KernelTestBase {
   /**
    * Tests shutdown functions by registering another shutdown function.
    */
-  public function shutdownOne(): void {
+  public function shutdownOne() {
     drupal_register_shutdown_function([$this, 'shutdownTwo']);
     $this->shutDownOneCalled = TRUE;
   }
@@ -59,7 +59,7 @@ class ShutdownFunctionTest extends KernelTestBase {
   /**
    * Tests shutdown functions by being registered during shutdown.
    */
-  public function shutdownTwo(): void {
+  public function shutdownTwo() {
     $this->shutDownTwoCalled = TRUE;
   }
 

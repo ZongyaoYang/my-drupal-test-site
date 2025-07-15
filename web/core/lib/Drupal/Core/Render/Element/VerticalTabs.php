@@ -53,13 +53,14 @@ class VerticalTabs extends RenderElementBase {
    * {@inheritdoc}
    */
   public function getInfo() {
+    $class = static::class;
     return [
       '#default_tab' => '',
       '#process' => [
-        [static::class, 'processVerticalTabs'],
+        [$class, 'processVerticalTabs'],
       ],
       '#pre_render' => [
-        [static::class, 'preRenderVerticalTabs'],
+        [$class, 'preRenderVerticalTabs'],
       ],
       '#theme_wrappers' => ['vertical_tabs', 'form_element'],
     ];

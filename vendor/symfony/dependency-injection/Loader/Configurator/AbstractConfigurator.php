@@ -29,18 +29,21 @@ abstract class AbstractConfigurator
     /**
      * @var \Closure(mixed, bool):mixed|null
      */
-    public static ?\Closure $valuePreProcessor = null;
+    public static $valuePreProcessor;
 
     /** @internal */
     protected Definition|Alias|null $definition = null;
 
-    public function __call(string $method, array $args): mixed
+    /**
+     * @return mixed
+     */
+    public function __call(string $method, array $args)
     {
         if (method_exists($this, 'set'.$method)) {
             return $this->{'set'.$method}(...$args);
         }
 
-        throw new \BadMethodCallException(\sprintf('Call to undefined method "%s::%s()".', static::class, $method));
+        throw new \BadMethodCallException(sprintf('Call to undefined method "%s::%s()".', static::class, $method));
     }
 
     public function __sleep(): array
@@ -48,7 +51,10 @@ abstract class AbstractConfigurator
         throw new \BadMethodCallException('Cannot serialize '.__CLASS__);
     }
 
-    public function __wakeup(): void
+    /**
+     * @return void
+     */
+    public function __wakeup()
     {
         throw new \BadMethodCallException('Cannot unserialize '.__CLASS__);
     }
@@ -92,7 +98,7 @@ abstract class AbstractConfigurator
         }
 
         if ($value instanceof self) {
-            throw new InvalidArgumentException(\sprintf('"%s()" can be used only at the root of service configuration files.', $value::FACTORY));
+            throw new InvalidArgumentException(sprintf('"%s()" can be used only at the root of service configuration files.', $value::FACTORY));
         }
 
         switch (true) {
@@ -112,6 +118,6 @@ abstract class AbstractConfigurator
                 }
         }
 
-        throw new InvalidArgumentException(\sprintf('Cannot use values of type "%s" in service configuration files.', get_debug_type($value)));
+        throw new InvalidArgumentException(sprintf('Cannot use values of type "%s" in service configuration files.', get_debug_type($value)));
     }
 }

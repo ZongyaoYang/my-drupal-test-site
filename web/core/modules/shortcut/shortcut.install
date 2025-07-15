@@ -8,7 +8,7 @@
 /**
  * Implements hook_schema().
  */
-function shortcut_schema(): array {
+function shortcut_schema() {
   $schema['shortcut_set_users'] = [
     'description' => 'Maps users to shortcut sets.',
     'fields' => [
@@ -49,7 +49,7 @@ function shortcut_schema(): array {
 /**
  * Implements hook_install().
  */
-function shortcut_install(): void {
+function shortcut_install() {
   // Theme settings are not configuration entities and cannot depend on modules
   // so to set a module-specific setting, we need to set it with logic.
   if (\Drupal::service('theme_handler')->themeExists('claro')) {
@@ -63,7 +63,7 @@ function shortcut_install(): void {
 /**
  * Implements hook_uninstall().
  */
-function shortcut_uninstall(): void {
+function shortcut_uninstall() {
   // Theme settings are not configuration entities and cannot depend on modules
   // so to unset a module-specific setting, we need to unset it with logic.
   if (\Drupal::service('theme_handler')->themeExists('claro')) {

@@ -9,7 +9,6 @@ use Drupal\Tests\BrowserTestBase;
 /**
  * Tests the authorize.php script and related API.
  *
- * @group legacy
  * @group system
  */
 class SystemAuthorizeTest extends BrowserTestBase {
@@ -47,7 +46,7 @@ class SystemAuthorizeTest extends BrowserTestBase {
    *
    * @see system_authorized_init()
    */
-  public function drupalGetAuthorizePHP($page_title = 'system-test-auth'): void {
+  public function drupalGetAuthorizePHP($page_title = 'system-test-auth') {
     $this->drupalGet('system-test/authorize-init/' . $page_title);
   }
 

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\block_test\Plugin\Condition;
 
 use Drupal\Core\Condition\Attribute\Condition;

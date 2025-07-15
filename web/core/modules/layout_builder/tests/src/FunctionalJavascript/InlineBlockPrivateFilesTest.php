@@ -169,7 +169,7 @@ class InlineBlockPrivateFilesTest extends InlineBlockTestBase {
    * @param \Drupal\file\FileInterface $file
    *   The file entity.
    */
-  protected function replaceFileInBlock(FileInterface $file): void {
+  protected function replaceFileInBlock(FileInterface $file) {
     $assert_session = $this->assertSession();
     $page = $this->getSession()->getPage();
     $this->clickContextualLink(static::INLINE_BLOCK_LOCATOR, 'Configure');
@@ -189,7 +189,7 @@ class InlineBlockPrivateFilesTest extends InlineBlockTestBase {
    * @param \Drupal\file\Entity\File $file
    *   The file entity.
    */
-  protected function addInlineFileBlockToLayout($title, File $file): void {
+  protected function addInlineFileBlockToLayout($title, File $file) {
     $assert_session = $this->assertSession();
     $page = $this->getSession()->getPage();
     $page->clickLink('Add block');
@@ -268,7 +268,7 @@ class InlineBlockPrivateFilesTest extends InlineBlockTestBase {
    * @param \Drupal\file\FileInterface $file
    *   The file to be attached.
    */
-  protected function attachFileToBlockForm(FileInterface $file): void {
+  protected function attachFileToBlockForm(FileInterface $file) {
     $assert_session = $this->assertSession();
     $page = $this->getSession()->getPage();
     $this->assertSession()->waitForElementVisible('named', ['field', 'files[settings_block_form_field_file_0]']);
@@ -283,7 +283,7 @@ class InlineBlockPrivateFilesTest extends InlineBlockTestBase {
    * @param int $node_id
    *   The node id.
    */
-  protected function createNewNodeRevision($node_id): void {
+  protected function createNewNodeRevision($node_id) {
     $node = Node::load($node_id);
     $node->setTitle('Update node');
     $node->setNewRevision();

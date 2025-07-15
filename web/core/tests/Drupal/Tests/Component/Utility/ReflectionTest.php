@@ -30,9 +30,6 @@ class ReflectionTest extends TestCase {
    * Data provider for ::testGetParameterClassName().
    *
    * @return array[]
-   *   An array of test cases. Each test case is an associative array containing:
-   *   - string|null $expected: The expected class name.
-   *   - \ReflectionParameter $parameter: The reflection parameter.
    */
   public static function providerGetParameterClassName() {
     $reflection_method = new \ReflectionMethod(static::class, 'existsForTesting');

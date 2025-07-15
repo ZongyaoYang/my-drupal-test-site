@@ -1,6 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-/* cspell:ignore imagetextalternative mediaimagetextalternative */
-/* cspell:ignore mediaimagetextalternativeediting textalternativeformview */
+/* cspell:ignore textalternativeformview */
 
 import { Plugin } from 'ckeditor5/src/core';
 import { IconLowVision } from '@ckeditor/ckeditor5-icons';

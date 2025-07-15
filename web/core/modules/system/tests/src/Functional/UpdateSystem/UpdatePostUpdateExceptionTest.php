@@ -63,7 +63,7 @@ class UpdatePostUpdateExceptionTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function doSelectionTest(): void {
+  protected function doSelectionTest() {
     $this->assertSession()->assertEscaped("Post update that throws an exception.");
   }
 

@@ -2,7 +2,6 @@
 
 namespace Drupal\Core\StreamWrapper;
 
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 
 /**
@@ -12,8 +11,6 @@ use Drupal\Core\Url;
  * file interface.
  */
 class TemporaryStream extends LocalStream {
-
-  use StringTranslationTrait;
 
   /**
    * {@inheritdoc}
@@ -26,14 +23,14 @@ class TemporaryStream extends LocalStream {
    * {@inheritdoc}
    */
   public function getName() {
-    return $this->t('Temporary files');
+    return t('Temporary files');
   }
 
   /**
    * {@inheritdoc}
    */
   public function getDescription() {
-    return $this->t('Temporary local files for upload and previews.');
+    return t('Temporary local files for upload and previews.');
   }
 
   /**

@@ -10,7 +10,6 @@ use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\entity_test\Entity\EntityTest;
 use Drupal\entity_test\Entity\EntityTestBaseFieldDisplay;
-use Drupal\entity_test\EntityTestHelper;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 
@@ -99,9 +98,6 @@ class FormTest extends FieldTestBase {
     ];
   }
 
-  /**
-   * Tests the single-value field form functionality.
-   */
   public function testFieldFormSingle(): void {
     $field_storage = $this->fieldStorageSingle;
     $field_name = $field_storage['field_name'];
@@ -164,6 +160,7 @@ class FormTest extends FieldTestBase {
     ];
     $this->submitForm($edit, 'Save');
     $this->assertSession()->pageTextContains('entity_test ' . $id . ' has been updated.');
+    $this->container->get('entity_type.manager')->getStorage('entity_test')->resetCache([$id]);
     $entity = EntityTest::load($id);
     $this->assertEquals($value, $entity->{$field_name}->value, 'Field value was updated');
 
@@ -175,6 +172,7 @@ class FormTest extends FieldTestBase {
     $this->drupalGet('entity_test/manage/' . $id . '/edit');
     $this->submitForm($edit, 'Save');
     $this->assertSession()->pageTextContains('entity_test ' . $id . ' has been updated.');
+    $this->container->get('entity_type.manager')->getStorage('entity_test')->resetCache([$id]);
     $entity = EntityTest::load($id);
     $this->assertTrue($entity->{$field_name}->isEmpty(), 'Field was emptied');
   }
@@ -212,9 +210,6 @@ class FormTest extends FieldTestBase {
     $this->assertTrue($entity->{$field_name}->isEmpty(), 'Field is now empty.');
   }
 
-  /**
-   * Tests the required single-value field form.
-   */
   public function testFieldFormSingleRequired(): void {
     $field_storage = $this->fieldStorageSingle;
     $field_name = $field_storage['field_name'];
@@ -255,9 +250,6 @@ class FormTest extends FieldTestBase {
     $this->assertSession()->pageTextContains("{$this->field['label']} field is required.");
   }
 
-  /**
-   * Tests the unlimited-value field form.
-   */
   public function testFieldFormUnlimited(): void {
     $field_storage = $this->fieldStorageUnlimited;
     $field_name = $field_storage['field_name'];
@@ -513,6 +505,7 @@ class FormTest extends FieldTestBase {
     $this->submitForm($edit, 'Save');
 
     // Check that the new revision has the expected values.
+    $storage->resetCache([$id]);
     $entity = $storage->load($id);
     $this->assertEquals(99, $entity->{$field_name_no_access}->value, 'New revision has the expected value for the field with no edit access.');
     $this->assertEquals(2, $entity->{$field_name}->value, 'New revision has the expected value for the field with edit access.');
@@ -580,6 +573,7 @@ class FormTest extends FieldTestBase {
     $edit = ["{$field_name}[0][value]" => $value];
     $this->submitForm($edit, 'Save');
     $this->assertSession()->pageTextContains('entity_test_rev ' . $id . ' has been updated.');
+    $storage->resetCache([$id]);
     $entity = $storage->load($id);
     $this->assertEquals($value, $entity->{$field_name}->value, 'Field value was updated');
 
@@ -608,7 +602,7 @@ class FormTest extends FieldTestBase {
     $this->drupalLogin($user);
 
     // Ensure that the 'bar' bundle exists, to avoid config validation errors.
-    EntityTestHelper::createBundle('bar', entity_type: 'entity_test_base_field_display');
+    entity_test_create_bundle('bar', entity_type: 'entity_test_base_field_display');
 
     FieldStorageConfig::create([
       'entity_type' => 'entity_test_base_field_display',

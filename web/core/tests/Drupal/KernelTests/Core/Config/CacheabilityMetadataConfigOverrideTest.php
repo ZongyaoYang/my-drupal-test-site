@@ -22,10 +22,8 @@ class CacheabilityMetadataConfigOverrideTest extends KernelTestBase {
     'block_content',
     'config',
     'config_override_test',
-    'field',
     'path_alias',
     'system',
-    'text',
     'user',
   ];
 
@@ -36,10 +34,7 @@ class CacheabilityMetadataConfigOverrideTest extends KernelTestBase {
     parent::setUp();
     $this->container->get('theme_installer')->install(['stark']);
     $this->installEntitySchema('block_content');
-    $this->installConfig([
-      'block_content',
-      'config_override_test',
-    ]);
+    $this->installConfig(['config_override_test']);
   }
 
   /**

@@ -49,7 +49,7 @@ class ShortcutTranslationUITest extends ContentTranslationUITestBase {
   /**
    * {@inheritdoc}
    */
-  protected function getTranslatorPermissions(): array {
+  protected function getTranslatorPermissions() {
     return array_merge(parent::getTranslatorPermissions(), ['access shortcuts', 'administer shortcuts', 'access toolbar']);
   }
 
@@ -68,14 +68,12 @@ class ShortcutTranslationUITest extends ContentTranslationUITestBase {
     return ['title' => [['value' => $this->randomMachineName()]]] + parent::getNewEntityValues($langcode);
   }
 
-  /**
-   * Tests basic translation functionality for an entity.
-   */
-  protected function doTestBasicTranslation(): void {
+  protected function doTestBasicTranslation() {
     parent::doTestBasicTranslation();
 
     $storage = $this->container->get('entity_type.manager')
       ->getStorage($this->entityTypeId);
+    $storage->resetCache([$this->entityId]);
     $entity = $storage->load($this->entityId);
     foreach ($this->langcodes as $langcode) {
       if ($entity->hasTranslation($langcode)) {
@@ -93,9 +91,10 @@ class ShortcutTranslationUITest extends ContentTranslationUITestBase {
   /**
    * {@inheritdoc}
    */
-  protected function doTestTranslationEdit(): void {
+  protected function doTestTranslationEdit() {
     $storage = $this->container->get('entity_type.manager')
       ->getStorage($this->entityTypeId);
+    $storage->resetCache([$this->entityId]);
     $entity = $storage->load($this->entityId);
     $languages = $this->container->get('language_manager')->getLanguages();
 
@@ -113,9 +112,10 @@ class ShortcutTranslationUITest extends ContentTranslationUITestBase {
   /**
    * Tests the basic translation workflow.
    */
-  protected function doTestTranslationChanged(): void {
+  protected function doTestTranslationChanged() {
     $storage = $this->container->get('entity_type.manager')
       ->getStorage($this->entityTypeId);
+    $storage->resetCache([$this->entityId]);
     $entity = $storage->load($this->entityId);
 
     $this->assertFalse(

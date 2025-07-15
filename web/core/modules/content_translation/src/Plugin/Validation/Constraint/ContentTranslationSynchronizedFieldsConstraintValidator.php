@@ -85,7 +85,7 @@ class ContentTranslationSynchronizedFieldsConstraintValidator extends Constraint
   /**
    * {@inheritdoc}
    */
-  public function validate($value, Constraint $constraint): void {
+  public function validate($value, Constraint $constraint) {
     /** @var \Drupal\content_translation\Plugin\Validation\Constraint\ContentTranslationSynchronizedFieldsConstraint $constraint */
     /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
     $entity = $value;
@@ -169,13 +169,13 @@ class ContentTranslationSynchronizedFieldsConstraintValidator extends Constraint
    *   The unchanged entity.
    */
   protected function getOriginalEntity(ContentEntityInterface $entity) {
-    if (!$entity->getOriginal()) {
+    if (!isset($entity->original)) {
       /** @var \Drupal\Core\Entity\RevisionableStorageInterface $storage */
       $storage = $this->entityTypeManager->getStorage($entity->getEntityTypeId());
-      $original = $entity->wasDefaultRevision() ? $storage->loadUnchanged($entity->id()) : $storage->loadRevision($entity->getLoadedRevisionId());
+      $original = $entity->isDefaultRevision() ? $storage->loadUnchanged($entity->id()) : $storage->loadRevision($entity->getLoadedRevisionId());
     }
     else {
-      $original = $entity->getOriginal();
+      $original = $entity->original;
     }
     return $original;
   }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drupal\Tests\shortcut\Functional;
 
 use Drupal\block_content\Entity\BlockContentType;
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Url;
 use Drupal\shortcut\Entity\Shortcut;
 use Drupal\shortcut\Entity\ShortcutSet;
@@ -108,10 +109,10 @@ class ShortcutLinksTest extends ShortcutTestBase {
       $this->assertContains('internal:' . $test_path, $paths, 'Shortcut created: ' . $test_path);
 
       if (in_array($test_path, $test_cases_non_access)) {
-        $this->assertSession()->linkNotExists($title, "Shortcut link $test_path not accessible on the page.");
+        $this->assertSession()->linkNotExists($title, new FormattableMarkup('Shortcut link %url not accessible on the page.', ['%url' => $test_path]));
       }
       else {
-        $this->assertSession()->linkExists($title, 0, "Shortcut link $test_path found on the page.");
+        $this->assertSession()->linkExists($title, 0, new FormattableMarkup('Shortcut link %url found on the page.', ['%url' => $test_path]));
       }
     }
     $saved_set = ShortcutSet::load($set->id());
@@ -170,6 +171,8 @@ class ShortcutLinksTest extends ShortcutTestBase {
   public function testShortcutQuickLink(): void {
     \Drupal::service('theme_installer')->install(['claro']);
     $this->config('system.theme')->set('admin', 'claro')->save();
+    $this->config('node.settings')->set('use_admin_theme', '1')->save();
+    $this->container->get('router.builder')->rebuild();
 
     $this->drupalLogin($this->adminUser);
     $this->drupalGet('admin/config/system/cron');
@@ -425,7 +428,7 @@ class ShortcutLinksTest extends ShortcutTestBase {
   /**
    * Tests the 'access shortcuts' permission for shortcut set administration.
    */
-  private function verifyAccessShortcutsPermissionForEditPages(): void {
+  private function verifyAccessShortcutsPermissionForEditPages() {
     // Create a user with customize links and switch sets permissions  but
     // without the 'access shortcuts' permission.
     $test_permissions = [
@@ -478,14 +481,14 @@ class ShortcutLinksTest extends ShortcutTestBase {
    *   Link position counting from zero.
    * @param string $message
    *   (optional) A message to display with the assertion. Do not translate
-   *   messages: use new FormattableMarkup() to embed variables in the message
-   *   text, not t(). If left blank, a default message will be displayed.
+   *   messages: use new FormattableMarkup() to embed variables in the message text, not
+   *   t(). If left blank, a default message will be displayed.
    *
    * @internal
    */
   protected function assertShortcutQuickLink(string $label, int $index = 0, string $message = ''): void {
     $links = $this->xpath('//a[normalize-space()=:label]', [':label' => $label]);
-    $message = ($message ?: "Shortcut quick link with label $label found.");
+    $message = ($message ? $message : (string) new FormattableMarkup('Shortcut quick link with label %label found.', ['%label' => $label]));
     $this->assertArrayHasKey($index, $links, $message);
   }
 

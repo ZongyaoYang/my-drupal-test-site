@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\entity_test\Plugin\Validation\Constraint;
 
 use Symfony\Component\Validator\Constraint;
@@ -15,7 +13,7 @@ class FieldWidgetConstraintValidator extends ConstraintValidator {
   /**
    * {@inheritdoc}
    */
-  public function validate($field_item, Constraint $constraint): void {
+  public function validate($field_item, Constraint $constraint) {
     $this->context->addViolation($constraint->message);
   }
 

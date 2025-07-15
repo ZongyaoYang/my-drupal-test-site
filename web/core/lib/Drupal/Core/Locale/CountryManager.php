@@ -18,8 +18,6 @@ class CountryManager implements CountryManagerInterface {
 
   /**
    * An array of country code => country name pairs.
-   *
-   * @var string[][]
    */
   protected $countries;
 

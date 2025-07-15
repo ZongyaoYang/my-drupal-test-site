@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\views_test_cacheable_metadata_calculation\Plugin\views\access;
 
 use Drupal\Core\Cache\Cache;

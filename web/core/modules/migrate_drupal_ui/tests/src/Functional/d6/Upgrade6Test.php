@@ -71,9 +71,9 @@ class Upgrade6Test extends MigrateUpgradeExecuteTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function getEntityCounts(): array {
+  protected function getEntityCounts() {
     return [
-      'block' => 36,
+      'block' => 37,
       'block_content' => 2,
       'block_content_type' => 1,
       'comment' => 8,
@@ -133,7 +133,7 @@ class Upgrade6Test extends MigrateUpgradeExecuteTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function getAvailablePaths(): array {
+  protected function getAvailablePaths() {
     return [
       'Block',
       'Block translation',
@@ -186,7 +186,7 @@ class Upgrade6Test extends MigrateUpgradeExecuteTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function getMissingPaths(): array {
+  protected function getMissingPaths() {
     return [
       'Aggregator',
       'Book',

@@ -159,18 +159,6 @@ class RouteBuilder implements RouteBuilderInterface, DestructableInterface {
         unset($routes['route_callbacks']);
       }
       foreach ($routes as $name => $route_info) {
-        if (isset($route_info['alias'])) {
-          $alias = $collection->addAlias($name, $route_info['alias']);
-          $deprecation = $route_info['deprecated'] ?? NULL;
-          if (isset($deprecation)) {
-            $alias->setDeprecated(
-              $deprecation['package'],
-              $deprecation['version'],
-              $deprecation['message'] ?? ''
-            );
-          }
-          continue;
-        }
         $route_info += [
           'defaults' => [],
           'requirements' => [],

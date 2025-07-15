@@ -1,15 +1,10 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\form_test\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 
-/**
- * Provides a form for configuring preferences and dynamically updating select list options via AJAX.
- */
 class TreeConfigTargetForm extends ConfigFormBase {
 
   /**
@@ -35,17 +30,17 @@ class TreeConfigTargetForm extends ConfigFormBase {
       '#open' => TRUE,
       '#tree' => TRUE,
       '#input' => TRUE,
-      '#title' => $this->t('Vegetable preferences'),
+      '#title' => t('Vegetable preferences'),
     ];
     $form['vegetables']['favorite'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Favorite'),
+      '#title' => t('Favorite'),
       '#default_value' => 'Potato',
       '#config_target' => 'form_test.object:favorite_vegetable',
     ];
     $form['vegetables']['nemesis'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Nemesis'),
+      '#title' => t('Nemesis'),
       '#config_target' => 'form_test.object:nemesis_vegetable',
     ];
     // Since form_test.object contains translatable values, it must specify a

@@ -36,13 +36,13 @@ class InstallerExistingConfigSyncDirectoryProfileMismatchTest extends InstallerC
   /**
    * Installer step: Configure settings.
    */
-  protected function setUpSettings(): void {
+  protected function setUpSettings() {
     // Cause a profile mismatch by hacking the URL.
     $this->drupalGet(str_replace($this->profile, 'minimal', $this->getUrl()));
     parent::setUpSettings();
   }
 
-  protected function setUpSite(): void {
+  protected function setUpSite() {
     // This step will not occur because there is an error.
   }
 

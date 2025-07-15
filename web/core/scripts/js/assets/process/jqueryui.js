@@ -1,5 +1,5 @@
 const Terser = require('terser');
-const path = require('node:path');
+const path = require('path');
 
 /**
  * Process jQuery UI source files.

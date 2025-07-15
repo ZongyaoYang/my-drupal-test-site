@@ -142,7 +142,7 @@ class SchemaTest extends DriverSpecificSchemaTestBase {
       $this->schema->addIndex('test_table_index_length', 'test_separate', [['test_field_text', 200]], $table_specification);
       $this->fail('\Drupal\Core\Database\SchemaObjectExistsException exception missed.');
     }
-    catch (SchemaObjectExistsException) {
+    catch (SchemaObjectExistsException $e) {
       // Expected exception; just continue testing.
     }
 
@@ -150,7 +150,7 @@ class SchemaTest extends DriverSpecificSchemaTestBase {
       $this->schema->addIndex('test_table_non_existing', 'test_separate', [['test_field_text', 200]], $table_specification);
       $this->fail('\Drupal\Core\Database\SchemaObjectDoesNotExistException exception missed.');
     }
-    catch (SchemaObjectDoesNotExistException) {
+    catch (SchemaObjectDoesNotExistException $e) {
       // Expected exception; just continue testing.
     }
 
@@ -183,7 +183,9 @@ class SchemaTest extends DriverSpecificSchemaTestBase {
     // Count the number of columns defined in the indexes.
     $column_count = 0;
     foreach ($table_specification_with_new_index['indexes'] as $index) {
-      $column_count += count($index);
+      foreach ($index as $field) {
+        $column_count++;
+      }
     }
     $test_count = 0;
     foreach ($results as $result) {
@@ -323,7 +325,7 @@ class SchemaTest extends DriverSpecificSchemaTestBase {
     try {
       $this->connection->query("SET sql_generate_invisible_primary_key = 1;")->execute();
     }
-    catch (DatabaseExceptionWrapper) {
+    catch (DatabaseExceptionWrapper $e) {
       $this->markTestSkipped('This test requires the SESSION_VARIABLES_ADMIN privilege.');
     }
     $this->schema->createTable('test_primary_key', [

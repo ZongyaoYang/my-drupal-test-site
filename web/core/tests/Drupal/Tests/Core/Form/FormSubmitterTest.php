@@ -262,7 +262,6 @@ class FormSubmitterTest extends UnitTestCase {
 
   /**
    * @return \Drupal\Core\Form\FormSubmitterInterface
-   *   A mocked instance of FormSubmitter.
    */
   protected function getFormSubmitter() {
     $request_stack = new RequestStack();

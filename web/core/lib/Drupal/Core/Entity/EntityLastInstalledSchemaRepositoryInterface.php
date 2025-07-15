@@ -125,7 +125,7 @@ interface EntityLastInstalledSchemaRepositoryInterface {
   public function getLastInstalledFieldStorageDefinitions($entity_type_id);
 
   /**
-   * Puts the entity type's field storage definitions in the application state.
+   * Stores the entity type's field storage definitions in the application state.
    *
    * @param string $entity_type_id
    *   The entity type identifier.

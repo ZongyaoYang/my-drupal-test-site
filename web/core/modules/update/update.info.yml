@@ -1,6 +1,6 @@
-name: 'Update Status'
+name: 'Update Manager'
 type: module
-description: 'Checks for updates and can notify users if there are new releases available.'
+description: 'Checks for updates and allows users to manage them through a user interface.'
 version: VERSION
 package: Core
 configure: update.settings

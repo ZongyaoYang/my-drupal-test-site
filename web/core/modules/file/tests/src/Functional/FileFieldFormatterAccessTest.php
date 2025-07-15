@@ -6,7 +6,6 @@ namespace Drupal\Tests\file\Functional;
 
 /**
  * Tests file formatter access.
- *
  * @group file
  */
 class FileFieldFormatterAccessTest extends FileFieldTestBase {

@@ -86,7 +86,7 @@ abstract class SectionListTestBase extends EntityKernelTestBase {
    */
   public function testGetSectionInvalidDelta(): void {
     $this->expectException(\OutOfBoundsException::class);
-    $this->expectExceptionMessage('Invalid section delta "2", there are 2 sections.');
+    $this->expectExceptionMessage('Invalid delta "2"');
     $this->sectionList->getSection(2);
   }
 
@@ -186,7 +186,7 @@ abstract class SectionListTestBase extends EntityKernelTestBase {
     $this->assertSame(['setting_1' => 'Default'], $this->sectionList->getSection(0)->getLayoutSettings());
 
     $new_section_storage = clone $this->sectionList;
-    $new_section_storage->getSection(0)->setLayoutSettings(['asdf' => 'foo']);
+    $new_section_storage->getSection(0)->setLayoutSettings(['asdf' => 'qwer']);
     $this->assertSame(['setting_1' => 'Default'], $this->sectionList->getSection(0)->getLayoutSettings());
   }
 

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\tabledrag_test\Form;
 
 use Drupal\Core\Form\FormStateInterface;

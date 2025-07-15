@@ -24,7 +24,6 @@ abstract class BlockBase extends PluginBase implements BlockPluginInterface, Plu
 
   use BlockPluginTrait {
     buildConfigurationForm as traitBuildConfigurationForm;
-    submitConfigurationForm as traitSubmitConfigurationForm;
   }
   use ContextAwarePluginTrait;
   use ContextAwarePluginAssignmentTrait;
@@ -40,16 +39,6 @@ abstract class BlockBase extends PluginBase implements BlockPluginInterface, Plu
     $form['context_mapping'] = $this->addContextAssignmentElement($this, $contexts);
 
     return $form;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function submitConfigurationForm(array &$form, FormStateInterface $form_state): void {
-    if (!$form_state->getErrors() && $form_state->getValue('context_mapping')) {
-      $this->configuration['context_mapping'] = $form_state->getValue('context_mapping');
-    }
-    $this->traitSubmitConfigurationForm($form, $form_state);
   }
 
 }

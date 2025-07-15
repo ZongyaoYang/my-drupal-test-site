@@ -28,9 +28,6 @@ class EntityHasFieldConstraintValidatorTest extends EntityKernelTestBase {
     $this->createUser();
   }
 
-  /**
-   * Tests validation of an entity with a field.
-   */
   public function testValidation(): void {
     $this->state->set('entity_test_constraints.build', [
       'EntityHasField' => 'body',

@@ -167,7 +167,6 @@ EOS;
    * Generates the string for the method which loads the actual service.
    *
    * @return string
-   *   A string for the lazyLoadItself method.
    */
   protected function buildLazyLoadItselfMethod() {
     $output = <<<'EOS'
@@ -198,7 +197,6 @@ EOS;
    *   A reflection method for the method.
    *
    * @return string
-   *   The docblock, signature, and body for a method.
    */
   protected function buildMethod(\ReflectionMethod $reflection_method) {
 
@@ -262,7 +260,6 @@ EOS;
    *   A reflection object of the parameter.
    *
    * @return string
-   *   A parameter string.
    */
   protected function buildParameter(\ReflectionParameter $parameter) {
     $parameter_string = '';
@@ -304,7 +301,6 @@ EOS;
    *   A reflection method for the method.
    *
    * @return string
-   *   The body for a method.
    */
   protected function buildMethodBody(\ReflectionMethod $reflection_method) {
     $output = '';
@@ -339,7 +335,6 @@ EOS;
    * Builds the constructor used to inject the actual service ID.
    *
    * @return string
-   *   The constructor for a class.
    */
   protected function buildConstructorMethod() {
     $output = <<<'EOS'
@@ -366,7 +361,6 @@ EOS;
    * Build the required use statements of the proxy class.
    *
    * @return string
-   *   The use statements.
    */
   protected function buildUseStatements() {
     $output = '';

@@ -31,8 +31,6 @@ class ThemeRegistry extends CacheCollector implements DestructableInterface {
 
   /**
    * The complete theme registry array.
-   *
-   * @var array
    */
   protected $completeRegistry;
 
@@ -166,18 +164,6 @@ class ThemeRegistry extends CacheCollector implements DestructableInterface {
         $this->lock->release($lock_name);
       }
     }
-  }
-
-  /**
-   * Gets preprocess invoke map.
-   *
-   * @return array
-   *   An array of preprocess invokes for preprocess functions in modules.
-   *
-   * @internal
-   */
-  public function getPreprocessInvokes() {
-    return $this->get('preprocess invokes');
   }
 
 }

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\migrate_drupal_message_test\Plugin\migrate\source;
 
 use Drupal\system\Plugin\migrate\source\Menu;

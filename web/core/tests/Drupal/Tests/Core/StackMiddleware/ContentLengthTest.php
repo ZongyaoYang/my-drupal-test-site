@@ -22,10 +22,10 @@ class ContentLengthTest extends UnitTestCase {
    * @dataProvider providerTestSetContentLengthHeader
    */
   public function testHandle(false|int $expected_header, Response $response): void {
-    $httpKernel = $this->prophesize(HttpKernelInterface::class);
+    $kernel = $this->prophesize(HttpKernelInterface::class);
     $request = Request::create('/');
-    $httpKernel->handle($request, HttpKernelInterface::MAIN_REQUEST, TRUE)->willReturn($response);
-    $middleware = new ContentLength($httpKernel->reveal());
+    $kernel->handle($request, HttpKernelInterface::MAIN_REQUEST, TRUE)->willReturn($response);
+    $middleware = new ContentLength($kernel->reveal());
     $response = $middleware->handle($request);
     if ($expected_header === FALSE) {
       $this->assertFalse($response->headers->has('Content-Length'));

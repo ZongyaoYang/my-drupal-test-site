@@ -6,7 +6,6 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\DatabaseConnectionRefusedException;
 use Drupal\Core\Database\DatabaseNotFoundException;
-use Drupal\Core\Database\Query\SelectInterface;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
@@ -147,7 +146,7 @@ class MigrateMessageController extends ControllerBase {
     try {
       $fields = $source_plugin->fields();
     }
-    catch (DatabaseConnectionRefusedException | DatabaseNotFoundException | RequirementsException | \PDOException) {
+    catch (DatabaseConnectionRefusedException | DatabaseNotFoundException | RequirementsException | \PDOException $e) {
     }
 
     $source_id_field_names = array_keys($source_plugin->getIds());
@@ -190,7 +189,10 @@ class MigrateMessageController extends ControllerBase {
     $query->leftJoin($map_table, 'map', 'msg.source_ids_hash = map.source_ids_hash');
     $query->fields('msg');
     $query->fields('map');
-    $this->addFilterToQuery($request, $query);
+    $filter = $this->buildFilterQuery($request);
+    if (!empty($filter['where'])) {
+      $query->where($filter['where'], $filter['args']);
+    }
     $result = $query
       ->limit(50)
       ->orderByHeader($header)
@@ -236,45 +238,54 @@ class MigrateMessageController extends ControllerBase {
   }
 
   /**
-   * Adds a filter to the query for migrate message administration.
-   *
-   * This method retrieves the session-based filters from the request and
-   * applies them to the provided query object. If no filters are present, the
-   * query is left unchanged.
+   * Builds a query for migrate message administration.
    *
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The request.
-   * @param \Drupal\Core\Database\Query\SelectInterface $query
-   *   The database query.
+   *
+   * @return array|null
+   *   An associative array with keys 'where' and 'args' or NULL if there were
+   *   no filters set.
    */
-  protected function addFilterToQuery(Request $request, SelectInterface $query): void {
+  protected function buildFilterQuery(Request $request): ?array {
     $session_filters = $request->getSession()->get('migration_messages_overview_filter', []);
     if (empty($session_filters)) {
-      return;
+      return NULL;
     }
 
-    // Build the condition.
+    // Build query.
+    $where = $args = [];
     foreach ($session_filters as $filter) {
-      if (empty($filter['value'])) {
-        continue;
-      }
+      $filter_where = [];
+
       switch ($filter['type']) {
         case 'array':
-          $values = array_values($filter['value']);
-          if ($filter['field'] === 'msg.level') {
-            $values = array_map(fn($x) => (int) $x, $values);
+          foreach ($filter['value'] as $value) {
+            $filter_where[] = $filter['where'];
+            $args[] = $value;
           }
-          $query->condition($filter['field'], $values, 'IN');
           break;
 
         case 'string':
-          $query->condition($filter['field'], "%{$filter['value']}%", 'LIKE');
+          $filter_where[] = $filter['where'];
+          $args[] = '%' . $filter['value'] . '%';
           break;
 
         default:
-          $query->condition($filter['field'], $filter['value']);
+          $filter_where[] = $filter['where'];
+          $args[] = $filter['value'];
+      }
+
+      if (!empty($filter_where)) {
+        $where[] = '(' . implode(' OR ', $filter_where) . ')';
       }
     }
+    $where = !empty($where) ? implode(' AND ', $where) : '';
+
+    return [
+      'where' => $where,
+      'args' => $args,
+    ];
   }
 
   /**

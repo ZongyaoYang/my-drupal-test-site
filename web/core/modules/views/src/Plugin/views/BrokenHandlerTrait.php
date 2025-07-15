@@ -93,7 +93,6 @@ trait BrokenHandlerTrait {
    * Gets dependencies for a broken handler.
    *
    * @return array
-   *   The dependencies for the broken handler.
    *
    * @see \Drupal\views\Plugin\views\PluginBase::calculateDependencies()
    */

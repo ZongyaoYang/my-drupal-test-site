@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drupal\Tests\block\Kernel\Migrate\d6;
 
 use Drupal\Tests\migrate_drupal\Kernel\d6\MigrateDrupal6TestBase;
-use Drupal\block\Hook\BlockHooks;
 
 /**
  * Tests migration of i18n block translations.
@@ -45,14 +44,12 @@ class MigrateBlockContentTranslationTest extends MigrateDrupal6TestBase {
       'd6_filter_format',
       'block_content_type',
       'block_content_body_field',
-      'd6_menu',
       'd6_custom_block',
       'd6_user_role',
       'd6_block',
       'd6_block_translation',
     ]);
-    $blockRebuild = new BlockHooks();
-    $blockRebuild->rebuild();
+    block_rebuild();
   }
 
   /**

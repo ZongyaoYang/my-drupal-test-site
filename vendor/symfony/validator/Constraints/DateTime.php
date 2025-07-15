@@ -11,13 +11,11 @@
 
 namespace Symfony\Component\Validator\Constraints;
 
-use Symfony\Component\Validator\Attribute\HasNamedArguments;
 use Symfony\Component\Validator\Constraint;
 
 /**
- * Validates that a value is a valid "datetime" according to a given format.
- *
- * @see https://www.php.net/manual/en/datetime.format.php
+ * @Annotation
+ * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
@@ -34,28 +32,19 @@ class DateTime extends Constraint
         self::INVALID_TIME_ERROR => 'INVALID_TIME_ERROR',
     ];
 
-    public string $format = 'Y-m-d H:i:s';
-    public string $message = 'This value is not a valid datetime.';
-
     /**
-     * @param non-empty-string|array<string,mixed>|null $format  The datetime format to match (defaults to 'Y-m-d H:i:s')
-     * @param string[]|null                             $groups
-     * @param array<string,mixed>|null                  $options
+     * @deprecated since Symfony 6.1, use const ERROR_NAMES instead
      */
-    #[HasNamedArguments]
-    public function __construct(string|array|null $format = null, ?string $message = null, ?array $groups = null, mixed $payload = null, ?array $options = null)
+    protected static $errorNames = self::ERROR_NAMES;
+
+    public $format = 'Y-m-d H:i:s';
+    public $message = 'This value is not a valid datetime.';
+
+    public function __construct(string|array|null $format = null, ?string $message = null, ?array $groups = null, mixed $payload = null, array $options = [])
     {
         if (\is_array($format)) {
-            trigger_deprecation('symfony/validator', '7.3', 'Passing an array of options to configure the "%s" constraint is deprecated, use named arguments instead.', static::class);
-
-            $options = array_merge($format, $options ?? []);
+            $options = array_merge($format, $options);
         } elseif (null !== $format) {
-            if (\is_array($options)) {
-                trigger_deprecation('symfony/validator', '7.3', 'Passing an array of options to configure the "%s" constraint is deprecated, use named arguments instead.', static::class);
-            } else {
-                $options = [];
-            }
-
             $options['value'] = $format;
         }
 

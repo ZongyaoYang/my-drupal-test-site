@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\taxonomy\Kernel;
 
-use Drupal\entity_test\EntityTestHelper;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\KernelTests\KernelTestBase;
@@ -86,7 +85,7 @@ class TermEntityReferenceTest extends KernelTestBase {
     ]);
     $field_storage->save();
 
-    EntityTestHelper::createBundle('test_bundle');
+    entity_test_create_bundle('test_bundle');
     $field = FieldConfig::create([
       'field_storage' => $field_storage,
       'entity_type' => 'entity_test',

@@ -43,9 +43,6 @@ class StringArgument extends ArgumentPluginBase {
     }
   }
 
-  /**
-   * {@inheritdoc}
-   */
   protected function defineOptions() {
     $options = parent::defineOptions();
 
@@ -64,9 +61,6 @@ class StringArgument extends ArgumentPluginBase {
     return $options;
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
 
@@ -277,9 +271,6 @@ class StringArgument extends ArgumentPluginBase {
     }
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function summaryArgument($data) {
     $value = $this->caseTransform($data->{$this->base_alias}, $this->options['path_case']);
     if (!empty($this->options['transform_dash'])) {
@@ -295,9 +286,6 @@ class StringArgument extends ArgumentPluginBase {
     return $this->t('Alphabetical', [], ['context' => 'Sort order']);
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function title() {
     // Support case-insensitive title comparisons for PostgreSQL by converting
     // the title to lowercase.
@@ -336,9 +324,6 @@ class StringArgument extends ArgumentPluginBase {
     return $this->value;
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function summaryName($data) {
     return $this->caseTransform(parent::summaryName($data), $this->options['case']);
   }

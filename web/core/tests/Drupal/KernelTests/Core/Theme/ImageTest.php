@@ -53,7 +53,7 @@ class ImageTest extends KernelTestBase {
 
     $this->testImages = [
       'core/misc/druplicon.png',
-      'core/misc/loading.svg',
+      'core/misc/loading.gif',
     ];
   }
 

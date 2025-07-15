@@ -21,13 +21,14 @@ class ProcessedText extends RenderElementBase {
    * {@inheritdoc}
    */
   public function getInfo() {
+    $class = static::class;
     return [
       '#text' => '',
       '#format' => NULL,
       '#filter_types_to_skip' => [],
       '#langcode' => '',
       '#pre_render' => [
-        [static::class, 'preRenderText'],
+        [$class, 'preRenderText'],
       ],
     ];
   }
@@ -157,7 +158,6 @@ class ProcessedText extends RenderElementBase {
    * Wraps the config factory.
    *
    * @return \Drupal\Core\Config\ConfigFactoryInterface
-   *   The config factory service.
    */
   protected static function configFactory() {
     return \Drupal::configFactory();

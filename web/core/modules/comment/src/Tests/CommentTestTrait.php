@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\comment\Tests;
 
 use Drupal\Component\Utility\Unicode;

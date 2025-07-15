@@ -47,7 +47,7 @@ class MapBaseFieldTest extends EntityKernelTestBase {
    */
   public function testUninstallMapItemBaseField(): void {
     $definitions['data_map'] = BaseFieldDefinition::create('map')
-      ->setLabel('Data')
+      ->setLabel(t('Data'))
       ->setRequired(TRUE);
 
     $this->state->set('entity_test_update.additional_base_field_definitions', $definitions);

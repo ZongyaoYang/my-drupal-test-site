@@ -99,8 +99,8 @@ class StorageComparerTest extends UnitTestCase {
         ],
       ],
       // Simple config.
-      'system.logging' => [
-        'error_level' => 'hide',
+      'system.performance' => [
+        'stale_file_threshold' => 2592000,
       ],
 
     ];
@@ -294,7 +294,7 @@ class StorageComparerTest extends UnitTestCase {
    * @param string $prefix
    *   The prefix for random names to make sure they are unique.
    */
-  protected function generateRandomData(StorageInterface $storage, string $prefix = ''): void {
+  protected function generateRandomData(StorageInterface $storage, string $prefix = '') {
     $generator = $this->getRandomGenerator();
     for ($i = 0; $i < rand(2, 10); $i++) {
       $storage->write($prefix . $this->randomMachineName(), (array) $generator->object());

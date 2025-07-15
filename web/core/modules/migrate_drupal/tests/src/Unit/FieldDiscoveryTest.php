@@ -270,7 +270,7 @@ class FieldDiscoveryTest extends UnitTestCase {
   /**
    * Returns dummy data to test the field getters.
    */
-  protected function getAllFieldData(): array {
+  protected function getAllFieldData() {
     return [
       'node' => [
         'content_type_1' => [

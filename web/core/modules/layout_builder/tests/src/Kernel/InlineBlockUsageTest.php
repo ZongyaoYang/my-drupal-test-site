@@ -6,7 +6,6 @@ namespace Drupal\Tests\layout_builder\Kernel;
 
 use Drupal\Core\Database\Connection;
 use Drupal\entity_test\Entity\EntityTest;
-use Drupal\entity_test\EntityTestHelper;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\layout_builder\InlineBlockUsageInterface;
 
@@ -44,15 +43,12 @@ class InlineBlockUsageTest extends KernelTestBase {
    */
   protected EntityTest $entity;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp(): void {
     parent::setUp();
     $this->database = $this->container->get('database');
     $this->inlineBlockUsage = $this->container->get('inline_block.usage');
     $this->installSchema('layout_builder', ['inline_block_usage']);
-    EntityTestHelper::createBundle('bundle_with_extra_fields');
+    entity_test_create_bundle('bundle_with_extra_fields');
     $this->installEntitySchema('entity_test');
     $this->entity = EntityTest::create();
     $this->entity->save();

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\media_test_source\Plugin\Validation\Constraint;
 
 use Drupal\Core\Entity\EntityInterface;
@@ -17,7 +15,7 @@ class MediaTestConstraintValidator extends ConstraintValidator {
   /**
    * {@inheritdoc}
    */
-  public function validate($value, Constraint $constraint): void {
+  public function validate($value, Constraint $constraint) {
     if ($value instanceof EntityInterface) {
       $string_to_test = $value->label();
     }

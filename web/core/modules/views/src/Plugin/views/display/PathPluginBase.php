@@ -103,10 +103,7 @@ abstract class PathPluginBase extends DisplayPluginBase implements DisplayRouter
   }
 
   /**
-   * Overrides view display plugin base.
-   *
-   * Overrides display plugin definition options with
-   * \Drupal\views\Plugin\views\display\DisplayPluginBase:defineOptions().
+   * Overrides \Drupal\views\Plugin\views\display\DisplayPluginBase:defineOptions().
    */
   protected function defineOptions() {
     $options = parent::defineOptions();

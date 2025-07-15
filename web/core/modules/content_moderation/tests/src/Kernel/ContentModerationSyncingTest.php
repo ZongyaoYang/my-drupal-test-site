@@ -191,7 +191,7 @@ class ContentModerationSyncingTest extends KernelTestBase {
    * @return array
    *   An array of revision names.
    */
-  protected function getAllRevisionNames(EntityTestMulRevPub $entity): array {
+  protected function getAllRevisionNames(EntityTestMulRevPub $entity) {
     /** @var \Drupal\Core\Entity\RevisionableStorageInterface $storage */
     $storage = $this->container->get('entity_type.manager')->getStorage('entity_test_mulrevpub');
     return array_map(function ($revision_id) use ($storage) {

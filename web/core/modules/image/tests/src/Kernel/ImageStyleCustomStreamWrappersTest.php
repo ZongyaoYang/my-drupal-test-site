@@ -46,11 +46,7 @@ class ImageStyleCustomStreamWrappersTest extends KernelTestBase {
   protected function setUp(): void {
     parent::setUp();
     $this->fileSystem = $this->container->get('file_system');
-    $this->config('system.file')
-      ->set('default_scheme', 'public')
-      ->set('allow_insecure_uploads', FALSE)
-      ->set('temporary_maximum_age', 21600)
-      ->save();
+    $this->config('system.file')->set('default_scheme', 'public')->save();
     $this->imageStyle = ImageStyle::create([
       'name' => 'test',
       'label' => 'Test',
@@ -61,7 +57,7 @@ class ImageStyleCustomStreamWrappersTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public function register(ContainerBuilder $container): void {
+  public function register(ContainerBuilder $container) {
     parent::register($container);
     foreach ($this->providerTestCustomStreamWrappers() as $stream_wrapper) {
       $scheme = $stream_wrapper[0];
@@ -74,12 +70,12 @@ class ImageStyleCustomStreamWrappersTest extends KernelTestBase {
   /**
    * Tests derivative creation with several source on a local writable stream.
    *
+   * @dataProvider providerTestCustomStreamWrappers
+   *
    * @param string $source_scheme
    *   The source stream wrapper scheme.
    * @param string $expected_scheme
    *   The derivative expected stream wrapper scheme.
-   *
-   * @dataProvider providerTestCustomStreamWrappers
    */
   public function testCustomStreamWrappers($source_scheme, $expected_scheme): void {
     $derivative_uri = $this->imageStyle->buildUri("$source_scheme://some/path/image.png");

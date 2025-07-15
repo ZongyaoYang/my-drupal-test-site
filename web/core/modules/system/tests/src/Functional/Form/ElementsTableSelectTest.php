@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drupal\Tests\system\Functional\Form;
 
 use Drupal\Core\Form\FormState;
-use Drupal\form_test\Callbacks;
 use Drupal\Tests\BrowserTestBase;
 
 /**
@@ -37,9 +36,10 @@ class ElementsTableSelectTest extends BrowserTestBase {
     // Test for the presence of the Select all rows tableheader.
     $this->assertSession()->elementExists('xpath', '//th[@class="select-all"]');
 
-    $this->assertSession()->elementExists('xpath', '//input[@type="checkbox" and @value="row1"]');
-    $this->assertSession()->elementExists('xpath', '//input[@type="checkbox" and @value="row2"]');
-    $this->assertSession()->elementExists('xpath', '//input[@type="checkbox" and @value="row3"]');
+    $rows = ['row1', 'row2', 'row3'];
+    foreach ($rows as $row) {
+      $this->assertSession()->elementExists('xpath', '//input[@type="checkbox"]');
+    }
   }
 
   /**
@@ -53,9 +53,10 @@ class ElementsTableSelectTest extends BrowserTestBase {
     // Test for the absence of the Select all rows tableheader.
     $this->assertSession()->elementNotExists('xpath', '//th[@class="select-all"]');
 
-    $this->assertSession()->elementExists('xpath', '//input[@type="radio" and @value="row1"]');
-    $this->assertSession()->elementExists('xpath', '//input[@type="radio" and @value="row2"]');
-    $this->assertSession()->elementExists('xpath', '//input[@type="radio" and @value="row3"]');
+    $rows = ['row1', 'row2', 'row3'];
+    foreach ($rows as $row) {
+      $this->assertSession()->elementExists('xpath', '//input[@type="radio"]');
+    }
   }
 
   /**
@@ -132,18 +133,15 @@ class ElementsTableSelectTest extends BrowserTestBase {
    * Tests the #js_select property.
    */
   public function testAdvancedSelect(): void {
-    // When #multiple = TRUE a Select all checkbox should be displayed by
-    // default.
+    // When #multiple = TRUE a Select all checkbox should be displayed by default.
     $this->drupalGet('form_test/tableselect/advanced-select/multiple-true-default');
     $this->assertSession()->elementExists('xpath', '//th[@class="select-all"]');
 
-    // When #js_select is set to FALSE, a "Select all" checkbox should not be
-    // displayed.
+    // When #js_select is set to FALSE, a "Select all" checkbox should not be displayed.
     $this->drupalGet('form_test/tableselect/advanced-select/multiple-true-no-advanced-select');
     $this->assertSession()->elementNotExists('xpath', '//th[@class="select-all"]');
 
-    // A "Select all" checkbox never makes sense when #multiple = FALSE,
-    // regardless of the value of #js_select.
+    // A "Select all" checkbox never makes sense when #multiple = FALSE, regardless of the value of #js_select.
     $this->drupalGet('form_test/tableselect/advanced-select/multiple-false-default');
     $this->assertSession()->elementNotExists('xpath', '//th[@class="select-all"]');
 
@@ -156,7 +154,7 @@ class ElementsTableSelectTest extends BrowserTestBase {
    */
   public function testMultipleTrueOptionChecker(): void {
 
-    [$header, $options] = Callbacks::tableselectGetData();
+    [$header, $options] = _form_test_tableselect_get_data();
 
     $form['tableselect'] = [
       '#type' => 'tableselect',
@@ -179,7 +177,7 @@ class ElementsTableSelectTest extends BrowserTestBase {
    */
   public function testMultipleFalseOptionChecker(): void {
 
-    [$header, $options] = Callbacks::tableselectGetData();
+    [$header, $options] = _form_test_tableselect_get_data();
 
     $form['tableselect'] = [
       '#type' => 'tableselect',
@@ -211,7 +209,7 @@ class ElementsTableSelectTest extends BrowserTestBase {
    * @internal param $form_element A form element to test.
    *   A form element to test.
    */
-  private function formSubmitHelper($form, $edit): array {
+  private function formSubmitHelper($form, $edit) {
     $form_id = $this->randomMachineName();
     $form_state = new FormState();
 

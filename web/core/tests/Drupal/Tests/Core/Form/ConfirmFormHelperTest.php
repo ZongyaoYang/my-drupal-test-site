@@ -17,9 +17,9 @@ use Symfony\Component\HttpFoundation\Request;
 class ConfirmFormHelperTest extends UnitTestCase {
 
   /**
-   * Tests the cancel link title.
-   *
    * @covers ::buildCancelLink
+   *
+   * Tests the cancel link title.
    */
   public function testCancelLinkTitle(): void {
     $cancel_text = 'Cancel text';
@@ -34,9 +34,9 @@ class ConfirmFormHelperTest extends UnitTestCase {
   }
 
   /**
-   * Tests a cancel link route.
-   *
    * @covers ::buildCancelLink
+   *
+   * Tests a cancel link route.
    */
   public function testCancelLinkRoute(): void {
     $route_name = 'foo_bar';
@@ -51,9 +51,9 @@ class ConfirmFormHelperTest extends UnitTestCase {
   }
 
   /**
-   * Tests a cancel link route with parameters.
-   *
    * @covers ::buildCancelLink
+   *
+   * Tests a cancel link route with parameters.
    */
   public function testCancelLinkRouteWithParams(): void {
     $expected = Url::fromRoute('foo_bar.baz', ['baz' => 'banana'], ['absolute' => TRUE]);
@@ -67,9 +67,9 @@ class ConfirmFormHelperTest extends UnitTestCase {
   }
 
   /**
-   * Tests a cancel link route with a URL object.
-   *
    * @covers ::buildCancelLink
+   *
+   * Tests a cancel link route with a URL object.
    */
   public function testCancelLinkRouteWithUrl(): void {
     $cancel_route = new Url(
@@ -90,9 +90,10 @@ class ConfirmFormHelperTest extends UnitTestCase {
   }
 
   /**
+   * @covers ::buildCancelLink
+   *
    * Tests a cancel link provided by the destination.
    *
-   * @covers ::buildCancelLink
    * @dataProvider providerTestCancelLinkDestination
    */
   public function testCancelLinkDestination($destination): void {

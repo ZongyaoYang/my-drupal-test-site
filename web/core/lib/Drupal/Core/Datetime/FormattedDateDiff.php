@@ -45,7 +45,6 @@ class FormattedDateDiff implements RenderableInterface, CacheableDependencyInter
 
   /**
    * @return string
-   *   The actual formatted time difference.
    */
   public function getString() {
     return $this->string;

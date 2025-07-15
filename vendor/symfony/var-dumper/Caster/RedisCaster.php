@@ -20,8 +20,6 @@ use Symfony\Component\VarDumper\Cloner\Stub;
  * @author Nicolas Grekas <p@tchwork.com>
  *
  * @final
- *
- * @internal since Symfony 7.3
  */
 class RedisCaster
 {
@@ -49,7 +47,10 @@ class RedisCaster
         \RedisCluster::FAILOVER_DISTRIBUTE_SLAVES => 'DISTRIBUTE_SLAVES',
     ];
 
-    public static function castRedis(\Redis|Relay $c, array $a, Stub $stub, bool $isNested): array
+    /**
+     * @return array
+     */
+    public static function castRedis(\Redis|Relay $c, array $a, Stub $stub, bool $isNested)
     {
         $prefix = Caster::PREFIX_VIRTUAL;
 
@@ -75,7 +76,10 @@ class RedisCaster
         ];
     }
 
-    public static function castRedisArray(\RedisArray $c, array $a, Stub $stub, bool $isNested): array
+    /**
+     * @return array
+     */
+    public static function castRedisArray(\RedisArray $c, array $a, Stub $stub, bool $isNested)
     {
         $prefix = Caster::PREFIX_VIRTUAL;
 
@@ -87,7 +91,10 @@ class RedisCaster
         ];
     }
 
-    public static function castRedisCluster(\RedisCluster $c, array $a, Stub $stub, bool $isNested): array
+    /**
+     * @return array
+     */
+    public static function castRedisCluster(\RedisCluster $c, array $a, Stub $stub, bool $isNested)
     {
         $prefix = Caster::PREFIX_VIRTUAL;
         $failover = $c->getOption(\RedisCluster::OPT_SLAVE_FAILOVER);

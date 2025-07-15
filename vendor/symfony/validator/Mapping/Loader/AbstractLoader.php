@@ -33,7 +33,7 @@ abstract class AbstractLoader implements LoaderInterface
      */
     public const DEFAULT_NAMESPACE = '\\Symfony\\Component\\Validator\\Constraints\\';
 
-    protected array $namespaces = [];
+    protected $namespaces = [];
 
     /**
      * @var array<class-string, bool>
@@ -49,8 +49,10 @@ abstract class AbstractLoader implements LoaderInterface
      *     $this->addNamespaceAlias('mynamespace', '\\Acme\\Package\\Constraints\\');
      *
      *     $constraint = $this->newConstraint('mynamespace:NotNull');
+     *
+     * @return void
      */
-    protected function addNamespaceAlias(string $alias, string $namespace): void
+    protected function addNamespaceAlias(string $alias, string $namespace)
     {
         $this->namespaces[$alias] = $namespace;
     }
@@ -76,7 +78,7 @@ abstract class AbstractLoader implements LoaderInterface
             [$prefix, $className] = explode(':', $name, 2);
 
             if (!isset($this->namespaces[$prefix])) {
-                throw new MappingException(\sprintf('Undefined namespace prefix "%s".', $prefix));
+                throw new MappingException(sprintf('Undefined namespace prefix "%s".', $prefix));
             }
 
             $className = $this->namespaces[$prefix].$className;
@@ -97,19 +99,9 @@ abstract class AbstractLoader implements LoaderInterface
                 return new $className($options['value']);
             }
 
-            if (array_is_list($options)) {
-                return new $className($options);
-            }
-
             return new $className(...$options);
         }
 
-        if ($options) {
-            trigger_deprecation('symfony/validator', '7.3', 'Using constraints not supporting named arguments is deprecated. Try adding the HasNamedArguments attribute to %s.', $className);
-
-            return new $className($options);
-        }
-
-        return new $className();
+        return new $className($options);
     }
 }

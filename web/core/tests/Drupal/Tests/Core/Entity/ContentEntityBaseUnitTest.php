@@ -242,7 +242,9 @@ class ContentEntityBaseUnitTest extends UnitTestCase {
     $field_item_list = $this->getMockBuilder('\Drupal\Core\Field\FieldItemList')
       ->disableOriginalConstructor()
       ->getMock();
-    $field_item = new StubFieldItemBase();
+    $field_item = $this->getMockBuilder('\Drupal\Core\Field\FieldItemBase')
+      ->disableOriginalConstructor()
+      ->getMockForAbstractClass();
 
     $this->fieldTypePluginManager->expects($this->any())
       ->method('createFieldItemList')
@@ -281,7 +283,6 @@ class ContentEntityBaseUnitTest extends UnitTestCase {
     // The last call changed the return value for this call.
     $this->assertFalse($this->entity->isDefaultRevision());
     // The revision for a new entity should always be the default revision.
-    $this->entity->isDefaultRevision(TRUE);
     $this->entity->expects($this->any())
       ->method('isNew')
       ->willReturn(TRUE);

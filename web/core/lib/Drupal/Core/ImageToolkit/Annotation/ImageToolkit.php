@@ -37,9 +37,9 @@ class ImageToolkit extends Plugin {
    *
    * The string should be wrapped in @Translation().
    *
-   * @var \Drupal\Core\Annotation\Translation
-   *
    * @ingroup plugin_translatable
+   *
+   * @var \Drupal\Core\Annotation\Translation
    */
   public $title;
 

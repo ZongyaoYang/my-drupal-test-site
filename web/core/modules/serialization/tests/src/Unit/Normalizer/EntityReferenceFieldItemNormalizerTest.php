@@ -169,9 +169,6 @@ class EntityReferenceFieldItemNormalizerTest extends UnitTestCase {
     $this->assertSame($expected, $normalized);
   }
 
-  /**
-   * Tests normalizing with an entity reference field.
-   */
   public function testNormalizeWithNewEntityReference(): void {
     $test_url = '/test/100';
 

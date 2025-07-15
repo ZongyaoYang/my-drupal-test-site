@@ -1,9 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\views\Tests;
 
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\views\Plugin\views\field\EntityField;
 
 /**
@@ -27,7 +26,7 @@ trait ViewResultAssertionTrait {
    *   from the view (as keys) and the expected result set (as values).
    * @param string $message
    *   (optional) A custom message to display with the assertion. Defaults to
-   *   'Identical result set.'.
+   *   'Identical result set.'
    */
   protected function assertIdenticalResultset($view, $expected_result, $column_map = [], $message = NULL): void {
     $this->assertIdenticalResultsetHelper($view, $expected_result, $column_map, 'assertIdentical', $message);
@@ -47,7 +46,7 @@ trait ViewResultAssertionTrait {
    *   from the view (as keys) and the expected result set (as values).
    * @param string $message
    *   (optional) A custom message to display with the assertion. Defaults to
-   *   'Non-identical result set.'.
+   *   'Non-identical result set.'
    */
   protected function assertNotIdenticalResultset($view, $expected_result, $column_map = [], $message = NULL): void {
     $this->assertIdenticalResultsetHelper($view, $expected_result, $column_map, 'assertNotIdentical', $message);
@@ -101,8 +100,7 @@ trait ViewResultAssertionTrait {
     foreach ($expected_result as $key => $value) {
       $row = [];
       foreach ($column_map as $expected_column) {
-        // The comparison will be done on the string representation of the
-        // value.
+        // The comparison will be done on the string representation of the value.
         if (is_object($value)) {
           $row[$expected_column] = (string) $value->$expected_column;
         }
@@ -126,7 +124,10 @@ trait ViewResultAssertionTrait {
     // Do the actual comparison.
     if (!isset($message)) {
       $not = (strpos($assert_method, 'Not') ? 'not' : '');
-      $message = sprintf("Actual result <pre>\n%s\n</pre> is $not identical to expected <pre>\n%s\n</pre>", var_export($result, TRUE), var_export($expected_result, TRUE));
+      $message = new FormattableMarkup("Actual result <pre>\n@actual\n</pre> is $not identical to expected <pre>\n@expected\n</pre>", [
+        '@actual' => var_export($result, TRUE),
+        '@expected' => var_export($expected_result, TRUE),
+      ]);
     }
 
     switch ($assert_method) {

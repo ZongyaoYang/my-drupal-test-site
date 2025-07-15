@@ -49,9 +49,9 @@ class DatabaseDriverProvidedByModuleTest extends BrowserTestBase {
       'password' => $connection_info['default']['password'],
       'prefix' => $connection_info['default']['prefix'],
       'host' => $connection_info['default']['host'],
-      'driver' => 'DriverTest' . ucfirst($driver),
-      'namespace' => 'Drupal\\driver_test\\Driver\\Database\\DriverTest' . ucfirst($driver),
-      'autoload' => 'core/modules/system/tests/modules/driver_test/src/Driver/Database/DriverTest' . ucfirst($driver),
+      'driver' => 'Drivertest' . ucfirst($driver),
+      'namespace' => 'Drupal\\driver_test\\Driver\\Database\\Drivertest' . ucfirst($driver),
+      'autoload' => 'core/modules/system/tests/modules/driver_test/src/Driver/Database/Drivertest' . ucfirst($driver),
       'dependencies' => [
         $driver => [
           'namespace' => "Drupal\\{$driver}",

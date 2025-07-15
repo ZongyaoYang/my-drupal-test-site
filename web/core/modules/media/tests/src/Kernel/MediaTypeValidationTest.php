@@ -19,17 +19,13 @@ class MediaTypeValidationTest extends ConfigEntityValidationTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = ['field', 'media', 'media_test_source', 'user', 'image'];
+  protected static $modules = ['field', 'media', 'media_test_source'];
 
   /**
    * {@inheritdoc}
    */
   protected function setUp(): void {
     parent::setUp();
-
-    $this->installEntitySchema('user');
-    $this->installEntitySchema('media');
-
     $this->entity = $this->createMediaType('test', ['id' => 'test_media']);
   }
 

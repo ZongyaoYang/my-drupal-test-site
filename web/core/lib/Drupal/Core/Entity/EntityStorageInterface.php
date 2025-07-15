@@ -8,9 +8,8 @@ namespace Drupal\Core\Entity;
  * For common default implementations, see
  * \Drupal\Core\Entity\Sql\SqlContentEntityStorage for content entities and
  * \Drupal\Core\Config\Entity\ConfigEntityStorage for config entities. Those
- * implementations are used by default when the
- * \Drupal\Core\Entity\Attribute\ContentEntityType or
- * \Drupal\Core\Entity\Attribute\ConfigEntityType attributes are used.
+ * implementations are used by default when the @ContentEntityType or
+ * @ConfigEntityType annotations are used.
  *
  * @ingroup entity_api
  */
@@ -29,7 +28,7 @@ interface EntityStorageInterface {
   /**
    * Resets the internal entity cache.
    *
-   * @param array<string|int>|null $ids
+   * @param $ids
    *   (optional) If specified, the cache is reset for the entities with the
    *   given ids only.
    */
@@ -38,7 +37,7 @@ interface EntityStorageInterface {
   /**
    * Loads one or more entities.
    *
-   * @param array<string|int>|null $ids
+   * @param $ids
    *   An array of entity IDs, or NULL to load all entities.
    *
    * @return \Drupal\Core\Entity\EntityInterface[]
@@ -50,7 +49,7 @@ interface EntityStorageInterface {
   /**
    * Loads one entity.
    *
-   * @param string|int $id
+   * @param mixed $id
    *   The ID of the entity to load.
    *
    * @return \Drupal\Core\Entity\EntityInterface|null
@@ -61,7 +60,7 @@ interface EntityStorageInterface {
   /**
    * Loads an unchanged entity from the database.
    *
-   * @param string|int $id
+   * @param mixed $id
    *   The ID of the entity to load.
    *
    * @return \Drupal\Core\Entity\EntityInterface|null
@@ -71,6 +70,41 @@ interface EntityStorageInterface {
    *   unchanged entity from the entity object.
    */
   public function loadUnchanged($id);
+
+  /**
+   * Load a specific entity revision.
+   *
+   * @param int|string $revision_id
+   *   The revision id.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface|null
+   *   The specified entity revision or NULL if not found.
+   *
+   * @deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. Use
+   * \Drupal\Core\Entity\RevisionableStorageInterface::loadRevision instead.
+   *
+   * @see https://www.drupal.org/node/2926958
+   * @see https://www.drupal.org/node/2927226
+   * @see https://www.drupal.org/node/3294237
+   */
+  public function loadRevision($revision_id);
+
+  /**
+   * Delete a specific entity revision.
+   *
+   * A revision can only be deleted if it's not the currently active one.
+   *
+   * @param int $revision_id
+   *   The revision id.
+   *
+   * @deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. Use
+   * \Drupal\Core\Entity\RevisionableStorageInterface::deleteRevision instead.
+   *
+   * @see https://www.drupal.org/node/2926958
+   * @see https://www.drupal.org/node/2927226
+   * @see https://www.drupal.org/node/3294237
+   */
+  public function deleteRevision($revision_id);
 
   /**
    * Load entities by their property values without any access checks.

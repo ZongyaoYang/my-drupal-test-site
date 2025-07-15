@@ -9,18 +9,19 @@
 
 'use strict';
 
-const { watch } = require('chokidar');
-const { stat, unlink } = require('node:fs');
+const fs = require('fs');
+const path = require('path');
+const chokidar = require('chokidar');
 
 const changeOrAdded = require('./changeOrAdded');
 const log = require('./log');
 
-// Initialize watcher.
-const watcher = watch(['./themes', './modules', './profiles'], {
+// Match only on .pcss.css files.
+const fileMatch = './**/*.pcss.css';
+// Ignore everything in node_modules
+const watcher = chokidar.watch(fileMatch, {
   ignoreInitial: true,
-  ignored: (filePath, stats) =>
-    stats?.isFile() && !filePath.endsWith('.pcss.css') || filePath.includes('node_modules'),
-  usePolling: true,
+  ignored: './node_modules/**'
 });
 
 const unlinkHandler = (err) => {
@@ -35,10 +36,8 @@ watcher
   .on('change', changeOrAdded)
   .on('unlink', (filePath) => {
     const fileName = filePath.slice(0, -9);
-    stat(`${fileName}.css`, (err) => {
-      if (!err) {
-        unlink(`${fileName}.css`, unlinkHandler);
-      }
+    fs.stat(`${fileName}.css`, () => {
+      fs.unlink(`${fileName}.css`, unlinkHandler);
     });
   })
-  .on('ready', () => log(`Watching '**/*.pcss.css' for changes.`));
+  .on('ready', () => log(`Watching '${fileMatch}' for changes.`));

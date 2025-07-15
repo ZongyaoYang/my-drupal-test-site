@@ -44,10 +44,10 @@ class EntityConstraintViolationList extends ConstraintViolationList implements E
    *
    * @param \Drupal\Core\Entity\FieldableEntityInterface $entity
    *   The entity that has been validated.
-   * @param iterable $violations
-   *   The set of violations.
+   * @param array $violations
+   *   The array of violations.
    */
-  public function __construct(FieldableEntityInterface $entity, iterable $violations = []) {
+  public function __construct(FieldableEntityInterface $entity, array $violations = []) {
     parent::__construct($violations);
     $this->entity = $entity;
   }
@@ -201,8 +201,11 @@ class EntityConstraintViolationList extends ConstraintViolationList implements E
 
   /**
    * {@inheritdoc}
+   *
+   * phpcs:ignore Drupal.Commenting.FunctionComment.VoidReturn
+   * @return void
    */
-  public function add(ConstraintViolationInterface $violation): void {
+  public function add(ConstraintViolationInterface $violation) {
     parent::add($violation);
     $this->violationOffsetsByField = NULL;
     $this->entityViolationOffsets = NULL;
@@ -210,8 +213,11 @@ class EntityConstraintViolationList extends ConstraintViolationList implements E
 
   /**
    * {@inheritdoc}
+   *
+   * phpcs:ignore Drupal.Commenting.FunctionComment.VoidReturn
+   * @return void
    */
-  public function remove($offset): void {
+  public function remove($offset) {
     parent::remove($offset);
     $this->violationOffsetsByField = NULL;
     $this->entityViolationOffsets = NULL;
@@ -219,8 +225,11 @@ class EntityConstraintViolationList extends ConstraintViolationList implements E
 
   /**
    * {@inheritdoc}
+   *
+   * phpcs:ignore Drupal.Commenting.FunctionComment.VoidReturn
+   * @return void
    */
-  public function set($offset, ConstraintViolationInterface $violation): void {
+  public function set($offset, ConstraintViolationInterface $violation) {
     parent::set($offset, $violation);
     $this->violationOffsetsByField = NULL;
     $this->entityViolationOffsets = NULL;

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drupal\KernelTests\Core\Menu;
 
 use Drupal\Component\Plugin\Exception\PluginException;
-use Drupal\Core\Database\Statement\FetchAs;
 use Drupal\Core\Menu\MenuTreeParameters;
 use Drupal\Core\Menu\MenuTreeStorage;
 use Drupal\KernelTests\KernelTestBase;
@@ -56,14 +55,14 @@ class MenuTreeStorageTest extends KernelTestBase {
   /**
    * Ensures that there are no menu links by default.
    */
-  protected function doTestEmptyStorage(): void {
+  protected function doTestEmptyStorage() {
     $this->assertEquals(0, $this->treeStorage->countMenuLinks());
   }
 
   /**
    * Ensures that table gets created on the fly.
    */
-  protected function doTestTable(): void {
+  protected function doTestTable() {
     // Test that we can create a tree storage with an arbitrary table name and
     // that selecting from the storage creates the table.
     $tree_storage = new MenuTreeStorage($this->container->get('database'), $this->container->get('cache.menu'), $this->container->get('cache_tags.invalidator'), 'test_menu_tree');
@@ -218,7 +217,7 @@ class MenuTreeStorageTest extends KernelTestBase {
       $this->moveMenuLink('test1', 'footerA');
       $this->fail('Exception was not thrown');
     }
-    catch (PluginException) {
+    catch (PluginException $e) {
       // Expected exception; just continue testing.
     }
     // The opposite move should work, and change the has_children flag.
@@ -378,7 +377,7 @@ class MenuTreeStorageTest extends KernelTestBase {
   /**
    * Adds a link with the given ID and supply defaults.
    */
-  protected function addMenuLink($id, $parent = '', $route_name = 'test', $route_parameters = [], $menu_name = 'tools', $extra = []): void {
+  protected function addMenuLink($id, $parent = '', $route_name = 'test', $route_parameters = [], $menu_name = 'tools', $extra = []) {
     $link = [
       'id' => $id,
       'menu_name' => $menu_name,
@@ -400,7 +399,7 @@ class MenuTreeStorageTest extends KernelTestBase {
    * @param string $new_parent
    *   The ID of the new parent link.
    */
-  protected function moveMenuLink($id, $new_parent): void {
+  protected function moveMenuLink($id, $new_parent) {
     $menu_link = $this->treeStorage->load($id);
     $menu_link['parent'] = $new_parent;
     $this->treeStorage->save($menu_link);
@@ -410,7 +409,7 @@ class MenuTreeStorageTest extends KernelTestBase {
    * Tests that a link's stored representation matches the expected values.
    *
    * @param string $id
-   *   The ID of the menu link to test.
+   *   The ID of the menu link to test
    * @param array $expected_properties
    *   A keyed array of column names and values like has_children and depth.
    * @param array $parents
@@ -427,7 +426,7 @@ class MenuTreeStorageTest extends KernelTestBase {
     foreach ($expected_properties as $field => $value) {
       $query->condition($field, $value);
     }
-    $all = $query->execute()->fetchAll(FetchAs::Associative);
+    $all = $query->execute()->fetchAll(\PDO::FETCH_ASSOC);
     $this->assertCount(1, $all, "Found link $id matching all the expected properties");
     $raw = reset($all);
 

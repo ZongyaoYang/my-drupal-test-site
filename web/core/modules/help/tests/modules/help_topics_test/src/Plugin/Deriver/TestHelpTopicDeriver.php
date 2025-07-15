@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\help_topics_test\Plugin\Deriver;
 
 use Drupal\Component\Plugin\Derivative\DeriverInterface;

@@ -15,7 +15,7 @@ use Drupal\Core\Url;
 /**
  * Alters theme operation links.
  *
- * @param array $theme_groups
+ * @param $theme_groups
  *   An associative array containing groups of themes.
  *
  * @see system_themes_page()

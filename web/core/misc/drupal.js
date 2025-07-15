@@ -370,7 +370,12 @@ window.Drupal = { behaviors: {}, locale: {} };
     options.context = options.context || '';
 
     // Fetch the localized version of the string.
-    if (drupalTranslations?.strings?.[options.context]?.[str]) {
+    if (
+      typeof drupalTranslations !== 'undefined' &&
+      drupalTranslations.strings &&
+      drupalTranslations.strings[options.context] &&
+      drupalTranslations.strings[options.context][str]
+    ) {
       str = drupalTranslations.strings[options.context][str];
     }
 
@@ -513,7 +518,10 @@ window.Drupal = { behaviors: {}, locale: {} };
     let index = 0;
 
     // Determine the index of the plural form.
-    if (drupalTranslations?.pluralFormula) {
+    if (
+      typeof drupalTranslations !== 'undefined' &&
+      drupalTranslations.pluralFormula
+    ) {
       index =
         count in drupalTranslations.pluralFormula
           ? drupalTranslations.pluralFormula[count]
@@ -554,7 +562,11 @@ window.Drupal = { behaviors: {}, locale: {} };
    * @see https://www.drupal.org/core/deprecation#javascript
    */
   Drupal.deprecationError = ({ message }) => {
-    if (drupalSettings.suppressDeprecationErrors === false && console?.warn) {
+    if (
+      drupalSettings.suppressDeprecationErrors === false &&
+      typeof console !== 'undefined' &&
+      console.warn
+    ) {
       console.warn(`[Deprecation] ${message}`);
     }
   };
@@ -616,13 +628,9 @@ window.Drupal = { behaviors: {}, locale: {} };
    *   but also a complex object.
    */
   Drupal.theme = function (func, ...args) {
-    if (typeof Drupal.theme?.[func] === 'function') {
+    if (func in Drupal.theme) {
       return Drupal.theme[func](...args);
     }
-
-    Drupal.throwError(
-      new TypeError(`Drupal.theme.${func} must be function type.`),
-    );
   };
 
   /**

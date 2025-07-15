@@ -19,6 +19,25 @@ namespace Drupal\Component\Assertion;
 class Inspector {
 
   /**
+   * Asserts argument can be traversed with foreach.
+   *
+   * @param mixed $traversable
+   *   Variable to be examined.
+   *
+   * @return bool
+   *   TRUE if $traversable can be traversed with foreach.
+   *
+   * @deprecated in drupal:10.3.0 and is removed from drupal:11.0.0. Use
+   *   is_iterable() instead.
+   *
+   * @see https://www.drupal.org/node/3422775
+   */
+  public static function assertTraversable($traversable) {
+    @trigger_error(__METHOD__ . '() is deprecated in drupal:10.3.0 and is removed from drupal:11.0.0. Use is_iterable() instead. See https://www.drupal.org/node/3422775', E_USER_DEPRECATED);
+    return is_iterable($traversable);
+  }
+
+  /**
    * Asserts callback returns TRUE for each member of a traversable.
    *
    * This is less memory intensive than using array_filter() to build a second
@@ -94,7 +113,7 @@ class Inspector {
    * in any way will cause a problem.
    *
    * @param mixed $string
-   *   Variable to be examined.
+   *   Variable to be examined
    *
    * @return bool
    *   TRUE if $string is a string or an object castable to a string.
@@ -184,16 +203,19 @@ class Inspector {
    *
    * @param mixed $traversable
    *   Variable to be examined.
-   * @param string ...$keys
+   * @param string ...
    *   Keys to be searched for.
    *
    * @return bool
    *   TRUE if $traversable can be traversed and all members have all keys.
    */
-  public static function assertAllHaveKey($traversable, string ...$keys) {
+  public static function assertAllHaveKey($traversable) {
+    $args = func_get_args();
+    unset($args[0]);
+
     if (is_iterable($traversable)) {
       foreach ($traversable as $member) {
-        foreach ($keys as $key) {
+        foreach ($args as $key) {
           if (!array_key_exists($key, $member)) {
             return FALSE;
           }
@@ -367,18 +389,21 @@ class Inspector {
    *
    * @param mixed $traversable
    *   Variable to be examined.
-   * @param string ...$classes
+   * @param string ...
    *   Classes and interfaces to test objects against.
    *
    * @return bool
    *   TRUE if $traversable can be traversed and all members are objects with
    *   at least one of the listed classes or interfaces.
    */
-  public static function assertAllObjects($traversable, string ...$classes) {
+  public static function assertAllObjects($traversable) {
+    $args = func_get_args();
+    unset($args[0]);
+
     if (is_iterable($traversable)) {
       foreach ($traversable as $member) {
-        if (count($classes) > 0) {
-          foreach ($classes as $instance) {
+        if (count($args) > 0) {
+          foreach ($args as $instance) {
             if ($member instanceof $instance) {
               // We're continuing to the next member on the outer loop.
               // @see http://php.net/continue

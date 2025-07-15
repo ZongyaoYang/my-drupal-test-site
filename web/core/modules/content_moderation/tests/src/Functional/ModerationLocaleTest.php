@@ -29,19 +29,16 @@ class ModerationLocaleTest extends ModerationStateTestBase {
 
   /**
    * {@inheritdoc}
+   *
+   * @todo Remove and fix test to not rely on super user.
+   * @see https://www.drupal.org/project/drupal/issues/3437620
    */
-  protected $defaultTheme = 'stark';
+  protected bool $usesSuperUserAccessPolicy = TRUE;
 
   /**
    * {@inheritdoc}
    */
-  protected function getAdministratorPermissions(): array {
-    return array_merge($this->permissions, [
-      'create content translations',
-      'bypass node access',
-      'translate any entity',
-    ]);
-  }
+  protected $defaultTheme = 'stark';
 
   /**
    * {@inheritdoc}
@@ -49,8 +46,8 @@ class ModerationLocaleTest extends ModerationStateTestBase {
   protected function setUp(): void {
     parent::setUp();
 
-    $this->adminUser = $this->drupalCreateUser($this->getAdministratorPermissions());
-    $this->drupalLogin($this->adminUser);
+    $this->drupalLogin($this->rootUser);
+
     // Enable moderation on Article node type.
     $this->createContentTypeFromUi('Article', 'article', TRUE);
 
@@ -351,11 +348,11 @@ class ModerationLocaleTest extends ModerationStateTestBase {
     foreach (range(11, 16) as $revision_id) {
       /** @var \Drupal\node\NodeInterface $revision */
       $revision = $storage->loadRevision($revision_id);
-      foreach (array_keys($revision->getTranslationLanguages()) as $langcode) {
+      foreach ($revision->getTranslationLanguages() as $langcode => $language) {
         if ($revision->isRevisionTranslationAffected()) {
-          $translation = $revision->getTranslation($langcode);
-          $this->drupalGet($translation->toUrl('revision'));
+          $this->drupalGet($revision->toUrl('revision'));
           $this->assertFalse($this->hasModerationForm(), 'Moderation form is not displayed correctly for revision ' . $revision_id);
+          break;
         }
       }
     }

@@ -35,16 +35,11 @@ class WorkspacesHtmlEntityFormController extends FormController {
    */
   public function getContentResult(Request $request, RouteMatchInterface $route_match): array {
     $form_arg = $this->getFormArgument($route_match);
-    // If no operation is provided, use 'default'.
-    $form_arg .= '.default';
-    [$entity_type_id, $operation] = explode('.', $form_arg);
+    $form_object = $this->getFormObject($route_match, $form_arg);
 
-    if ($route_match->getRawParameter($entity_type_id) !== NULL) {
-      /** @var \Drupal\Core\Entity\EntityInterface $entity */
-      $entity = $route_match->getParameter($entity_type_id);
-    }
-
-    if (isset($entity) && $this->workspaceInfo->isEntitySupported($entity)) {
+    /** @var \Drupal\Core\Entity\EntityInterface $entity */
+    $entity = $form_object->getEntity();
+    if ($this->workspaceInfo->isEntitySupported($entity)) {
       $active_workspace = $this->workspaceManager->getActiveWorkspace();
 
       // Prepare a minimal render array in case we need to return it.
@@ -53,7 +48,7 @@ class WorkspacesHtmlEntityFormController extends FormController {
       $build['#cache']['max-age'] = $entity->getCacheMaxAge();
 
       // Prevent entities from being edited if they're tracked in workspace.
-      if ($operation !== 'delete') {
+      if ($form_object->getOperation() !== 'delete') {
         $constraints = array_values(array_filter($entity->getTypedData()->getConstraints(), function ($constraint) {
           return $constraint instanceof EntityWorkspaceConflictConstraint;
         }));
@@ -73,7 +68,7 @@ class WorkspacesHtmlEntityFormController extends FormController {
 
       // Prevent entities from being deleted in a workspace if they have a
       // published default revision.
-      if ($operation === 'delete' && $active_workspace && !$this->workspaceInfo->isEntityDeletable($entity, $active_workspace)) {
+      if ($form_object->getOperation() === 'delete' && $active_workspace && !$this->workspaceInfo->isEntityDeletable($entity, $active_workspace)) {
         $build['#markup'] = $this->t('This @entity_type_label can only be deleted in the Live workspace.', [
           '@entity_type_label' => $entity->getEntityType()->getSingularLabel(),
         ]);

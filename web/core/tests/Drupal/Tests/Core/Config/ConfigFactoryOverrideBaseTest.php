@@ -82,9 +82,7 @@ class ConfigFactoryOverrideBaseTest extends UnitTestCase {
 
 }
 
-/**
- * Stub class for testing ConfigFactoryOverrideBase.
- */
+
 class TestConfigFactoryOverrideBase extends ConfigFactoryOverrideBase {
 
   public function doFilterNestedArray(array $original_data, array &$override_data) {

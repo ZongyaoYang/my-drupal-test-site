@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\config_test;
 
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
@@ -18,8 +16,8 @@ class ConfigTestListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function buildHeader() {
-    $header['label'] = 'Label';
-    $header['id'] = 'Machine name';
+    $header['label'] = t('Label');
+    $header['id'] = t('Machine name');
     return $header + parent::buildHeader();
   }
 

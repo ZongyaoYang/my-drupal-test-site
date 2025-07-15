@@ -4,9 +4,6 @@ namespace Drupal\migrate\Plugin;
 
 use Drupal\Component\Plugin\PluginManagerInterface;
 
-/**
- * Interface for the migration plugin manager.
- */
 interface MigratePluginManagerInterface extends PluginManagerInterface {
 
   /**

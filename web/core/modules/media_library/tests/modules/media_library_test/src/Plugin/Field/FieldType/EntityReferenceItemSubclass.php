@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\media_library_test\Plugin\Field\FieldType;
 
 use Drupal\Core\Field\Attribute\FieldType;

@@ -19,9 +19,10 @@ class ContextualLinksPlaceholder extends RenderElementBase {
    * {@inheritdoc}
    */
   public function getInfo() {
+    $class = static::class;
     return [
       '#pre_render' => [
-        [static::class, 'preRenderPlaceholder'],
+        [$class, 'preRenderPlaceholder'],
       ],
       '#id' => NULL,
     ];

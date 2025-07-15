@@ -12,8 +12,6 @@ use Drupal\migrate\Row;
 use Drupal\Tests\UnitTestCase;
 
 /**
- * Tests the file field process plugin.
- *
  * @group file
  */
 class FieldFileTest extends UnitTestCase {

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\module_test;
 
 use Drupal\Core\Plugin\DefaultPluginManager;

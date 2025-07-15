@@ -15,7 +15,7 @@ class StubUpsert extends Upsert {
    * {@inheritdoc}
    */
   public function __toString() {
-    throw new \BadMethodCallException('Upsert not implemented');
+    return '';
   }
 
 }

@@ -2,6 +2,7 @@
 
 namespace Drupal\taxonomy\Plugin\views\argument;
 
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -25,10 +26,27 @@ class IndexTidDepth extends ArgumentPluginBase implements ContainerFactoryPlugin
   use TaxonomyIndexDepthQueryTrait;
 
   /**
+   * @var \Drupal\Core\Entity\EntityStorageInterface
+   *
+   * @deprecated in drupal:10.3.0 and is removed from drupal:11.0.0. There is no
+   *   replacement.
+   *
+   * @see https://www.drupal.org/node/3427843
+   */
+  protected $termStorage;
+
+  /**
    * {@inheritdoc}
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, protected EntityRepositoryInterface $entityRepository) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, protected EntityStorageInterface|EntityRepositoryInterface $entityRepository) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
+
+    if ($entityRepository instanceof EntityStorageInterface) {
+      // @phpstan-ignore-next-line
+      $this->termStorage = $entityRepository;
+      @trigger_error('Calling ' . __CLASS__ . '::__construct() with the $termStorage argument as \Drupal\Core\Entity\EntityStorageInterface is deprecated in drupal:10.3.0 and it will require Drupal\Core\Entity\EntityRepositoryInterface in drupal:11.0.0. See https://www.drupal.org/node/3427843', E_USER_DEPRECATED);
+      $this->entityRepository = \Drupal::service('entity.repository');
+    }
   }
 
   /**
@@ -43,9 +61,6 @@ class IndexTidDepth extends ArgumentPluginBase implements ContainerFactoryPlugin
     );
   }
 
-  /**
-   * {@inheritdoc}
-   */
   protected function defineOptions() {
     $options = parent::defineOptions();
 
@@ -56,9 +71,6 @@ class IndexTidDepth extends ArgumentPluginBase implements ContainerFactoryPlugin
     return $options;
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     $form['depth'] = [
       '#type' => 'weight',
@@ -95,9 +107,6 @@ class IndexTidDepth extends ArgumentPluginBase implements ContainerFactoryPlugin
     return $actions;
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function query($group_by = FALSE) {
     $this->ensureMyTable();
 
@@ -115,15 +124,13 @@ class IndexTidDepth extends ArgumentPluginBase implements ContainerFactoryPlugin
     $this->addSubQueryJoin($tids);
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function title() {
     $term = $this->entityRepository->getCanonical('taxonomy_term', $this->argument);
     if (!empty($term)) {
       return $term->label();
     }
     // @todo Review text.
+
     return $this->t('No name');
   }
 

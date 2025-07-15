@@ -61,9 +61,6 @@ class SearchRankingTest extends BrowserTestBase {
     ]));
   }
 
-  /**
-   * Tests the impact of different ranking factors on search results.
-   */
   public function testRankings(): void {
     // Add a comment field.
     $this->addDefaultCommentField('node', 'page');

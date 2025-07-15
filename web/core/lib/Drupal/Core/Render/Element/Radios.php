@@ -42,14 +42,15 @@ class Radios extends FormElementBase {
    * {@inheritdoc}
    */
   public function getInfo() {
+    $class = static::class;
     return [
       '#input' => TRUE,
       '#process' => [
-        [static::class, 'processRadios'],
+        [$class, 'processRadios'],
       ],
       '#theme_wrappers' => ['radios'],
       '#pre_render' => [
-        [static::class, 'preRenderCompositeFormElement'],
+        [$class, 'preRenderCompositeFormElement'],
       ],
     ];
   }
@@ -73,11 +74,11 @@ class Radios extends FormElementBase {
         $element[$key] += [
           '#type' => 'radio',
           '#title' => $choice,
-          // The key is sanitized in Drupal\Core\Template\Attribute during
-          // output from the theme function.
+          // The key is sanitized in Drupal\Core\Template\Attribute during output
+          // from the theme function.
           '#return_value' => $key,
-          // Use default or FALSE. A value of FALSE means that the radio button
-          // is not 'checked'.
+          // Use default or FALSE. A value of FALSE means that the radio button is
+          // not 'checked'.
           '#default_value' => $element['#default_value'] ?? FALSE,
           '#attributes' => $element['#attributes'],
           '#parents' => $element['#parents'],

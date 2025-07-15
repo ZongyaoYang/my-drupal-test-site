@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\image_test\Plugin\ImageToolkit;
 
 use Drupal\Core\ImageToolkit\Attribute\ImageToolkit;

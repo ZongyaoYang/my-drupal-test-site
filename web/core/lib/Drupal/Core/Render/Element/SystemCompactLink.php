@@ -24,10 +24,11 @@ class SystemCompactLink extends Link {
    * {@inheritdoc}
    */
   public function getInfo() {
+    $class = static::class;
     return [
       '#pre_render' => [
-        [static::class, 'preRenderCompactLink'],
-        [static::class, 'preRenderLink'],
+        [$class, 'preRenderCompactLink'],
+        [$class, 'preRenderLink'],
       ],
       '#theme_wrappers' => [
         'container' => [

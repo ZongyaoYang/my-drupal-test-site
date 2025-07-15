@@ -11,8 +11,6 @@ use Drupal\migrate\Row;
 use Drupal\Tests\UnitTestCase;
 
 /**
- * Tests the link field migrate process plugin.
- *
  * @group Link
  */
 class FieldLinkTest extends UnitTestCase {

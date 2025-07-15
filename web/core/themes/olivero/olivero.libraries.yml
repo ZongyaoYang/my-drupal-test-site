@@ -38,6 +38,7 @@ global-styling:
       css/components/hero.css: {}
       css/components/links.css: {}
       css/components/layout-field.css: {}
+      css/components/messages.css: {}
       css/components/navigation/nav-button-mobile.css: {}
       css/components/node.css: {}
       css/components/node-teaser.css: {}
@@ -57,6 +58,12 @@ global-styling:
     - core/once
     - core/tabbable
     - olivero/navigation-base
+
+book:
+  version: VERSION
+  css:
+    theme:
+      css/components/book.css: {}
 
 cke-dialog:
   version: VERSION
@@ -139,6 +146,12 @@ filter.theme:
     component:
       css/theme/filter.theme.css: {}
 
+forum:
+  version: VERSION
+  css:
+    component:
+      css/components/forum.css: {}
+
 layout_builder_fourcol_section:
   version: VERSION
   css:
@@ -197,9 +210,6 @@ messages:
   version: VERSION
   js:
     js/messages.js: {}
-  css:
-    component:
-      css/components/messages.css: {}
   dependencies:
     - olivero/global-styling
 

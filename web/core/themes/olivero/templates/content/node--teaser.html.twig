@@ -22,6 +22,7 @@
  *   of a given child element.
  * - author_picture: The node author user entity, rendered using the "compact"
  *   view mode.
+ * - metadata: Metadata for this node.
  * - date: (optional) Themed creation date field.
  * - author_name: (optional) Themed author name field.
  * - url: Direct URL of the current node.
@@ -95,7 +96,7 @@
     {% if display_submitted %}
       <div class="node__meta">
         <span{{ author_attributes }}>
-          {{ 'By'|t }} <span class="node__author">{{- author_name -}}</span>, {{ date }}
+          {{ 'By'|t }} {% apply spaceless %}<span class="node__author">{{ author_name }}</span>{% endapply %}, {{ date }}
         </span>
         {{ metadata }}
       </div>

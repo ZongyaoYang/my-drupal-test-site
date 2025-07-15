@@ -39,17 +39,20 @@ use Symfony\Component\Validator\Mapping\MetadataInterface;
  */
 class LazyLoadingMetadataFactory implements MetadataFactoryInterface
 {
+    protected $loader;
+    protected $cache;
+
     /**
      * The loaded metadata, indexed by class name.
      *
      * @var ClassMetadata[]
      */
-    protected array $loadedClasses = [];
+    protected $loadedClasses = [];
 
-    public function __construct(
-        protected ?LoaderInterface $loader = null,
-        protected ?CacheItemPoolInterface $cache = null,
-    ) {
+    public function __construct(?LoaderInterface $loader = null, ?CacheItemPoolInterface $cache = null)
+    {
+        $this->loader = $loader;
+        $this->cache = $cache;
     }
 
     /**
@@ -68,7 +71,7 @@ class LazyLoadingMetadataFactory implements MetadataFactoryInterface
     public function getMetadataFor(mixed $value): MetadataInterface
     {
         if (!\is_object($value) && !\is_string($value)) {
-            throw new NoSuchMetadataException(\sprintf('Cannot create metadata for non-objects. Got: "%s".', get_debug_type($value)));
+            throw new NoSuchMetadataException(sprintf('Cannot create metadata for non-objects. Got: "%s".', get_debug_type($value)));
         }
 
         $class = ltrim(\is_object($value) ? $value::class : $value, '\\');
@@ -78,7 +81,7 @@ class LazyLoadingMetadataFactory implements MetadataFactoryInterface
         }
 
         if (!class_exists($class) && !interface_exists($class, false)) {
-            throw new NoSuchMetadataException(\sprintf('The class or interface "%s" does not exist.', $class));
+            throw new NoSuchMetadataException(sprintf('The class or interface "%s" does not exist.', $class));
         }
 
         $cacheItem = $this->cache?->getItem($this->escapeClassName($class));

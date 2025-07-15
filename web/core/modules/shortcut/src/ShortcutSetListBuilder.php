@@ -16,7 +16,7 @@ class ShortcutSetListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function buildHeader() {
-    $header['name'] = $this->t('Name');
+    $header['name'] = t('Name');
     return $header + parent::buildHeader();
   }
 
@@ -27,11 +27,11 @@ class ShortcutSetListBuilder extends ConfigEntityListBuilder {
     $operations = parent::getDefaultOperations($entity);
 
     if (isset($operations['edit'])) {
-      $operations['edit']['title'] = $this->t('Edit shortcut set');
+      $operations['edit']['title'] = t('Edit shortcut set');
     }
 
     $operations['list'] = [
-      'title' => $this->t('List links'),
+      'title' => t('List links'),
       'url' => $entity->toUrl('customize-form'),
     ];
     return $operations;

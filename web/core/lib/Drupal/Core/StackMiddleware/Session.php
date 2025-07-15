@@ -60,7 +60,7 @@ class Session implements HttpKernelInterface {
   }
 
   /**
-   * Sets a session backed by persistent store and puts it on the request.
+   * Initializes a session backed by persistent store and puts it on the request.
    *
    * Sessions for web requests need to be backed by a persistent session store
    * and a real session handler (responsible for session cookie management).

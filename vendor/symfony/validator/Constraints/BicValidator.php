@@ -57,11 +57,17 @@ class BicValidator extends ConstraintValidator
         'EA' => 'ES', // Ceuta and Melilla
     ];
 
-    public function __construct(private ?PropertyAccessor $propertyAccessor = null)
+    private ?PropertyAccessor $propertyAccessor;
+
+    public function __construct(?PropertyAccessor $propertyAccessor = null)
     {
+        $this->propertyAccessor = $propertyAccessor;
     }
 
-    public function validate(mixed $value, Constraint $constraint): void
+    /**
+     * @return void
+     */
+    public function validate(mixed $value, Constraint $constraint)
     {
         if (!$constraint instanceof Bic) {
             throw new UnexpectedTypeException($constraint, Bic::class);
@@ -98,9 +104,6 @@ class BicValidator extends ConstraintValidator
         }
 
         $bicCountryCode = substr($canonicalize, 4, 2);
-        if (Bic::VALIDATION_MODE_CASE_INSENSITIVE === $constraint->mode) {
-            $bicCountryCode = strtoupper($bicCountryCode);
-        }
         if (!isset(self::BIC_COUNTRY_TO_IBAN_COUNTRY_MAP[$bicCountryCode]) && !Countries::exists($bicCountryCode)) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $this->formatValue($value))
@@ -110,8 +113,8 @@ class BicValidator extends ConstraintValidator
             return;
         }
 
-        // should contain uppercase characters only in strict mode
-        if (Bic::VALIDATION_MODE_STRICT === $constraint->mode && strtoupper($canonicalize) !== $canonicalize) {
+        // should contain uppercase characters only
+        if (strtoupper($canonicalize) !== $canonicalize) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $this->formatValue($value))
                 ->setCode(Bic::INVALID_CASE_ERROR)
@@ -127,7 +130,7 @@ class BicValidator extends ConstraintValidator
             try {
                 $iban = $this->getPropertyAccessor()->getValue($object, $path);
             } catch (NoSuchPropertyException $e) {
-                throw new ConstraintDefinitionException(\sprintf('Invalid property path "%s" provided to "%s" constraint: ', $path, get_debug_type($constraint)).$e->getMessage(), 0, $e);
+                throw new ConstraintDefinitionException(sprintf('Invalid property path "%s" provided to "%s" constraint: ', $path, get_debug_type($constraint)).$e->getMessage(), 0, $e);
             } catch (UninitializedPropertyException) {
                 $iban = null;
             }

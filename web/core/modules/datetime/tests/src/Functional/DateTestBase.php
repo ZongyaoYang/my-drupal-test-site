@@ -82,7 +82,6 @@ abstract class DateTestBase extends BrowserTestBase {
    * Returns the type of field to be tested.
    *
    * @return string
-   *   The field type to be tested.
    */
   abstract protected function getTestFieldType();
 
@@ -157,7 +156,7 @@ abstract class DateTestBase extends BrowserTestBase {
   /**
    * Renders an entity_test and sets the output in the internal browser.
    *
-   * @param string|int $id
+   * @param int $id
    *   The entity_test ID to render.
    * @param string $view_mode
    *   (optional) The view mode to use for rendering. Defaults to 'full'.

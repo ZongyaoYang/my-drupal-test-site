@@ -62,9 +62,9 @@ class Editor extends Plugin {
   /**
    * The human-readable name of the editor plugin.
    *
-   * @var \Drupal\Core\Annotation\Translation
-   *
    * @ingroup plugin_translatable
+   *
+   * @var \Drupal\Core\Annotation\Translation
    */
   public $label;
 

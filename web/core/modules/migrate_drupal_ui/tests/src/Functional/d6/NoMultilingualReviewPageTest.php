@@ -50,7 +50,7 @@ class NoMultilingualReviewPageTest extends NoMultilingualReviewPageTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function getAvailablePaths(): array {
+  protected function getAvailablePaths() {
     return [
       'Blog',
       'Blog API',
@@ -107,6 +107,8 @@ class NoMultilingualReviewPageTest extends NoMultilingualReviewPageTestBase {
       'Taxonomy',
       'Text',
       'Throttle',
+      // @todo Remove tracker in https://www.drupal.org/project/drupal/issues/3261452
+      'Tracker',
       'Trigger',
       'Update status',
       'Upload',
@@ -123,14 +125,14 @@ class NoMultilingualReviewPageTest extends NoMultilingualReviewPageTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function getIncompletePaths(): array {
+  protected function getIncompletePaths() {
     return [];
   }
 
   /**
    * {@inheritdoc}
    */
-  protected function getMissingPaths(): array {
+  protected function getMissingPaths() {
     return [
       'Aggregator',
       // Block is set not_finished in migrate_state_not_finished_test.
@@ -155,7 +157,6 @@ class NoMultilingualReviewPageTest extends NoMultilingualReviewPageTestBase {
       'String translation',
       'Synchronize translations',
       'Taxonomy translation',
-      'Tracker',
       'Views',
       'Views translation',
     ];

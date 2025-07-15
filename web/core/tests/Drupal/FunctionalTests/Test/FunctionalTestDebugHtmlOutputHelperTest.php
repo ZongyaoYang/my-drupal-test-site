@@ -25,7 +25,6 @@ class FunctionalTestDebugHtmlOutputHelperTest extends BrowserTestBase {
    */
   public function testCreateFunctionalTestDebugHtmlOutput(): void {
     $this->drupalGet('<front>');
-    $this->assertSession()->statusCodeEquals(200);
   }
 
 }

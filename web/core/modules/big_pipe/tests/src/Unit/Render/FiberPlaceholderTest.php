@@ -13,13 +13,11 @@ use Drupal\Core\Render\HtmlResponse;
 use Drupal\Core\Render\PlaceholderGeneratorInterface;
 use Drupal\Core\Render\RenderCacheInterface;
 use Drupal\Core\Render\Renderer;
-use Drupal\Core\Routing\RequestContext;
 use Drupal\Core\Security\TrustedCallbackInterface;
 use Drupal\Core\Theme\ThemeManagerInterface;
 use Drupal\Core\Utility\CallableResolver;
 use Drupal\Tests\UnitTestCase;
 use Prophecy\Argument;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -71,8 +69,6 @@ class FiberPlaceholderTest extends UnitTestCase {
       $this->createMock(EventDispatcherInterface::class),
       $this->prophesize(ConfigFactoryInterface::class)->reveal(),
       $this->prophesize(MessengerInterface::class)->reveal(),
-      $this->prophesize(RequestContext::class)->reveal(),
-      $this->prophesize(LoggerInterface::class)->reveal(),
     );
     $response = new BigPipeResponse(new HtmlResponse());
 
@@ -110,18 +106,14 @@ class FiberPlaceholderTest extends UnitTestCase {
 
 }
 
-/**
- * Test class for testing fiber placeholders.
- */
 class TurtleLazyBuilder implements TrustedCallbackInterface {
 
   /**
-   * Render API callback: Suspends execution twice to simulate a long operation.
+   * #lazy_builder callback.
    *
-   * This function is assigned as a #lazy_builder callback.
+   * Suspends its own execution twice to simulate long operation.
    *
    * @return array
-   *   The lazy builder callback.
    */
   public static function turtle(): array {
     if (\Fiber::getCurrent() !== NULL) {

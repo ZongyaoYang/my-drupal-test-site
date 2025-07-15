@@ -8,7 +8,7 @@ use Drupal\Tests\rest\Functional\EntityResource\ConfigEntityResourceTestBase;
 use Drupal\workflows\Entity\Workflow;
 
 /**
- * Resource test base for Workflow entity.
+ * ResourceTestBase for Workflow entity.
  */
 abstract class WorkflowResourceTestBase extends ConfigEntityResourceTestBase {
 

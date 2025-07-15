@@ -34,7 +34,8 @@ class TemporaryArrayObjectThrowingExceptions extends \ArrayObject {
    *   This class does not support this action but it must implement it, because
    *   it is extending \ArrayObject.
    */
-  public function asort($flags = SORT_REGULAR): TRUE {
+  #[\ReturnTypeWillChange]
+  public function asort($flags = SORT_REGULAR): bool {
     throw new \Exception('This ' . __CLASS__ . ' does not support this action but it must implement it, because it is extending \ArrayObject.');
   }
 
@@ -97,7 +98,7 @@ class TemporaryArrayObjectThrowingExceptions extends \ArrayObject {
   }
 
   /**
-   * Gets the class name of the iterator used by \ArrayObject::getIterator().
+   * Gets the class name of the array iterator that is used by \ArrayObject::getIterator().
    *
    * @throws \Exception
    *   This class does not support this action but it must implement it, because
@@ -117,7 +118,8 @@ class TemporaryArrayObjectThrowingExceptions extends \ArrayObject {
    *   This class does not support this action but it must implement it, because
    *   it is extending \ArrayObject.
    */
-  public function ksort($flags = SORT_REGULAR): TRUE {
+  #[\ReturnTypeWillChange]
+  public function ksort($flags = SORT_REGULAR): bool {
     throw new \Exception('This ' . __CLASS__ . ' does not support this action but it must implement it, because it is extending \ArrayObject.');
   }
 
@@ -128,7 +130,8 @@ class TemporaryArrayObjectThrowingExceptions extends \ArrayObject {
    *   This class does not support this action but it must implement it, because
    *   it is extending \ArrayObject.
    */
-  public function natcasesort(): TRUE {
+  #[\ReturnTypeWillChange]
+  public function natcasesort(): bool {
     throw new \Exception('This ' . __CLASS__ . ' does not support this action but it must implement it, because it is extending \ArrayObject.');
   }
 
@@ -139,7 +142,8 @@ class TemporaryArrayObjectThrowingExceptions extends \ArrayObject {
    *   This class does not support this action but it must implement it, because
    *   it is extending \ArrayObject.
    */
-  public function natsort(): TRUE {
+  #[\ReturnTypeWillChange]
+  public function natsort(): bool {
     throw new \Exception('This ' . __CLASS__ . ' does not support this action but it must implement it, because it is extending \ArrayObject.');
   }
 
@@ -170,7 +174,8 @@ class TemporaryArrayObjectThrowingExceptions extends \ArrayObject {
    *   This class does not support this action but it must implement it, because
    *   it is extending \ArrayObject.
    */
-  public function offsetGet($key): mixed {
+  #[\ReturnTypeWillChange]
+  public function offsetGet($key) {
     throw new \Exception('This ' . __CLASS__ . ' does not support this action but it must implement it, because it is extending \ArrayObject.');
   }
 
@@ -245,7 +250,8 @@ class TemporaryArrayObjectThrowingExceptions extends \ArrayObject {
    *   This class does not support this action but it must implement it, because
    *   it is extending \ArrayObject.
    */
-  public function uasort($callback): TRUE {
+  #[\ReturnTypeWillChange]
+  public function uasort($callback): bool {
     throw new \Exception('This ' . __CLASS__ . ' does not support this action but it must implement it, because it is extending \ArrayObject.');
   }
 
@@ -261,7 +267,8 @@ class TemporaryArrayObjectThrowingExceptions extends \ArrayObject {
    *   This class does not support this action but it must implement it, because
    *   it is extending \ArrayObject.
    */
-  public function uksort($callback): TRUE {
+  #[\ReturnTypeWillChange]
+  public function uksort($callback): bool {
     throw new \Exception('This ' . __CLASS__ . ' does not support this action but it must implement it, because it is extending \ArrayObject.');
   }
 

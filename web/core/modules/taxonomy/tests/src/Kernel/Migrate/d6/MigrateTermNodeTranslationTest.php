@@ -11,7 +11,6 @@ use Drupal\node\Entity\Node;
  * Upgrade taxonomy term node associations.
  *
  * @group migrate_drupal_6
- * @group #slow
  */
 class MigrateTermNodeTranslationTest extends MigrateDrupal6TestBase {
 

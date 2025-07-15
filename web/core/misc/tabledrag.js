@@ -1064,7 +1064,8 @@
       const nextRow = $nextRow.get(0);
       sourceRow = changedRow;
       if (
-        previousRow?.matches('.draggable') &&
+        previousRow &&
+        previousRow.matches('.draggable') &&
         $previousRow.find(`.${group}`).length
       ) {
         if (this.indentEnabled) {
@@ -1078,7 +1079,8 @@
           sourceRow = previousRow;
         }
       } else if (
-        nextRow?.matches('.draggable') &&
+        nextRow &&
+        nextRow.matches('.draggable') &&
         $nextRow.find(`.${group}`).length
       ) {
         if (this.indentEnabled) {
@@ -1245,7 +1247,12 @@
         ? de.clientHeight
         : b.offsetHeight);
     this.windowHeight = windowHeight;
-    const scrollY = window.scrollY;
+    let scrollY;
+    if (document.all) {
+      scrollY = !de.scrollTop ? b.scrollTop : de.scrollTop;
+    } else {
+      scrollY = window.pageYOffset ? window.pageYOffset : window.scrollY;
+    }
     this.scrollY = scrollY;
     const trigger = this.scrollSettings.trigger;
     let delta = 0;

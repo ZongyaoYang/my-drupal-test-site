@@ -27,7 +27,6 @@ use Prophecy\Argument;
 /**
  * @coversDefaultClass \Drupal\Core\Layout\LayoutPluginManager
  * @group Layout
- * @group legacy
  */
 class LayoutPluginManagerTest extends UnitTestCase {
 
@@ -109,8 +108,6 @@ class LayoutPluginManagerTest extends UnitTestCase {
     $class_loader->addPsr4("Drupal\\Core\\", vfsStream::url("root/core/lib/Drupal/Core"));
     $class_loader->register(TRUE);
     $this->layoutPluginManager = new LayoutPluginManager($namespaces, $this->cacheBackend->reveal(), $this->moduleHandler->reveal(), $this->themeHandler->reveal());
-
-    $this->expectDeprecation('Using @Layout annotation for plugin with ID plugin_provided_by_annotation_layout is deprecated and is removed from drupal:13.0.0. Use a Drupal\Core\Layout\Attribute\Layout attribute instead. See https://www.drupal.org/node/3395575');
   }
 
   /**
@@ -361,9 +358,9 @@ EOS;
   }
 
   /**
-   * Test that modules and themes can alter the list of layouts.
-   *
    * @covers ::getLayoutOptions
+   *
+   * Test that modules and themes can alter the list of layouts.
    */
   public function testGetLayoutOptions(): void {
     $this->moduleHandler->alter(
@@ -385,7 +382,7 @@ EOS;
   /**
    * Sets up the filesystem with YAML files and annotated plugins.
    */
-  protected function setUpFilesystem(): void {
+  protected function setUpFilesystem() {
     $module_a_provided_layout = <<<'EOS'
 module_a_provided_layout:
   label: 1 column layout

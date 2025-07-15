@@ -25,11 +25,17 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
  */
 class RangeValidator extends ConstraintValidator
 {
-    public function __construct(private ?PropertyAccessorInterface $propertyAccessor = null)
+    private ?PropertyAccessorInterface $propertyAccessor;
+
+    public function __construct(?PropertyAccessorInterface $propertyAccessor = null)
     {
+        $this->propertyAccessor = $propertyAccessor;
     }
 
-    public function validate(mixed $value, Constraint $constraint): void
+    /**
+     * @return void
+     */
+    public function validate(mixed $value, Constraint $constraint)
     {
         if (!$constraint instanceof Range) {
             throw new UnexpectedTypeException($constraint, Range::class);
@@ -67,7 +73,7 @@ class RangeValidator extends ConstraintValidator
                 try {
                     $min = new $value($min);
                 } catch (\Exception) {
-                    throw new ConstraintDefinitionException(\sprintf('The min value "%s" could not be converted to a "%s" instance in the "%s" constraint.', $min, get_debug_type($value), get_debug_type($constraint)));
+                    throw new ConstraintDefinitionException(sprintf('The min value "%s" could not be converted to a "%s" instance in the "%s" constraint.', $min, get_debug_type($value), get_debug_type($constraint)));
                 }
             }
 
@@ -75,7 +81,7 @@ class RangeValidator extends ConstraintValidator
                 try {
                     $max = new $value($max);
                 } catch (\Exception) {
-                    throw new ConstraintDefinitionException(\sprintf('The max value "%s" could not be converted to a "%s" instance in the "%s" constraint.', $max, get_debug_type($value), get_debug_type($constraint)));
+                    throw new ConstraintDefinitionException(sprintf('The max value "%s" could not be converted to a "%s" instance in the "%s" constraint.', $max, get_debug_type($value), get_debug_type($constraint)));
                 }
             }
         }
@@ -156,7 +162,7 @@ class RangeValidator extends ConstraintValidator
         try {
             return $this->getPropertyAccessor()->getValue($object, $propertyPath);
         } catch (NoSuchPropertyException $e) {
-            throw new ConstraintDefinitionException(\sprintf('Invalid property path "%s" provided to "%s" constraint: ', $propertyPath, get_debug_type($constraint)).$e->getMessage(), 0, $e);
+            throw new ConstraintDefinitionException(sprintf('Invalid property path "%s" provided to "%s" constraint: ', $propertyPath, get_debug_type($constraint)).$e->getMessage(), 0, $e);
         } catch (UninitializedPropertyException) {
             return null;
         }

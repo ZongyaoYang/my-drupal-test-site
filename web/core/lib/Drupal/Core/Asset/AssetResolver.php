@@ -7,7 +7,6 @@ use Drupal\Component\Utility\NestedArray;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Theme\ThemeManagerInterface;
@@ -60,13 +59,6 @@ class AssetResolver implements AssetResolverInterface {
   protected $cache;
 
   /**
-   * The theme handler service.
-   *
-   * @var \Drupal\Core\Extension\ThemeHandlerInterface
-   */
-  protected $themeHandler;
-
-  /**
    * Constructs a new AssetResolver instance.
    *
    * @param \Drupal\Core\Asset\LibraryDiscoveryInterface $library_discovery
@@ -81,22 +73,14 @@ class AssetResolver implements AssetResolverInterface {
    *   The language manager.
    * @param \Drupal\Core\Cache\CacheBackendInterface $cache
    *   The cache backend.
-   * @param \Drupal\Core\Extension\ThemeHandlerInterface $theme_handler
-   *   The theme handler service.
    */
-  public function __construct(LibraryDiscoveryInterface $library_discovery, LibraryDependencyResolverInterface $library_dependency_resolver, ModuleHandlerInterface $module_handler, ThemeManagerInterface $theme_manager, LanguageManagerInterface $language_manager, CacheBackendInterface $cache, ?ThemeHandlerInterface $theme_handler = NULL) {
-    if ($theme_handler === NULL) {
-      @trigger_error('Calling ' . __METHOD__ . ' without the $theme_handler argument is deprecated in drupal:11.1.0 and it will be required in drupal:12.0.0. See https://www.drupal.org/project/drupal/issues/3451667', E_USER_DEPRECATED);
-      $theme_handler = \Drupal::service('theme_handler');
-    }
-
+  public function __construct(LibraryDiscoveryInterface $library_discovery, LibraryDependencyResolverInterface $library_dependency_resolver, ModuleHandlerInterface $module_handler, ThemeManagerInterface $theme_manager, LanguageManagerInterface $language_manager, CacheBackendInterface $cache) {
     $this->libraryDiscovery = $library_discovery;
     $this->libraryDependencyResolver = $library_dependency_resolver;
     $this->moduleHandler = $module_handler;
     $this->themeManager = $theme_manager;
     $this->languageManager = $language_manager;
     $this->cache = $cache;
-    $this->themeHandler = $theme_handler;
   }
 
   /**
@@ -196,14 +180,10 @@ class AssetResolver implements AssetResolverInterface {
     if (!isset($language)) {
       $language = $this->languageManager->getCurrentLanguage();
     }
-    // Add the active theme name to the cache key since active themes may
-    // implement hook_library_info_alter().
-    $active_theme = $this->themeManager->getActiveTheme()->getName();
-    // Add the default theme name to the cache key since css generated for an
-    // active admin theme may include the default theme's ckeditor5-stylesheets
-    // and default themes may be set conditionally and dynamically.
-    $default_theme = $this->themeHandler->getDefault();
-    $cid = 'css:' . $active_theme . ':' . $default_theme . ':' . $language->getId() . Crypt::hashBase64(serialize($libraries_to_load)) . (int) $optimize;
+    $theme_info = $this->themeManager->getActiveTheme();
+    // Add the theme name to the cache key since themes may implement
+    // hook_library_info_alter().
+    $cid = 'css:' . $theme_info->getName() . ':' . $language->getId() . Crypt::hashBase64(serialize($libraries_to_load)) . (int) $optimize;
     if ($cached = $this->cache->get($cid)) {
       return $cached->data;
     }
@@ -286,8 +266,7 @@ class AssetResolver implements AssetResolverInterface {
    * {@inheritdoc}
    */
   public function getJsAssets(AttachedAssetsInterface $assets, $optimize, ?LanguageInterface $language = NULL) {
-    $asset_settings = $assets->getSettings();
-    if (!$assets->getLibraries() && !$asset_settings) {
+    if (!$assets->getLibraries() && !$assets->getSettings()) {
       return [[], []];
     }
     if (!isset($language)) {
@@ -310,14 +289,14 @@ class AssetResolver implements AssetResolverInterface {
 
     // If all the libraries to load contained only CSS, there is nothing further
     // to do here, so return early.
-    if (!$libraries_to_load && !$asset_settings) {
+    if (!$libraries_to_load && !$assets->getSettings()) {
       return [[], []];
     }
 
     // Add the theme name to the cache key since themes may implement
     // hook_library_info_alter(). Additionally add the current language to
     // support translation of JavaScript files via hook_js_alter().
-    $cid = 'js:' . $theme_info->getName() . ':' . $language->getId() . ':' . Crypt::hashBase64(serialize($libraries_to_load)) . ':' . (int) $optimize;
+    $cid = 'js:' . $theme_info->getName() . ':' . $language->getId() . ':' . Crypt::hashBase64(serialize($libraries_to_load)) . (int) (count($assets->getSettings()) > 0) . (int) $optimize;
 
     if ($cached = $this->cache->get($cid)) {
       [$js_assets_header, $js_assets_footer, $settings, $settings_in_header] = $cached->data;
@@ -390,30 +369,32 @@ class AssetResolver implements AssetResolverInterface {
         $js_assets_footer = $collection_optimizer->optimize($js_assets_footer, $libraries_to_load);
       }
 
-      // Always build settings from js libraries. They may or may not be
-      // used later depending on whether the core/drupalSettings library is
-      // requested.
-      $settings = $this->getJsSettingsAssets($assets);
-      // Allow modules to add cached JavaScript settings.
-      $this->moduleHandler->invokeAllWith('js_settings_build', function (callable $hook, string $module) use (&$settings, $assets) {
-        $hook($settings, $assets);
-      });
+      // If the core/drupalSettings library is being loaded or is already
+      // loaded, get the JavaScript settings assets, and convert them into a
+      // single "regular" JavaScript asset.
+      $libraries_to_load = $this->getLibrariesToLoad($assets);
+      $settings_required = in_array('core/drupalSettings', $libraries_to_load) || in_array('core/drupalSettings', $this->libraryDependencyResolver->getLibrariesWithDependencies($assets->getAlreadyLoadedLibraries()));
+      $settings_have_changed = count($libraries_to_load) > 0 || count($assets->getSettings()) > 0;
+
+      // Initialize settings to FALSE since they are not needed by default. This
+      // distinguishes between an empty array which must still allow
+      // hook_js_settings_alter() to be run.
+      $settings = FALSE;
+      if ($settings_required && $settings_have_changed) {
+        $settings = $this->getJsSettingsAssets($assets);
+        // Allow modules to add cached JavaScript settings.
+        $this->moduleHandler->invokeAllWith('js_settings_build', function (callable $hook, string $module) use (&$settings, $assets) {
+          $hook($settings, $assets);
+        });
+      }
       $settings_in_header = in_array('core/drupalSettings', $header_js_libraries);
       $this->cache->set($cid, [$js_assets_header, $js_assets_footer, $settings, $settings_in_header], CacheBackendInterface::CACHE_PERMANENT, ['library_info']);
     }
 
-    // If the core/drupalSettings library is being loaded or is already
-    // loaded, get the JavaScript settings assets, and convert them into a
-    // single "regular" JavaScript asset. But only if there are settings to
-    // add. Do the quickest checks first.
-    $process_settings = FALSE;
-    if (count($libraries_to_load) > 0 || count($asset_settings) > 0) {
-      $process_settings = in_array('core/drupalSettings', $libraries_to_load) || in_array('core/drupalSettings', $this->libraryDependencyResolver->getLibrariesWithDependencies($assets->getAlreadyLoadedLibraries()));
-    }
-    if ($process_settings) {
+    if ($settings !== FALSE) {
       // Attached settings override both library definitions and
       // hook_js_settings_build().
-      $settings = NestedArray::mergeDeepArray([$settings, $asset_settings], TRUE);
+      $settings = NestedArray::mergeDeepArray([$settings, $assets->getSettings()], TRUE);
       // Allow modules and themes to alter the JavaScript settings.
       $this->moduleHandler->alter('js_settings', $settings, $assets);
       $this->themeManager->alter('js_settings', $settings, $assets);

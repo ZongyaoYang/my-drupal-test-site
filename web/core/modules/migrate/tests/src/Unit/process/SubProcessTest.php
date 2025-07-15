@@ -29,8 +29,6 @@ class SubProcessTest extends MigrateProcessTestCase {
   protected $plugin;
 
   /**
-   * The default migration configuration.
-   *
    * @var array
    */
   protected $migrationConfiguration = [

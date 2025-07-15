@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\field\Kernel;
 
-use Drupal\entity_test\EntityTestHelper;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
-use Drupal\field_test\FieldTestHelper;
 
 /**
  * Tests storage-related Field Attach API functions.
@@ -88,8 +86,8 @@ class FieldAttachStorageTest extends FieldKernelTestBase {
       1 => 'test_bundle_1',
       2 => 'test_bundle_2',
     ];
-    EntityTestHelper::createBundle($bundles[1], entity_type: $entity_type);
-    EntityTestHelper::createBundle($bundles[2], entity_type: $entity_type);
+    entity_test_create_bundle($bundles[1], entity_type: $entity_type);
+    entity_test_create_bundle($bundles[2], entity_type: $entity_type);
     // Define 3 fields:
     // - field_1 is in bundle_1 and bundle_2,
     // - field_2 is in bundle_1,
@@ -204,14 +202,14 @@ class FieldAttachStorageTest extends FieldKernelTestBase {
     $this->createFieldWithStorage('', $entity_type);
 
     // Add a default value function.
-    $this->fieldTestData->field->set('default_value_callback', FieldTestHelper::class . '::defaultValue');
+    $this->fieldTestData->field->set('default_value_callback', 'field_test_default_value');
     $this->fieldTestData->field->save();
 
     // Verify that fields are populated with default values.
     $entity_init = $this->container->get('entity_type.manager')
       ->getStorage($entity_type)
       ->create(['id' => 1, 'revision_id' => 1]);
-    $default = FieldTestHelper::defaultValue($entity_init, $this->fieldTestData->field);
+    $default = field_test_default_value($entity_init, $this->fieldTestData->field);
     $this->assertEquals($default, $entity_init->{$this->fieldTestData->field_name}->getValue(), 'Default field value correctly populated.');
 
     // Insert: Field is NULL.
@@ -300,7 +298,7 @@ class FieldAttachStorageTest extends FieldKernelTestBase {
 
     // Create a new bundle.
     $new_bundle = 'test_bundle_' . $this->randomMachineName();
-    EntityTestHelper::createBundle($new_bundle, NULL, $entity_type);
+    entity_test_create_bundle($new_bundle, NULL, $entity_type);
 
     // Add a field to that bundle.
     $this->fieldTestData->field_definition['bundle'] = $new_bundle;
@@ -327,7 +325,7 @@ class FieldAttachStorageTest extends FieldKernelTestBase {
 
     // Create a new bundle.
     $new_bundle = 'test_bundle_' . $this->randomMachineName();
-    EntityTestHelper::createBundle($new_bundle, NULL, $entity_type);
+    entity_test_create_bundle($new_bundle, NULL, $entity_type);
 
     // Add a field to that bundle.
     $this->fieldTestData->field_definition['bundle'] = $new_bundle;
@@ -371,7 +369,7 @@ class FieldAttachStorageTest extends FieldKernelTestBase {
     $this->container->get('entity_display.repository')
       ->getFormDisplay($entity_type, $this->fieldTestData->field->getTargetBundle())
       ->delete();
-    EntityTestHelper::deleteBundle($this->fieldTestData->field->getTargetBundle(), $entity_type);
+    entity_test_delete_bundle($this->fieldTestData->field->getTargetBundle(), $entity_type);
 
     // Verify no data gets loaded
     $controller = $this->container->get('entity_type.manager')->getStorage($entity->getEntityTypeId());

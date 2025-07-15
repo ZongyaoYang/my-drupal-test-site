@@ -191,7 +191,7 @@ class LayoutEntityHelperTraitTest extends KernelTestBase {
       $entity->save();
       if ($has_original) {
         $original_entity = EntityTest::create(['name' => 'original']);
-        $entity->setOriginal($original_entity);
+        $entity->original = $original_entity;
       }
 
     }

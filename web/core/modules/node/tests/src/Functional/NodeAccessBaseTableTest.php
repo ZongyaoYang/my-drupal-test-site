@@ -7,7 +7,6 @@ namespace Drupal\Tests\node\Functional;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\node\Entity\NodeType;
-use Drupal\Tests\node\Traits\NodeAccessTrait;
 use Drupal\taxonomy\Entity\Vocabulary;
 use Drupal\Tests\field\Traits\EntityReferenceFieldCreationTrait;
 
@@ -19,7 +18,6 @@ use Drupal\Tests\field\Traits\EntityReferenceFieldCreationTrait;
 class NodeAccessBaseTableTest extends NodeTestBase {
 
   use EntityReferenceFieldCreationTrait;
-  use NodeAccessTrait;
 
   /**
    * {@inheritdoc}
@@ -104,7 +102,7 @@ class NodeAccessBaseTableTest extends NodeTestBase {
       ])
       ->save();
 
-    $this->addPrivateField(NodeType::load('article'));
+    node_access_test_add_field(NodeType::load('article'));
 
     node_access_rebuild();
     \Drupal::state()->set('node_access_test.private', TRUE);

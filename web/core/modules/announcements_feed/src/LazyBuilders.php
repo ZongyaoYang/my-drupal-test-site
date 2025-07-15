@@ -8,7 +8,6 @@ use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Render\ElementInfoManagerInterface;
 use Drupal\Core\Security\TrustedCallbackInterface;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 
 /**
@@ -17,8 +16,6 @@ use Drupal\Core\Url;
  * @internal
  */
 final class LazyBuilders implements TrustedCallbackInterface {
-
-  use StringTranslationTrait;
 
   /**
    * Constructs LazyBuilders object.
@@ -43,11 +40,11 @@ final class LazyBuilders implements TrustedCallbackInterface {
       '#cache' => [
         'context' => ['user.permissions'],
       ],
-      '#title' => $this->t('Announcements'),
+      '#title' => t('Announcements'),
       '#url' => Url::fromRoute('announcements_feed.announcement'),
       '#id' => Html::getId('toolbar-item-announcement'),
       '#attributes' => [
-        'title' => $this->t('Announcements'),
+        'title' => t('Announcements'),
         'data-drupal-announce-trigger' => '',
         'class' => [
           'toolbar-icon',

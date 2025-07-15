@@ -48,9 +48,6 @@ class HandlerAliasTest extends ViewsKernelTestBase {
     return $data;
   }
 
-  /**
-   * Tests the behavior of plugin aliases in Views filters.
-   */
   public function testPluginAliases(): void {
     $view = Views::getView('test_filter');
     $view->initDisplay();

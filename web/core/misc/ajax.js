@@ -1,5 +1,3 @@
-/* cspell:ignore xmlhttprequest */
-
 /**
  * @file
  * Provides Ajax page updating via jQuery $.ajax.
@@ -458,7 +456,7 @@
 
     // If there isn't a form, jQuery.ajax() will be used instead, allowing us to
     // bind Ajax to links as well.
-    if (this.element?.form) {
+    if (this.element && this.element.form) {
       /**
        * @type {jQuery}
        */
@@ -556,7 +554,7 @@
         // Sanity check for browser support (object expected).
         // When using iFrame uploads, responses must be returned as a string.
         if (typeof response === 'string') {
-          response = JSON.parse(response);
+          response = $.parseJSON(response);
         }
 
         // Prior to invoking the response's commands, verify that they can be
@@ -1438,7 +1436,7 @@
      *   The JSON response object from the Ajax request.
      * @param {string} response.selector
      *   A jQuery selector string.
-     * @param {string} [response.asterisk]
+     * @param {boolean} [response.asterisk]
      *   An optional CSS selector. If specified, an asterisk will be
      *   appended to the HTML inside the provided selector.
      * @param {number} [status]
@@ -1715,12 +1713,21 @@
      *   {@link Drupal.Ajax} object created by {@link Drupal.ajax}.
      * @param {object} response
      *   The response from the Ajax request.
-     * @param {object[]} response.data
+     * @param {object[]|string} response.data
      *   An array of styles to be added.
      * @param {number} [status]
      *   The XMLHttpRequest status.
      */
     add_css(ajax, response, status) {
+      if (typeof response.data === 'string') {
+        Drupal.deprecationError({
+          message:
+            'Passing a string to the Drupal.ajax.add_css() method is deprecated in 10.1.0 and is removed from drupal:11.0.0. See https://www.drupal.org/node/3154948.',
+        });
+        $('head').prepend(response.data);
+        return;
+      }
+
       const allUniqueBundleIds = response.data.map(function (style) {
         const uniqueBundleId = style.href;
         // Force file to load as a CSS stylesheet using 'css!' flag.
@@ -1896,7 +1903,7 @@
       xhr.getResponseHeader('X-Drupal-Ajax-Token') === '1' &&
       // The isInProgress() function might not be defined if the Ajax request
       // was initiated without Drupal.ajax() or new Drupal.Ajax().
-      typeof settings.isInProgress === 'function' &&
+      settings.isInProgress &&
       // Until this is false, the Ajax request isn't completely done (the
       // response's commands might still be running).
       settings.isInProgress()

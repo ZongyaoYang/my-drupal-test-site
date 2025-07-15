@@ -2,7 +2,6 @@
 
 namespace Drupal\serialization\Normalizer;
 
-use Drupal\Core\Serialization\Attribute\JsonSchema;
 use Drupal\Core\TypedData\Plugin\DataType\DateTimeIso8601;
 use Drupal\datetime\Plugin\Field\FieldType\DateTimeItem;
 use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
@@ -14,8 +13,6 @@ use Symfony\Component\Serializer\Exception\InvalidArgumentException;
  * @internal
  */
 class DateTimeIso8601Normalizer extends DateTimeNormalizer {
-
-  use SchematicNormalizerHelperTrait;
 
   /**
    * {@inheritdoc}
@@ -35,22 +32,18 @@ class DateTimeIso8601Normalizer extends DateTimeNormalizer {
   /**
    * {@inheritdoc}
    */
-  #[JsonSchema(['type' => 'string', 'format' => 'date'])]
-  public function normalize($object, $format = NULL, array $context = []): array|string|int|float|bool|\ArrayObject|NULL {
-    if ($format === 'json_schema') {
-      return $this->getNormalizationSchema($object, $context);
-    }
-    assert($object instanceof DateTimeIso8601);
-    $field_item = $object->getParent();
+  public function normalize($datetime, $format = NULL, array $context = []): array|string|int|float|bool|\ArrayObject|NULL {
+    assert($datetime instanceof DateTimeIso8601);
+    $field_item = $datetime->getParent();
     // @todo Remove this in https://www.drupal.org/project/drupal/issues/2958416.
     if ($field_item instanceof DateTimeItem && $field_item->getFieldDefinition()->getFieldStorageDefinition()->getSetting('datetime_type') === DateTimeItem::DATETIME_TYPE_DATE) {
-      $drupal_date_time = $object->getDateTime();
+      $drupal_date_time = $datetime->getDateTime();
       if ($drupal_date_time === NULL) {
         return $drupal_date_time;
       }
       return $drupal_date_time->format($this->allowedFormats['date-only']);
     }
-    return parent::normalize($object, $format, $context);
+    return parent::normalize($datetime, $format, $context);
   }
 
   /**

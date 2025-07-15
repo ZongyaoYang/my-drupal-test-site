@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\media_test_source\Plugin\media\Source;
 
 use Drupal\Core\StringTranslation\TranslatableMarkup;

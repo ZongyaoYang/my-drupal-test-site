@@ -14,7 +14,7 @@ trait MenuUiTrait {
    *
    * @param array $expected_item
    *   Array containing properties to check.
-   * @param string $menu_plugin_id
+   * @param int $menu_plugin_id
    *   Menu item id.
    */
   protected function assertMenuLink(array $expected_item, $menu_plugin_id) {

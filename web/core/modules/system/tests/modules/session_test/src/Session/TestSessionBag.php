@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\session_test\Session;
 
 use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
@@ -74,7 +72,7 @@ class TestSessionBag implements SessionBagInterface {
   /**
    * {@inheritdoc}
    */
-  public function initialize(array &$attributes): void {
+  public function initialize(array &$attributes) {
     $this->attributes = &$attributes;
   }
 

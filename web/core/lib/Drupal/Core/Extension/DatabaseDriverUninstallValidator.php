@@ -3,6 +3,7 @@
 namespace Drupal\Core\Extension;
 
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Database\Database;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslationInterface;
 
@@ -48,6 +49,10 @@ class DatabaseDriverUninstallValidator implements ModuleUninstallValidatorInterf
    */
   public function validate($module) {
     $reasons = [];
+
+    // @todo Remove the next line of code in
+    // https://www.drupal.org/project/drupal/issues/3129043.
+    $this->connection = Database::getConnection();
 
     // When the database driver is provided by a module, then that module
     // cannot be uninstalled.

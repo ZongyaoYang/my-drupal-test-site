@@ -101,8 +101,8 @@ class FieldTranslationSynchronizer implements FieldTranslationSynchronizerInterf
           return;
         }
         // When this mode is enabled, changes to synchronized properties are
-        // allowed only in the default translation, thus we need to make sure
-        // this is always used as source for the synchronization process.
+        // allowed only in the default translation, thus we need to make sure this
+        // is always used as source for the synchronization process.
         else {
           $sync_langcode = $entity->getUntranslated()->language()->getId();
         }
@@ -189,13 +189,13 @@ class FieldTranslationSynchronizer implements FieldTranslationSynchronizerInterf
    *   The unchanged entity.
    */
   protected function getOriginalEntity(ContentEntityInterface $entity) {
-    if (!$entity->getOriginal()) {
+    if (!isset($entity->original)) {
       /** @var \Drupal\Core\Entity\RevisionableStorageInterface $storage */
       $storage = $this->entityTypeManager->getStorage($entity->getEntityTypeId());
-      $original = $entity->wasDefaultRevision() ? $storage->loadUnchanged($entity->id()) : $storage->loadRevision($entity->getLoadedRevisionId());
+      $original = $entity->isDefaultRevision() ? $storage->loadUnchanged($entity->id()) : $storage->loadRevision($entity->getLoadedRevisionId());
     }
     else {
-      $original = $entity->getOriginal();
+      $original = $entity->original;
     }
     return $original;
   }

@@ -21,10 +21,8 @@ class UrlAlterTest extends KernelTestBase {
    */
   protected static $modules = ['path', 'url_alter_test', 'user'];
 
-  /**
-   * Tests altering outbound query string.
-   */
   public function testUrlWithQueryString(): void {
+    // Test outbound query string altering.
     $url = Url::fromRoute('user.login');
     $this->assertEquals(\Drupal::request()->getBaseUrl() . '/user/login?foo=bar', $url->toString());
   }

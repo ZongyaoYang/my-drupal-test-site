@@ -33,7 +33,7 @@ class DateFormatter implements DateFormatterInterface {
   protected $dateFormatStorage;
 
   /**
-   * The Language manager.
+   * Language manager for retrieving the default langcode when none is specified.
    *
    * @var \Drupal\Core\Language\LanguageManagerInterface
    */
@@ -53,11 +53,7 @@ class DateFormatter implements DateFormatterInterface {
    */
   protected $requestStack;
 
-  /**
-   * The available date formats.
-   *
-   * @var array
-   */
+  protected $country = NULL;
   protected $dateFormats = [];
 
   /**
@@ -168,7 +164,7 @@ class DateFormatter implements DateFormatterInterface {
         break;
       }
     }
-    return $output ?: $this->t('0 sec', [], ['langcode' => $langcode]);
+    return $output ? $output : $this->t('0 sec', [], ['langcode' => $langcode]);
   }
 
   /**
@@ -270,8 +266,7 @@ class DateFormatter implements DateFormatterInterface {
             }
             else {
               // If we did not output days, set the granularity to 0 so that we
-              // will not output hours and get things like "@count week @count
-              // hour".
+              // will not output hours and get things like "@count week @count hour".
               $granularity = 0;
             }
             break;
@@ -297,8 +292,7 @@ class DateFormatter implements DateFormatterInterface {
       }
       elseif ($output) {
         // Break if there was previous output but not any output at this level,
-        // to avoid skipping levels and getting output like "@count year @count
-        // second".
+        // to avoid skipping levels and getting output like "@count year @count second".
         break;
       }
 
@@ -345,6 +339,24 @@ class DateFormatter implements DateFormatterInterface {
       $this->languageManager->setConfigOverrideLanguage($original_language);
     }
     return $this->dateFormats[$type][$langcode];
+  }
+
+  /**
+   * Returns the default country from config.
+   *
+   * @return string
+   *   The config setting for country.default.
+   *
+   * @deprecated in drupal:10.3.0 and is removed from drupal:11.0.0. There will be a contrib replacement. See https://www.drupal.org/node/3439484
+   *
+   * @see https://www.drupal.org/node/3439484
+   */
+  protected function country() {
+    @trigger_error('Calling ' . __METHOD__ . '() is deprecated in drupal:10.3.0 and is removed from drupal:11.0.0. There is no replacement. See https://www.drupal.org/node/3439484', E_USER_DEPRECATED);
+    if ($this->country === NULL) {
+      $this->country = \Drupal::config('system.date')->get('country.default');
+    }
+    return $this->country;
   }
 
 }

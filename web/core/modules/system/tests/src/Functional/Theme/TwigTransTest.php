@@ -119,7 +119,7 @@ class TwigTransTest extends BrowserTestBase {
     catch (SyntaxError $e) {
       $this->assertStringContainsString('{% trans %} tag cannot be empty', $e->getMessage());
     }
-    catch (\Exception) {
+    catch (\Exception $e) {
       $this->fail('{% trans %}{% endtrans %} threw an unexpected exception.');
     }
   }
@@ -188,7 +188,7 @@ class TwigTransTest extends BrowserTestBase {
   /**
    * Helper function: install languages.
    */
-  protected function installLanguages(): void {
+  protected function installLanguages() {
     $file_system = \Drupal::service('file_system');
     foreach ($this->languages as $langcode => $name) {
       // Generate custom .po contents for the language.

@@ -5,9 +5,6 @@
  * Documentation related to JSON:API.
  */
 
-use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Access\AccessResult;
 
 /**
@@ -273,7 +270,7 @@ use Drupal\Core\Access\AccessResult;
  *
  * @see hook_jsonapi_ENTITY_TYPE_filter_access()
  */
-function hook_jsonapi_entity_filter_access(EntityTypeInterface $entity_type, AccountInterface $account) {
+function hook_jsonapi_entity_filter_access(\Drupal\Core\Entity\EntityTypeInterface $entity_type, \Drupal\Core\Session\AccountInterface $account) {
   // For every entity type that has an admin permission, allow access to filter
   // by all entities of that type to users with that permission.
   if ($admin_permission = $entity_type->getAdminPermission()) {
@@ -303,7 +300,7 @@ function hook_jsonapi_entity_filter_access(EntityTypeInterface $entity_type, Acc
  *
  * @see hook_jsonapi_entity_filter_access()
  */
-function hook_jsonapi_ENTITY_TYPE_filter_access(EntityTypeInterface $entity_type, AccountInterface $account): array {
+function hook_jsonapi_ENTITY_TYPE_filter_access(\Drupal\Core\Entity\EntityTypeInterface $entity_type, \Drupal\Core\Session\AccountInterface $account) {
   return ([
     JSONAPI_FILTER_AMONG_ALL => AccessResult::allowedIfHasPermission($account, 'administer llamas'),
     JSONAPI_FILTER_AMONG_PUBLISHED => AccessResult::allowedIfHasPermission($account, 'view all published llamas'),
@@ -341,7 +338,7 @@ function hook_jsonapi_ENTITY_TYPE_filter_access(EntityTypeInterface $entity_type
  * @return \Drupal\Core\Access\AccessResultInterface
  *   The access result.
  */
-function hook_jsonapi_entity_field_filter_access(FieldDefinitionInterface $field_definition, AccountInterface $account) {
+function hook_jsonapi_entity_field_filter_access(\Drupal\Core\Field\FieldDefinitionInterface $field_definition, \Drupal\Core\Session\AccountInterface $account) {
   if ($field_definition->getTargetEntityTypeId() === 'node' && $field_definition->getName() === 'field_sensitive_data') {
     $has_sufficient_access = FALSE;
     foreach (['administer nodes', 'view all sensitive field data'] as $permission) {

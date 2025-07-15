@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\system_test\Controller;
 
 use Drupal\Core\Access\AccessResult;
@@ -305,10 +303,7 @@ class SystemTestController extends ControllerBase implements TrustedCallbackInte
     $response = new CacheableResponse();
     $response->headers->set($query['name'], $query['value']);
     $response->getCacheableMetadata()->addCacheContexts(['url.query_args:name', 'url.query_args:value']);
-    $response->setContent((string) $this->t('The following header was set: %name: %value', [
-      '%name' => $query['name'],
-      '%value' => $query['value'],
-    ]));
+    $response->setContent((string) $this->t('The following header was set: %name: %value', ['%name' => $query['name'], '%value' => $query['value']]));
 
     return $response;
   }
@@ -357,7 +352,6 @@ class SystemTestController extends ControllerBase implements TrustedCallbackInte
    *   Any string for the {foo} slug.
    *
    * @return string
-   *   The value of title.
    */
   public function configureTitle($foo) {
     return 'Bar.' . $foo;

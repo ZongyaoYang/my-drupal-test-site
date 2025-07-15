@@ -14,7 +14,7 @@
 
 const { globSync } = require('glob');
 const log = require('./log');
-const fs = require('node:fs');
+const fs = require('fs');
 
 /**
  * A list of regex used to alias CKEditor 5 types.

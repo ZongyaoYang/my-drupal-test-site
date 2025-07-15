@@ -84,8 +84,10 @@ class IncludeNode extends Node implements NodeOutputInterface
     protected function addGetTemplate(Compiler $compiler/* , string $template = '' */)
     {
         $compiler
-            ->raw('$this->load(')
+            ->raw('$this->loadTemplate(')
             ->subcompile($this->getNode('expr'))
+            ->raw(', ')
+            ->repr($this->getTemplateName())
             ->raw(', ')
             ->repr($this->getTemplateLine())
             ->raw(')')

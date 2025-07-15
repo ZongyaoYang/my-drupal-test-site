@@ -12,8 +12,6 @@ use Drupal\workspaces\WorkspaceInterface;
 use Drupal\workspaces\WorkspaceOperationFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-// cspell:ignore differring
-
 /**
  * Provides a form that merges the contents for a workspace into another one.
  */

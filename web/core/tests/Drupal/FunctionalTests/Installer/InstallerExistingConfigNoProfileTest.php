@@ -12,7 +12,7 @@ namespace Drupal\FunctionalTests\Installer;
 class InstallerExistingConfigNoProfileTest extends InstallerExistingConfigTest {
 
   /**
-   * {@inheritdoc}
+   * Tests the install from config without a profile.
    */
   protected $profile = FALSE;
 

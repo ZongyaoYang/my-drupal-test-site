@@ -39,7 +39,7 @@ class ProxyBuilderTest extends UnitTestCase {
 
     $result = $this->proxyBuilder->build($class);
 
-    // @todo Solve the silly linebreak for an empty array.
+    // @todo Solve the silly linebreak for array()
     $method_body = <<<'EOS'
 
 /**
@@ -161,16 +161,10 @@ EOS;
 
 }
 
-/**
- * Class used to test a service that has no methods.
- */
 class TestServiceNoMethod {
 
 }
 
-/**
- * Call used to test a service with a complex method.
- */
 class TestServiceComplexMethod {
 
   public function complexMethod($parameter, callable $function, ?TestServiceNoMethod $test_service = NULL, array &$elements = []) {

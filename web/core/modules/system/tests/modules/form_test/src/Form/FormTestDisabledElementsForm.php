@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\form_test\Form;
 
 use Drupal\Core\Datetime\DrupalDateTime;
@@ -49,8 +47,7 @@ class FormTestDisabledElementsForm extends FormBase {
         ],
         '#multiple' => TRUE,
         '#default_value' => ['test_2' => 'test_2'],
-        // The keys of #test_hijack_value need to match the #name of the
-        // control.
+        // The keys of #test_hijack_value need to match the #name of the control.
         // @see FormsTestCase::testDisabledElements()
         '#test_hijack_value' => $type == 'select' ? ['' => 'test_1'] : ['test_1' => 'test_1'],
         '#disabled' => TRUE,
@@ -256,7 +253,7 @@ class FormTestDisabledElementsForm extends FormBase {
 
     $form['submit'] = [
       '#type' => 'submit',
-      '#value' => $this->t('Submit'),
+      '#value' => t('Submit'),
     ];
 
     return $form;

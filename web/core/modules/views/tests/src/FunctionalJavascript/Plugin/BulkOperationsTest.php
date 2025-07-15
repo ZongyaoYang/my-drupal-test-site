@@ -38,9 +38,6 @@ class BulkOperationsTest extends WebDriverTestBase {
     $this->drupalLogin($this->createUser(['bypass node access', 'administer nodes', 'access content overview']));
   }
 
-  /**
-   * Tests views bulk operations.
-   */
   public function testBulkOperations(): void {
     $node_1 = $this->drupalCreateNode([
       'type' => 'page',

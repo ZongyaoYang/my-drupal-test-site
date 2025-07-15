@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\config_translation_test\EventSubscriber;
 
 use Drupal\config_translation\Event\ConfigMapperPopulateEvent;

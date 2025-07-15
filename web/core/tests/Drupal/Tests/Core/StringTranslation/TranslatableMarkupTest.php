@@ -43,7 +43,7 @@ class TranslatableMarkupTest extends UnitTestCase {
    * @param string $error_message
    *   The error message.
    */
-  public function errorHandler($error_number, $error_message): void {
+  public function errorHandler($error_number, $error_message) {
     $this->lastErrorNumber = $error_number;
     $this->lastErrorMessage = $error_message;
   }
@@ -73,15 +73,14 @@ class TranslatableMarkupTest extends UnitTestCase {
         throw new \Exception('Yes you may.');
       });
 
-    // We set a custom error handler because of
-    // https://github.com/sebastianbergmann/phpunit/issues/487
+    // We set a custom error handler because of https://github.com/sebastianbergmann/phpunit/issues/487
     set_error_handler([$this, 'errorHandler']);
     // We want this to trigger an error.
     (string) $text;
     restore_error_handler();
 
     $this->assertEquals(E_USER_WARNING, $this->lastErrorNumber);
-    $this->assertMatchesRegularExpression('/Exception thrown while calling __toString on a .*MockObject_TranslatableMarkup_.* object in .*TranslatableMarkupTest.php on line [0-9]+: Yes you may./', $this->lastErrorMessage);
+    $this->assertMatchesRegularExpression('/Exception thrown while calling __toString on a .*Mock_TranslatableMarkup_.* object in .*TranslatableMarkupTest.php on line [0-9]+: Yes you may./', $this->lastErrorMessage);
   }
 
   /**
@@ -91,7 +90,6 @@ class TranslatableMarkupTest extends UnitTestCase {
     $translation = $this->getStringTranslationStub();
     $this->expectException(\InvalidArgumentException::class);
     $this->expectExceptionMessage('$string ("foo") must be a string.');
-    // phpcs:ignore Drupal.Semantics.FunctionT.NotLiteralString
     new TranslatableMarkup(new TranslatableMarkup('foo', [], [], $translation));
   }
 
@@ -102,7 +100,6 @@ class TranslatableMarkupTest extends UnitTestCase {
     $formattable_string = new FormattableMarkup('@bar', ['@bar' => 'foo']);
     $this->expectException(\InvalidArgumentException::class);
     $this->expectExceptionMessage('$string ("foo") must be a string.');
-    // phpcs:ignore Drupal.Semantics.FunctionT.NotLiteralString
     new TranslatableMarkup($formattable_string);
   }
 

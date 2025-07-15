@@ -123,11 +123,11 @@ abstract class ConfigTranslationUiTestBase extends BrowserTestBase {
   /**
    * Gets translation from locale storage.
    *
-   * @param string $config_name
+   * @param $config_name
    *   Configuration object.
-   * @param string $key
+   * @param $key
    *   Translation configuration field key.
-   * @param string $langcode
+   * @param $langcode
    *   String language code to load translation.
    *
    * @return bool|mixed
@@ -191,7 +191,7 @@ abstract class ConfigTranslationUiTestBase extends BrowserTestBase {
   }
 
   /**
-   * Returns a .po file with a given number of plural forms.
+   * Helper function that returns a .po file with a given number of plural forms.
    */
   public function getPoFile($plurals) {
     $po_file = [];

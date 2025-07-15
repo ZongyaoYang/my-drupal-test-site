@@ -41,11 +41,7 @@ class SearchPluginCollectionTest extends UnitTestCase {
     parent::setUp();
 
     $this->pluginManager = $this->createMock('Drupal\Component\Plugin\PluginManagerInterface');
-    $this->searchPluginCollection = new SearchPluginCollection(
-      $this->pluginManager,
-      'banana',
-      ['id' => 'banana', 'color' => 'yellow'],
-      'fruit_stand');
+    $this->searchPluginCollection = new SearchPluginCollection($this->pluginManager, 'banana', ['id' => 'banana', 'color' => 'yellow'], 'fruit_stand');
   }
 
   /**

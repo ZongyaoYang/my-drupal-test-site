@@ -39,9 +39,7 @@ class LayoutBuilderEntityViewDisplayTest extends SectionListTestBase {
    */
   public function testInvalidConfiguration(): void {
     $this->expectException(SchemaIncompleteException::class);
-    $this->sectionList->getSection(0)
-      ->getComponent('10000000-0000-1000-a000-000000000000')
-      ->setConfiguration(['id' => 'foo', 'bar' => 'baz']);
+    $this->sectionList->getSection(0)->getComponent('10000000-0000-1000-a000-000000000000')->setConfiguration(['id' => 'foo', 'bar' => 'baz']);
     $this->sectionList->save();
   }
 
@@ -89,8 +87,7 @@ class LayoutBuilderEntityViewDisplayTest extends SectionListTestBase {
     $this->sectionList->setOverridable();
     $this->assertTrue($this->sectionList->isLayoutBuilderEnabled());
 
-    // Ensure Layout Builder is still enabled after setting Overridable to
-    // FALSE.
+    // Ensure Layout Builder is still enabled after setting Overridable to FALSE.
     $this->sectionList->setOverridable(FALSE);
     $this->assertTrue($this->sectionList->isLayoutBuilderEnabled());
   }

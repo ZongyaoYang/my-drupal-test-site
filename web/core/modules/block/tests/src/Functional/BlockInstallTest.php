@@ -18,9 +18,6 @@ class BlockInstallTest extends BrowserTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  /**
-   * Tests cache tag invalidation after installing the block module.
-   */
   public function testCacheTagInvalidationUponInstallation(): void {
     // Warm the page cache.
     $this->drupalGet('');

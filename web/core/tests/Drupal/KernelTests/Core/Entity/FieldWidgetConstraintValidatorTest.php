@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\KernelTests\Core\Entity;
 
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\entity_test\Entity\EntityTestCompositeConstraint;
@@ -70,7 +71,7 @@ class FieldWidgetConstraintValidatorTest extends KernelTestBase {
    * Gets the form errors for a given entity.
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
-   *   The entity.
+   *   The entity
    * @param array $hidden_fields
    *   (optional) A list of hidden fields.
    *
@@ -145,7 +146,7 @@ class FieldWidgetConstraintValidatorTest extends KernelTestBase {
     $errors = $this->getErrorsForEntity($entity, ['name']);
     $this->assertFalse(isset($errors['name']));
     $this->assertTrue(isset($errors['type']));
-    $this->assertEquals('The validation failed because the value conflicts with the value in name, which you cannot access.', $errors['type']);
+    $this->assertEquals(new FormattableMarkup('The validation failed because the value conflicts with the value in %field_name, which you cannot access.', ['%field_name' => 'name']), $errors['type']);
   }
 
   /**

@@ -51,7 +51,7 @@ class MultilingualReviewPageTest extends MultilingualReviewPageTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function getAvailablePaths(): array {
+  protected function getAvailablePaths() {
     return [
       'Block languages',
       'Blog',
@@ -138,7 +138,7 @@ class MultilingualReviewPageTest extends MultilingualReviewPageTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function getMissingPaths(): array {
+  protected function getMissingPaths() {
     return [
       // Action is set not_finished in migrate_state_not_finished_test.
       'Aggregator',
@@ -166,6 +166,7 @@ class MultilingualReviewPageTest extends MultilingualReviewPageTestBase {
       'References',
       'References UUID',
       'Statistics',
+      // @todo Remove tracker in https://www.drupal.org/project/drupal/issues/3261452
       'Tracker',
       'Translation redirect',
       'Translation sets',

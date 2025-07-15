@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\content_moderation_test_local_task\Controller;
 
 /**

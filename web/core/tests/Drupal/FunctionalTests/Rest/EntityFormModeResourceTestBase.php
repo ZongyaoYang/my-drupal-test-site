@@ -7,9 +7,6 @@ namespace Drupal\FunctionalTests\Rest;
 use Drupal\Tests\rest\Functional\EntityResource\ConfigEntityResourceTestBase;
 use Drupal\Core\Entity\Entity\EntityFormMode;
 
-/**
- * Resource test base for the entity_form_mode entity.
- */
 abstract class EntityFormModeResourceTestBase extends ConfigEntityResourceTestBase {
 
   /**
@@ -43,7 +40,7 @@ abstract class EntityFormModeResourceTestBase extends ConfigEntityResourceTestBa
     $entity_form_mode = EntityFormMode::create([
       'id' => 'user.test',
       'label' => 'Test',
-      'description' => NULL,
+      'description' => '',
       'targetEntityType' => 'user',
     ]);
     $entity_form_mode->save();

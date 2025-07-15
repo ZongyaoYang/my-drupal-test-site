@@ -30,9 +30,6 @@ class Fields extends RowPluginBase {
    */
   protected $usesFields = TRUE;
 
-  /**
-   * {@inheritdoc}
-   */
   protected function defineOptions() {
     $options = parent::defineOptions();
 

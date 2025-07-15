@@ -30,9 +30,9 @@ abstract class Schema implements PlaceholderInterface {
    * by defining the defaultSchema variable only MySQL has to re-write the
    * method.
    *
-   * @var string
-   *
    * @see DatabaseSchema::getPrefixInfo()
+   *
+   * @var string
    */
   protected $defaultSchema = 'public';
 
@@ -118,51 +118,26 @@ abstract class Schema implements PlaceholderInterface {
   }
 
   /**
-   * Executes a data definition language (DDL) statement.
+   * Build a condition to match a table name against a standard information_schema.
    *
-   * This method allows to void an active transaction when the driver does
-   * not support transactional DDL.
+   * The information_schema is a SQL standard that provides information about the
+   * database server and the databases, schemas, tables, columns and users within
+   * it. This makes information_schema a useful tool to use across the drupal
+   * database drivers and is used by a few different functions. The function below
+   * describes the conditions to be meet when querying information_schema.tables
+   * for drupal tables or information associated with drupal tables. Even though
+   * this is the standard method, not all databases follow standards and so this
+   * method should be overwritten by a database driver if the database provider
+   * uses alternate methods. Because information_schema.tables is used in a few
+   * different functions, a database driver will only need to override this function
+   * to make all the others work. For example see
+   * core/includes/databases/mysql/schema.inc.
    *
-   * @param string $sql
-   *   The DDL statement to execute. This is a SQL string that may contain
-   *   placeholders.
-   * @param array $arguments
-   *   (Optional) The associative array of arguments for the prepared
-   *   statement.
-   * @param array $options
-   *   (Optional) An associative array of options to control how the query is
-   *   run. The given options will be merged with self::defaultOptions().
-   */
-  protected function executeDdlStatement(string $sql, array $arguments = [], array $options = []): void {
-    $this->connection->query($sql, $arguments, $options);
-    // DDL statements when in a transaction force a commit in some databases.
-    // Void the transaction in that case.
-    if (!$this->connection->supportsTransactionalDDL() && $this->connection->transactionManager()->inTransaction()) {
-      $this->connection->transactionManager()->voidClientTransaction();
-    }
-  }
-
-  /**
-   * Builds a condition to match a table name against the information_schema.
-   *
-   * The information_schema is a SQL standard that provides information about
-   * the database server and the databases, schemas, tables, columns and users
-   * within it. This makes information_schema a useful tool to use across the
-   * drupal database drivers and is used by a few different functions. The
-   * function below describes the conditions to be meet when querying
-   * information_schema.tables for drupal tables or information associated with
-   * drupal tables. Even though this is the standard method, not all databases
-   * follow standards and so this method should be overwritten by a database
-   * driver if the database provider uses alternate methods. Because
-   * information_schema.tables is used in a few different functions, a database
-   * driver will only need to override this function to make all the others
-   * work. For example see core/includes/databases/mysql/schema.inc.
-   *
-   * @param string $table_name
+   * @param $table_name
    *   The name of the table in question.
-   * @param string $operator
+   * @param $operator
    *   The operator to apply on the 'table' part of the condition.
-   * @param bool $add_prefix
+   * @param $add_prefix
    *   Boolean to indicate whether the table name needs to be prefixed.
    *
    * @return \Drupal\Core\Database\Query\Condition
@@ -184,7 +159,7 @@ abstract class Schema implements PlaceholderInterface {
   /**
    * Check if a table exists.
    *
-   * @param string $table
+   * @param $table
    *   The name of the table in drupal (no prefixing).
    * @param bool $add_prefix
    *   Boolean to indicate whether the table name needs to be prefixed.
@@ -286,9 +261,8 @@ abstract class Schema implements PlaceholderInterface {
    * Returns a mapping of Drupal schema field names to DB-native field types.
    *
    * Because different field types do not map 1:1 between databases, Drupal has
-   * its own normalized field type names. This function returns a
-   * driver-specific mapping table from Drupal names to the native names for
-   * each database.
+   * its own normalized field type names. This function returns a driver-specific
+   * mapping table from Drupal names to the native names for each database.
    *
    * @return array
    *   An array of Schema API field types to driver-specific field types.
@@ -298,9 +272,9 @@ abstract class Schema implements PlaceholderInterface {
   /**
    * Rename a table.
    *
-   * @param string $table
+   * @param $table
    *   The table to be renamed.
-   * @param string $new_name
+   * @param $new_name
    *   The new name for the table.
    *
    * @throws \Drupal\Core\Database\SchemaObjectDoesNotExistException
@@ -313,7 +287,7 @@ abstract class Schema implements PlaceholderInterface {
   /**
    * Drop a table.
    *
-   * @param string $table
+   * @param $table
    *   The table to be dropped.
    *
    * @return bool
@@ -325,11 +299,11 @@ abstract class Schema implements PlaceholderInterface {
   /**
    * Add a new field to a table.
    *
-   * @param string $table
+   * @param $table
    *   Name of the table to be altered.
-   * @param string $field
+   * @param $field
    *   Name of the field to be added.
-   * @param array $spec
+   * @param $spec
    *   The field specification array, as taken from a schema definition.
    *   The specification may also contain the key 'initial', the newly
    *   created field will be set to the value of the key in all rows.
@@ -337,7 +311,7 @@ abstract class Schema implements PlaceholderInterface {
    *   value in existing tables.
    *   Alternatively, the 'initial_from_field' key may be used, which will
    *   auto-populate the new field with values from the specified field.
-   * @param array|null $keys_new
+   * @param $keys_new
    *   (optional) Keys and indexes specification to be created on the
    *   table along with adding the field. The format is the same as a
    *   table specification but without the 'fields' element. If you are
@@ -355,9 +329,9 @@ abstract class Schema implements PlaceholderInterface {
   /**
    * Drop a field.
    *
-   * @param string $table
+   * @param $table
    *   The table to be altered.
-   * @param string $field
+   * @param $field
    *   The field to be dropped.
    *
    * @return bool
@@ -369,9 +343,9 @@ abstract class Schema implements PlaceholderInterface {
   /**
    * Checks if an index exists in the given table.
    *
-   * @param string $table
+   * @param $table
    *   The name of the table in drupal (no prefixing).
-   * @param string $name
+   * @param $name
    *   The name of the index in drupal (no prefixing).
    *
    * @return bool
@@ -382,9 +356,9 @@ abstract class Schema implements PlaceholderInterface {
   /**
    * Add a primary key.
    *
-   * @param string $table
+   * @param $table
    *   The table to be altered.
-   * @param array $fields
+   * @param $fields
    *   Fields for the primary key.
    *
    * @throws \Drupal\Core\Database\SchemaObjectDoesNotExistException
@@ -397,7 +371,7 @@ abstract class Schema implements PlaceholderInterface {
   /**
    * Drop the primary key.
    *
-   * @param string $table
+   * @param $table
    *   The table to be altered.
    *
    * @return bool
@@ -429,11 +403,11 @@ abstract class Schema implements PlaceholderInterface {
   /**
    * Add a unique key.
    *
-   * @param string $table
+   * @param $table
    *   The table to be altered.
-   * @param string $name
+   * @param $name
    *   The name of the key.
-   * @param array $fields
+   * @param $fields
    *   An array of field names.
    *
    * @throws \Drupal\Core\Database\SchemaObjectDoesNotExistException
@@ -446,9 +420,9 @@ abstract class Schema implements PlaceholderInterface {
   /**
    * Drop a unique key.
    *
-   * @param string $table
+   * @param $table
    *   The table to be altered.
-   * @param string $name
+   * @param $name
    *   The name of the key.
    *
    * @return bool
@@ -460,11 +434,11 @@ abstract class Schema implements PlaceholderInterface {
   /**
    * Add an index.
    *
-   * @param string $table
+   * @param $table
    *   The table to be altered.
-   * @param string $name
+   * @param $name
    *   The name of the index.
-   * @param array $fields
+   * @param $fields
    *   An array of field names or field information; if field information is
    *   passed, it's an array whose first element is the field name and whose
    *   second is the maximum length in the index. For example, the following
@@ -522,9 +496,9 @@ abstract class Schema implements PlaceholderInterface {
   /**
    * Drop an index.
    *
-   * @param string $table
+   * @param $table
    *   The table to be altered.
-   * @param string $name
+   * @param $name
    *   The name of the index.
    *
    * @return bool
@@ -539,7 +513,6 @@ abstract class Schema implements PlaceholderInterface {
    * @param string $table
    *   The name of the table.
    *
-   * phpcs:ignore Drupal.Commenting.FunctionComment.InvalidNoReturn
    * @return array
    *   A schema array with the following keys: 'primary key', 'unique keys' and
    *   'indexes', and values as arrays of database columns.
@@ -588,9 +561,9 @@ abstract class Schema implements PlaceholderInterface {
    *
    * The reasons for this are due to the different database engines:
    *
-   * On PostgreSQL, changing a field definition involves adding a new field and
-   * dropping an old one which* causes any indices, primary keys and sequences
-   * (from serial-type fields) that use the changed field to be dropped.
+   * On PostgreSQL, changing a field definition involves adding a new field
+   * and dropping an old one which* causes any indices, primary keys and
+   * sequences (from serial-type fields) that use the changed field to be dropped.
    *
    * On MySQL, all type 'serial' fields must be part of at least one key
    * or index as soon as they are created. You cannot use
@@ -604,16 +577,15 @@ abstract class Schema implements PlaceholderInterface {
    * Schema::addIndex() in all cases unless you are converting a field to
    * be type serial. You can use the $keys_new argument in all cases.
    *
-   * @param string $table
+   * @param $table
    *   Name of the table.
-   * @param string $field
+   * @param $field
    *   Name of the field to change.
-   * @param string $field_new
-   *   New name for the field (set to the same as $field if you don't want to
-   *   change the name).
-   * @param array $spec
+   * @param $field_new
+   *   New name for the field (set to the same as $field if you don't want to change the name).
+   * @param $spec
    *   The field specification for the new field.
-   * @param array|null $keys_new
+   * @param $keys_new
    *   (optional) Keys and indexes specification to be created on the
    *   table along with changing the field. The format is the same as a
    *   table specification but without the 'fields' element.
@@ -628,9 +600,9 @@ abstract class Schema implements PlaceholderInterface {
   /**
    * Create a new table from a Drupal table definition.
    *
-   * @param string $name
+   * @param $name
    *   The name of the table to create.
-   * @param array $table
+   * @param $table
    *   A Schema API table definition array.
    *
    * @throws \Drupal\Core\Database\SchemaObjectExistsException
@@ -644,7 +616,7 @@ abstract class Schema implements PlaceholderInterface {
     }
     $statements = $this->createTableSql($name, $table);
     foreach ($statements as $statement) {
-      $this->executeDdlStatement($statement);
+      $this->connection->query($statement);
     }
   }
 
@@ -658,30 +630,29 @@ abstract class Schema implements PlaceholderInterface {
    * @param array $table
    *   A Schema API table definition array.
    *
-   * phpcs:ignore Drupal.Commenting.FunctionComment.InvalidNoReturn
    * @return array
    *   An array of SQL statements to create the table.
    *
    * @throws \BadMethodCallException
    *   If the method is not implemented in the concrete driver class.
    *
-   * @todo This method is called by Schema::createTable on the abstract class,
-   *   and therefore should be defined as well on the abstract class to prevent
-   *   static analysis errors. In D11, consider changing it to an abstract
-   *   method, or to make it private for each driver, and ::createTable actually
-   *   an abstract method here for implementation in each driver.
+   * @todo This method is called by Schema::createTable on the abstract class, and
+   *   therefore should be defined as well on the abstract class to prevent static
+   *   analysis errors. In D11, consider changing it to an abstract method, or to
+   *   make it private for each driver, and ::createTable actually an abstract
+   *   method here for implementation in each driver.
    */
   protected function createTableSql($name, $table) {
     throw new \BadMethodCallException(get_class($this) . '::createTableSql() not implemented.');
   }
 
   /**
-   * Gets an array of field names from an array of key/index column specifiers.
+   * Return an array of field names from an array of key/index column specifiers.
    *
-   * This is usually an identity function but if a key/index uses a column
-   * prefix specification, this function extracts just the name.
+   * This is usually an identity function but if a key/index uses a column prefix
+   * specification, this function extracts just the name.
    *
-   * @param array $fields
+   * @param $fields
    *   An array of key/index column specifiers.
    *
    * @return array
@@ -703,9 +674,9 @@ abstract class Schema implements PlaceholderInterface {
   /**
    * Prepare a table or column comment for database query.
    *
-   * @param string $comment
+   * @param $comment
    *   The comment string to prepare.
-   * @param int $length
+   * @param $length
    *   Optional upper limit on the returned string length.
    *
    * @return string

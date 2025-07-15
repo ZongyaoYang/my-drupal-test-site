@@ -6,7 +6,6 @@ namespace Drupal\Tests\toolbar\Functional;
 
 use Drupal\Core\EventSubscriber\MainContentViewSubscriber;
 use Drupal\Core\Language\LanguageInterface;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\Tests\BrowserTestBase;
@@ -31,8 +30,6 @@ use Drupal\user\RoleInterface;
  * @group toolbar
  */
 class ToolbarAdminMenuTest extends BrowserTestBase {
-
-  use StringTranslationTrait;
 
   /**
    * A user with permission to access the administrative toolbar.
@@ -311,8 +308,7 @@ class ToolbarAdminMenuTest extends BrowserTestBase {
     ];
     $this->drupalGet('admin/config/regional/language/add');
     $this->submitForm($edit, 'Add custom language');
-    // phpcs:ignore Drupal.Semantics.FunctionT.NotLiteralString
-    $this->t($name, [], ['langcode' => $langcode]);
+    t($name, [], ['langcode' => $langcode]);
     // Reset locale cache.
     $this->container->get('string_translation')->reset();
     $this->assertSession()->responseContains('"edit-languages-' . $langcode . '-weight"');

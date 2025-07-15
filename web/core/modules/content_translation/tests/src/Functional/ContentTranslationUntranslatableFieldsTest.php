@@ -50,7 +50,7 @@ class ContentTranslationUntranslatableFieldsTest extends ContentTranslationPendi
   /**
    * {@inheritdoc}
    */
-  protected function setupTestFields(): void {
+  protected function setupTestFields() {
     parent::setupTestFields();
 
     $field_storage = FieldStorageConfig::create([

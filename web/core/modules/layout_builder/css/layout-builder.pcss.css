@@ -91,7 +91,7 @@
     pointer-events: none;
   }
 
-  .layout-builder--content-preview-disabled & {
+  @nest .layout-builder--content-preview-disabled & {
     margin: 0;
     border-bottom: 2px dashed #979797;
   }

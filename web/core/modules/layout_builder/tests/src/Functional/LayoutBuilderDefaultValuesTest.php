@@ -117,7 +117,7 @@ class LayoutBuilderDefaultValuesTest extends BrowserTestBase {
   /**
    * Test for expected text on node 1.
    */
-  protected function assertNodeWithValues(): void {
+  protected function assertNodeWithValues() {
     $this->drupalGet('node/1');
     $assert_session = $this->assertSession();
     // String field with no default should render a value.
@@ -165,7 +165,7 @@ class LayoutBuilderDefaultValuesTest extends BrowserTestBase {
   /**
    * Test for expected text on node 2.
    */
-  protected function assertNodeWithDefaultValues(): void {
+  protected function assertNodeWithDefaultValues() {
     // Switch theme to starterkit_theme so that layout builder components will
     // have block classes.
     /** @var \Drupal\Core\Extension\ThemeInstallerInterface $theme_installer */
@@ -208,7 +208,7 @@ class LayoutBuilderDefaultValuesTest extends BrowserTestBase {
   /**
    * Helper function to add string fields.
    */
-  protected function addTextFields(): void {
+  protected function addTextFields() {
     // String field with no default.
     $field_storage = FieldStorageConfig::create([
       'field_name' => 'field_string_no_default',
@@ -284,7 +284,7 @@ class LayoutBuilderDefaultValuesTest extends BrowserTestBase {
   /**
    * Helper function to add image fields.
    */
-  protected function addImageFields(): void {
+  protected function addImageFields() {
     // Create files to use as the default images.
     $files = $this->drupalGetTestFiles('image');
     $images = [];

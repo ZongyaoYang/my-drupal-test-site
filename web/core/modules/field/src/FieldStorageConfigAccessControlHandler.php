@@ -18,7 +18,7 @@ class FieldStorageConfigAccessControlHandler extends EntityAccessControlHandler 
    * {@inheritdoc}
    */
   protected function checkAccess(EntityInterface $entity, $operation, AccountInterface $account) {
-    /** @var \Drupal\field\FieldStorageConfigInterface $entity */
+    /** \Drupal\field\FieldStorageConfigInterface $entity */
     if ($operation === 'delete') {
       if ($entity->isLocked()) {
         return AccessResult::forbidden()->addCacheableDependency($entity);

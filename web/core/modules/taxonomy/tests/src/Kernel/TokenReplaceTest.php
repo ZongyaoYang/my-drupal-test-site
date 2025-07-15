@@ -78,7 +78,7 @@ class TokenReplaceTest extends KernelTestBase {
       ],
       'auto_create' => TRUE,
     ];
-    $this->createEntityReferenceField('node', 'article', $this->fieldName, '', 'taxonomy_term', 'default', $handler_settings, FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED);
+    $this->createEntityReferenceField('node', 'article', $this->fieldName, NULL, 'taxonomy_term', 'default', $handler_settings, FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED);
 
     /** @var \Drupal\Core\Entity\EntityDisplayRepositoryInterface $display_repository */
     $display_repository = \Drupal::service('entity_display.repository');
@@ -109,7 +109,7 @@ class TokenReplaceTest extends KernelTestBase {
     ]);
 
     // Create node with term2.
-    $this->createNode([
+    $node = $this->createNode([
       'type' => 'article',
       $this->fieldName => $term2->id(),
     ]);
@@ -117,7 +117,6 @@ class TokenReplaceTest extends KernelTestBase {
     // Generate and test sanitized tokens for term1.
     $tests = [];
     $tests['[term:tid]'] = $term1->id();
-    $tests['[term:uuid]'] = $term1->uuid();
     $tests['[term:name]'] = $term1->getName();
     $tests['[term:description]'] = $term1->description->processed;
     $tests['[term:url]'] = $term1->toUrl('canonical', ['absolute' => TRUE])->toString();
@@ -133,7 +132,6 @@ class TokenReplaceTest extends KernelTestBase {
 
     $metadata_tests = [];
     $metadata_tests['[term:tid]'] = $base_bubbleable_metadata;
-    $metadata_tests['[term:uuid]'] = $base_bubbleable_metadata;
     $metadata_tests['[term:name]'] = $base_bubbleable_metadata;
     $metadata_tests['[term:description]'] = $base_bubbleable_metadata;
     $metadata_tests['[term:url]'] = $base_bubbleable_metadata;
@@ -155,7 +153,6 @@ class TokenReplaceTest extends KernelTestBase {
     // Generate and test sanitized tokens for term2.
     $tests = [];
     $tests['[term:tid]'] = $term2->id();
-    $tests['[term:uuid]'] = $term2->uuid();
     $tests['[term:name]'] = $term2->getName();
     $tests['[term:description]'] = $term2->description->processed;
     $tests['[term:url]'] = $term2->toUrl('canonical', ['absolute' => TRUE])->toString();

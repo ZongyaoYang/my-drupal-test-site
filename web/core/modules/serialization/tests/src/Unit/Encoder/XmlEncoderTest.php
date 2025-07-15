@@ -24,8 +24,6 @@ class XmlEncoderTest extends UnitTestCase {
   protected $encoder;
 
   /**
-   * The Symfony XML encoder.
-   *
    * @var \Symfony\Component\Serializer\Encoder\XmlEncoder|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $baseEncoder;
@@ -105,14 +103,8 @@ class XmlEncoderTest extends UnitTestCase {
 
 }
 
-/**
- * Test class used for the encoding test.
- */
 class TestObject {
 
-  /**
-   * Return the characters "A".
-   */
   public function getA() {
     return 'A';
   }

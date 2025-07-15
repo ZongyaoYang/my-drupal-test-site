@@ -34,10 +34,6 @@ class SettingsTrayBlockFormTest extends SettingsTrayTestBase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    if ($this->name() === 'testEditModeEnableDisable') {
-      $this->markTestSkipped("Skipped due to frequent random test failures. See https://www.drupal.org/project/drupal/issues/3317520");
-    }
-
     parent::setUp();
 
     $user = $this->createUser([
@@ -62,7 +58,7 @@ class SettingsTrayBlockFormTest extends SettingsTrayTestBase {
   /**
    * Tests opening off-canvas dialog by click blocks and elements in the blocks.
    */
-  protected function doTestBlocks($theme, $block_plugin, $new_page_text, $element_selector, $label_selector, $button_text, $toolbar_item, $permissions): void {
+  protected function doTestBlocks($theme, $block_plugin, $new_page_text, $element_selector, $label_selector, $button_text, $toolbar_item, $permissions) {
     if ($permissions) {
       $this->grantPermissions(Role::load(Role::AUTHENTICATED_ID), $permissions);
     }
@@ -235,6 +231,7 @@ class SettingsTrayBlockFormTest extends SettingsTrayTestBase {
    * Tests enabling and disabling Edit Mode.
    */
   public function testEditModeEnableDisable(): void {
+    $this->markTestSkipped("Skipped due to frequent random test failures. See https://www.drupal.org/project/drupal/issues/3317520");
     foreach (static::getTestThemes() as $theme) {
       $this->enableTheme($theme);
       $block = $this->placeBlock('system_powered_by_block');

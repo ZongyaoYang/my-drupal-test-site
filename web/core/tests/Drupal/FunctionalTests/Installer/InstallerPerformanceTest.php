@@ -28,7 +28,7 @@ class InstallerPerformanceTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function prepareSettings(): void {
+  protected function prepareSettings() {
     parent::prepareSettings();
     PerformanceTestRecorder::registerService($this->siteDirectory . '/services.yml', FALSE);
   }

@@ -29,16 +29,18 @@
       {% set tray = trays[key] %}
       <div{{ tab.attributes.addClass('toolbar-tab') }}>
         {{ tab.link }}
-        <div{{ tray.attributes }}>
-          {% if tray.label %}
-            <nav class="toolbar-lining clearfix" role="navigation" aria-label="{{ tray.label }}">
-              <h3 class="toolbar-tray-name visually-hidden">{{ tray.label }}</h3>
-          {% else %}
-            <nav class="toolbar-lining clearfix" role="navigation">
-          {% endif %}
-          {{- tray.links -}}
-          </nav>
-        </div>
+        {% apply spaceless %}
+          <div{{ tray.attributes }}>
+            {% if tray.label %}
+              <nav class="toolbar-lining clearfix" role="navigation" aria-label="{{ tray.label }}">
+                <h3 class="toolbar-tray-name visually-hidden">{{ tray.label }}</h3>
+            {% else %}
+              <nav class="toolbar-lining clearfix" role="navigation">
+            {% endif %}
+            {{ tray.links }}
+            </nav>
+          </div>
+        {% endapply %}
       </div>
     {% endfor %}
   </nav>

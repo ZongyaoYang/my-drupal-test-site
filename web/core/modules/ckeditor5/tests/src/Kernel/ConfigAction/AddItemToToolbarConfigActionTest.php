@@ -95,9 +95,6 @@ class AddItemToToolbarConfigActionTest extends KernelTestBase {
     }
   }
 
-  /**
-   * Tests that adding non-existent toolbar item to CKEditor triggers an error.
-   */
   public function testAddNonExistentItem(): void {
     $recipe = $this->createRecipe([
       'name' => 'Add an invalid toolbar item',
@@ -115,9 +112,6 @@ class AddItemToToolbarConfigActionTest extends KernelTestBase {
     RecipeRunner::processRecipe($recipe);
   }
 
-  /**
-   * Tests that the `addItemToToolbar` config action requires CKEditor 5.
-   */
   public function testActionRequiresCKEditor5(): void {
     $this->enableModules(['editor_test']);
     Editor::load('filter_test')?->setEditor('unicorn')->setSettings([])->save();

@@ -13,7 +13,6 @@ interface ContentLanguageSettingsInterface extends ConfigEntityInterface {
    * Gets the entity type ID this config applies to.
    *
    * @return string
-   *   The entity type ID this config applies to.
    */
   public function getTargetEntityTypeId();
 
@@ -21,7 +20,6 @@ interface ContentLanguageSettingsInterface extends ConfigEntityInterface {
    * Gets the bundle this config applies to.
    *
    * @return string
-   *   The bundle this config applies to.
    */
   public function getTargetBundle();
 
@@ -49,7 +47,6 @@ interface ContentLanguageSettingsInterface extends ConfigEntityInterface {
    * Gets the default language code.
    *
    * @return string
-   *   The default language code.
    */
   public function getDefaultLangcode();
 
@@ -67,7 +64,6 @@ interface ContentLanguageSettingsInterface extends ConfigEntityInterface {
    * Checks if the language is alterable or not.
    *
    * @return bool
-   *   Flag indicating if the language is alterable.
    */
   public function isLanguageAlterable();
 

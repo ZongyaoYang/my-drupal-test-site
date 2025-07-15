@@ -1,4 +1,5 @@
 # Schema for the views argument plugins.
+
 views.argument.*:
   type: views_argument
   label: 'Default argument'

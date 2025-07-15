@@ -82,19 +82,19 @@ class MessageForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $filters['message'] = [
       'title' => $this->t('message'),
-      'field' => 'msg.message',
+      'where' => 'msg.message LIKE ?',
       'type' => 'string',
     ];
     $filters['severity'] = [
       'title' => $this->t('Severity'),
-      'field' => 'msg.level',
+      'where' => 'msg.level = ?',
       'type' => 'array',
     ];
     $session_filters = $this->getRequest()->getSession()->get('migration_messages_overview_filter', []);
     foreach ($filters as $name => $filter) {
       if ($form_state->hasValue($name)) {
         $session_filters[$name] = [
-          'field' => $filter['field'],
+          'where' => $filter['where'],
           'value' => $form_state->getValue($name),
           'type' => $filter['type'],
         ];

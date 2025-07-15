@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\field_layout_test\Plugin\Layout;
 
 use Drupal\Core\Layout\Attribute\Layout;

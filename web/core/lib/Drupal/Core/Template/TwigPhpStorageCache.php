@@ -62,7 +62,6 @@ class TwigPhpStorageCache implements CacheInterface {
    * Gets the PHP code storage object to use for the compiled Twig files.
    *
    * @return \Drupal\Component\PhpStorage\PhpStorageInterface
-   *   The PhpStorage object used for storing the templates.
    */
   protected function storage() {
     if (!isset($this->storage)) {

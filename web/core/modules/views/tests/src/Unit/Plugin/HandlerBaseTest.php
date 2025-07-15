@@ -60,13 +60,7 @@ class HandlerBaseTest extends UnitTestCase {
     $this->display->expects($this->atLeastOnce())
       ->method('getOption')
       ->with('relationships')
-      ->willReturn([
-        'test_relationship' => [
-          'table' => 'test_entity_type_table',
-          'id' => 'test_relationship',
-          'field' => 'test_relationship',
-        ],
-      ]);
+      ->willReturn(['test_relationship' => ['table' => 'test_entity_type_table', 'id' => 'test_relationship', 'field' => 'test_relationship']]);
 
     $this->view->expects($this->any())
       ->method('get')

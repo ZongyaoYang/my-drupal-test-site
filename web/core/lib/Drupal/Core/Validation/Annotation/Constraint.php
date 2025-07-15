@@ -31,9 +31,9 @@ class Constraint extends Plugin {
   /**
    * The human-readable name of the constraint plugin.
    *
-   * @var string|\Drupal\Core\Annotation\Translation
-   *
    * @ingroup plugin_translatable
+   *
+   * @var string|\Drupal\Core\Annotation\Translation
    */
   public $label;
 

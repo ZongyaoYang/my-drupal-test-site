@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\entity_test;
 
 use Drupal\Core\Entity\EntityInterface;
@@ -18,8 +16,8 @@ class EntityTestListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildHeader() {
-    $header['label'] = $this->t('Label');
-    $header['id'] = $this->t('Machine name');
+    $header['label'] = t('Label');
+    $header['id'] = t('Machine name');
     return $header + parent::buildHeader();
   }
 

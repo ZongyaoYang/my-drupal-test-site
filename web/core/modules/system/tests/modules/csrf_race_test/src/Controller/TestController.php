@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\csrf_race_test\Controller;
 
 use Drupal\Core\Access\CsrfTokenGenerator;

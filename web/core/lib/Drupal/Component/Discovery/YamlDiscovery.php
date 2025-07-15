@@ -77,7 +77,6 @@ class YamlDiscovery implements DiscoverableInterface {
    *   Yaml file path.
    *
    * @return array
-   *   The decoded contents of the YAML file.
    */
   protected function decode($file) {
     try {
@@ -92,7 +91,6 @@ class YamlDiscovery implements DiscoverableInterface {
    * Returns an array of file paths, keyed by provider.
    *
    * @return array
-   *   An array of file paths.
    */
   protected function findFiles() {
     $files = [];

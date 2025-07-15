@@ -15,19 +15,21 @@ use Drupal\views\Attribute\ViewsArgument;
 class LanguageArgument extends ArgumentPluginBase {
 
   /**
-   * {@inheritdoc}
+   * Overrides \Drupal\views\Plugin\views\argument\ArgumentPluginBase::summaryName().
+   *
+   * Gets the user-friendly version of the language name.
    */
   public function summaryName($data) {
-    // Gets the user-friendly version of the language name.
     return $this->language($data->{$this->name_alias});
   }
 
   /**
-   * {@inheritdoc}
+   * Overrides \Drupal\views\Plugin\views\argument\ArgumentPluginBase::title().
+   *
+   * Gets the user friendly version of the language name for display as a
+   * title placeholder.
    */
   public function title() {
-    // Gets the user friendly version of the language name for display as a
-    // title placeholder.
     return $this->language($this->argument);
   }
 

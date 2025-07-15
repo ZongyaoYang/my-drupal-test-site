@@ -51,51 +51,50 @@ class FormattableMarkupKernelTest extends KernelTestBase {
 
   /**
    * @return array
-   *   Data provider for testFormattableMarkupUri().
    */
   public static function providerTestFormattableMarkupUri() {
     $data = [];
     $data['routed-url'] = [
-      'Hey giraffe <a href=":url">example</a>',
+      'Hey giraffe <a href=":url">MUUUH</a>',
       'route:system.admin',
       [],
-      'Hey giraffe <a href="/admin">example</a>',
+      'Hey giraffe <a href="/admin">MUUUH</a>',
     ];
     $data['routed-with-query'] = [
-      'Hey giraffe <a href=":url">example</a>',
+      'Hey giraffe <a href=":url">MUUUH</a>',
       'route:system.admin',
       ['query' => ['bar' => 'baz#']],
-      'Hey giraffe <a href="/admin?bar=baz%23">example</a>',
+      'Hey giraffe <a href="/admin?bar=baz%23">MUUUH</a>',
     ];
     $data['routed-with-fragment'] = [
-      'Hey giraffe <a href=":url">example</a>',
+      'Hey giraffe <a href=":url">MUUUH</a>',
       'route:system.admin',
       ['fragment' => 'bar&lt;'],
-      'Hey giraffe <a href="/admin#bar&amp;lt;">example</a>',
+      'Hey giraffe <a href="/admin#bar&amp;lt;">MUUUH</a>',
     ];
     $data['unrouted-url'] = [
-      'Hey giraffe <a href=":url">example</a>',
+      'Hey giraffe <a href=":url">MUUUH</a>',
       'base://foo',
       [],
-      'Hey giraffe <a href="/foo">example</a>',
+      'Hey giraffe <a href="/foo">MUUUH</a>',
     ];
     $data['unrouted-with-query'] = [
-      'Hey giraffe <a href=":url">example</a>',
+      'Hey giraffe <a href=":url">MUUUH</a>',
       'base://foo',
       ['query' => ['bar' => 'baz#']],
-      'Hey giraffe <a href="/foo?bar=baz%23">example</a>',
+      'Hey giraffe <a href="/foo?bar=baz%23">MUUUH</a>',
     ];
     $data['unrouted-with-fragment'] = [
-      'Hey giraffe <a href=":url">example</a>',
+      'Hey giraffe <a href=":url">MUUUH</a>',
       'base://foo',
       ['fragment' => 'bar&lt;'],
-      'Hey giraffe <a href="/foo#bar&amp;lt;">example</a>',
+      'Hey giraffe <a href="/foo#bar&amp;lt;">MUUUH</a>',
     ];
     $data['mailto-protocol'] = [
-      'Hey giraffe <a href=":url">example</a>',
+      'Hey giraffe <a href=":url">MUUUH</a>',
       'mailto:test@example.com',
       [],
-      'Hey giraffe <a href="mailto:test@example.com">example</a>',
+      'Hey giraffe <a href="mailto:test@example.com">MUUUH</a>',
     ];
 
     return $data;
@@ -114,24 +113,23 @@ class FormattableMarkupKernelTest extends KernelTestBase {
 
   /**
    * @return array
-   *   Data provider for testFormattableMarkupUriWithExceptionUri().
    */
   public static function providerTestFormattableMarkupUriWithException() {
     $data = [];
     $data['js-protocol'] = [
-      'Hey giraffe <a href=":url">example</a>',
+      'Hey giraffe <a href=":url">MUUUH</a>',
       "javascript:alert('xss')",
     ];
     $data['js-with-fromCharCode'] = [
-      'Hey giraffe <a href=":url">example</a>',
+      'Hey giraffe <a href=":url">MUUUH</a>',
       "javascript:alert(String.fromCharCode(88,83,83))",
     ];
     $data['non-url-with-colon'] = [
-      'Hey giraffe <a href=":url">example</a>',
+      'Hey giraffe <a href=":url">MUUUH</a>',
       "llamas: they are not URLs",
     ];
     $data['non-url-with-html'] = [
-      'Hey giraffe <a href=":url">example</a>',
+      'Hey giraffe <a href=":url">MUUUH</a>',
       '<span>not a url</span>',
     ];
 

@@ -10,6 +10,7 @@ use Drupal\Composer\Composer;
 /**
  * Demonstrate that the Component generator responds to release tagging.
  *
+ * @group #slow
  * @group Composer
  * @group Component
  *

@@ -105,9 +105,6 @@ class SearchLanguageTest extends BrowserTestBase {
     $plugin->updateIndex();
   }
 
-  /**
-   * Tests language management in the search interface.
-   */
   public function testLanguages(): void {
     // Add predefined language.
     $edit = ['predefined_langcode' => 'fr'];

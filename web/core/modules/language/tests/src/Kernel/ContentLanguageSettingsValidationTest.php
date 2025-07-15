@@ -40,7 +40,6 @@ class ContentLanguageSettingsValidationTest extends ConfigEntityValidationTestBa
    */
   protected function setUp(): void {
     parent::setUp();
-    $this->installEntitySchema('node');
     $this->installConfig('node');
 
     $this->createContentType(['type' => 'alpha']);

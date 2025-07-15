@@ -17,9 +17,6 @@ use Drupal\views\Attribute\ViewsCache;
 )]
 class None extends CachePluginBase {
 
-  /**
-   * {@inheritdoc}
-   */
   public function summaryTitle() {
     return $this->t('None');
   }

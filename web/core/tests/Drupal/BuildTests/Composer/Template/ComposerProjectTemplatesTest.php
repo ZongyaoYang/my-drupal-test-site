@@ -22,6 +22,7 @@ use Drupal\Composer\Composer;
  * This is because Composer only uses the packages.json file to resolve the
  * project template and not any other dependencies.
  *
+ * @group #slow
  * @group Template
  */
 class ComposerProjectTemplatesTest extends ComposerBuildTestBase {
@@ -109,7 +110,6 @@ class ComposerProjectTemplatesTest extends ComposerBuildTestBase {
 
     $exclude = [
       'drupal/core',
-      'drupal/core-recipe-unpack',
       'drupal/core-project-message',
       'drupal/core-vendor-hardening',
     ];
@@ -245,9 +245,7 @@ class ComposerProjectTemplatesTest extends ComposerBuildTestBase {
 
     $installed_composer_json = $this->getWorkspaceDirectory() . '/test_project/composer.json';
     $autoloader = $this->getWorkspaceDirectory() . '/test_project' . $docroot_dir . '/autoload.php';
-    $recipes_dir = $this->getWorkspaceDirectory() . '/test_project/recipes';
     $this->assertFileDoesNotExist($autoloader);
-    $this->assertDirectoryDoesNotExist($recipes_dir);
 
     $this->executeCommand("COMPOSER_HOME=$composer_home COMPOSER_ROOT_VERSION=$simulated_core_version composer create-project --no-ansi $project test_project $simulated_core_version -vvv --repository $repository_path");
     $this->assertCommandSuccessful();
@@ -268,8 +266,6 @@ class ComposerProjectTemplatesTest extends ComposerBuildTestBase {
     // Verify that there is an autoloader. This is written by the scaffold
     // plugin, so its existence assures us that scaffolding happened.
     $this->assertFileExists($autoloader);
-    // Verify recipes directory exists.
-    $this->assertDirectoryExists($recipes_dir);
 
     // Verify that the minimum stability in the installed composer.json file
     // matches the stability of the simulated core version.
@@ -314,7 +310,7 @@ class ComposerProjectTemplatesTest extends ComposerBuildTestBase {
    * @param string $version
    *   The version under test.
    */
-  protected function makeTestPackage($repository_path, $version): void {
+  protected function makeTestPackage($repository_path, $version) {
     $json = <<<JSON
 {
   "packages": {
@@ -353,7 +349,7 @@ JSON;
    * @param string $repository_path
    *   The path where to create the test package.
    */
-  protected function makeVendorPackage($repository_path): void {
+  protected function makeVendorPackage($repository_path) {
     $root = $this->getDrupalRoot();
     $process = $this->executeCommand("composer --working-dir=$root info --format=json");
     $this->assertCommandSuccessful();
@@ -424,11 +420,6 @@ JSON;
    */
   protected function getCoreStability() {
     $version = \Drupal::VERSION;
-    // If the current version is x.y-dev then this is the equivalent of the main
-    // branch and should be treated as a dev release.
-    if (preg_match('/^(\d)+\.(\d)+-dev$/', $version)) {
-      return 'dev';
-    }
     $stability = VersionParser::parseStability($version);
     if ($stability === 'dev') {
       // Strip off "-dev";

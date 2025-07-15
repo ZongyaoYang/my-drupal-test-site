@@ -1,6 +1,3 @@
-parameters:
-  basic_auth.skip_procedural_hook_scan: true
-
 services:
   _defaults:
     autoconfigure: true

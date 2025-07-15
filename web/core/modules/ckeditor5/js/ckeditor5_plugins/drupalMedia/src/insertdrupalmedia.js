@@ -1,6 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-/* cspell:ignore drupalelementstyle drupalelementstyleediting */
-/* cspell:ignore insertdrupalmediacommand */
+// cspell:ignore insertdrupalmediacommand
 import { Command } from 'ckeditor5/src/core';
 import { groupNameToModelAttributeKey } from './utils';
 
@@ -49,7 +48,9 @@ export default class InsertDrupalMediaCommand extends Command {
       {},
     );
 
-    // This converts data-attribute keys to keys used in model.
+    // \Drupal\media\Form\EditorMediaDialog returns data in keyed by
+    // data-attributes used in view data. This converts data-attribute keys to
+    // keys used in model.
     const modelAttributes = Object.keys(attributes).reduce(
       (result, attribute) => {
         if (dataAttributeMapping[attribute]) {

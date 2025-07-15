@@ -27,7 +27,7 @@ class ModerationStateTaxonomyTermTest extends ModerationStateTestBase {
     parent::setUp();
 
     // Create a "Tags" vocabulary.
-    Vocabulary::create([
+    $bundle = Vocabulary::create([
       'vid' => 'tags',
       'name' => 'Tags',
       'new_revision' => FALSE,

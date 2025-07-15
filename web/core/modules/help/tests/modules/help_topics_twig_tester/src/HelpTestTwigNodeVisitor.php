@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\help_topics_twig_tester;
 
 use Drupal\Core\Template\TwigNodeTrans;
@@ -97,7 +95,7 @@ class HelpTestTwigNodeVisitor implements NodeVisitorInterface {
   /**
    * {@inheritdoc}
    */
-  public function getPriority(): int {
+  public function getPriority() {
     return -100;
   }
 
@@ -169,7 +167,7 @@ class HelpTestTwigNodeVisitor implements NodeVisitorInterface {
    *     each rendering run.
    *   - return_chunk: Chunk index to keep intact for translated_chunk
    *     processing. All others are removed.
-   * @param int $value
+   * @param $value
    *   Value to set for $key.
    */
   public static function setStateValue(string $key, $value) {

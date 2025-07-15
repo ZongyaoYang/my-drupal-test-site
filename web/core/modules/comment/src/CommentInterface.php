@@ -232,7 +232,6 @@ interface CommentInterface extends ContentEntityInterface, EntityChangedInterfac
    * Returns the permalink URL for this comment.
    *
    * @return \Drupal\Core\Url
-   *   The permalink URL for this comment.
    */
   public function permalink();
 

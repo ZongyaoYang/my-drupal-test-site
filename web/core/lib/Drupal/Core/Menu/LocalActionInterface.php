@@ -32,7 +32,6 @@ interface LocalActionInterface {
    * Returns the weight for the local action.
    *
    * @return int
-   *   The weight of this action.
    */
   public function getWeight();
 

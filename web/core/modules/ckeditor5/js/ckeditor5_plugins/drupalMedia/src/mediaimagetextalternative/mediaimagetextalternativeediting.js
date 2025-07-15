@@ -1,7 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-/* cspell:ignore drupalmediametadatarepository insertdrupalmediacommand */
-/* cspell:ignore mediaimagetextalternative mediaimagetextalternativecommand */
-/* cspell:ignore mediaimagetextalternativeediting */
+/* cspell:ignore mediaimagetextalternativecommand drupalmediametadatarepository insertdrupalmediacommand */
 
 import { Plugin } from 'ckeditor5/src/core';
 import { Template } from 'ckeditor5/src/ui';

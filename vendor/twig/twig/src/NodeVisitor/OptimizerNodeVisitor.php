@@ -143,7 +143,7 @@ final class OptimizerNodeVisitor implements NodeVisitorInterface
         }
 
         // optimize access to loop targets
-        elseif ($node instanceof ContextVariable && \in_array($node->getAttribute('name'), $this->loopsTargets, true)) {
+        elseif ($node instanceof ContextVariable && \in_array($node->getAttribute('name'), $this->loopsTargets)) {
             $node->setAttribute('always_defined', true);
         }
 

@@ -26,9 +26,9 @@ class Layout extends Plugin {
   /**
    * Any additional properties and values.
    *
-   * @var array
-   *
    * @see \Drupal\Core\Layout\LayoutDefinition::$additional
+   *
+   * @var array
    */
   public readonly array $additional;
 
@@ -50,8 +50,7 @@ class Layout extends Plugin {
    * @param string $theme_hook
    *   (optional) The template hook to render the layout.
    * @param string|null $path
-   *   (optional) Path (relative to the module or theme) to resources like icon
-   *   or template.
+   *   (optional) Path (relative to the module or theme) to resources like icon or template.
    * @param string|null $library
    *   (optional) The asset library.
    * @param string|null $icon

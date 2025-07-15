@@ -4,11 +4,6 @@ namespace Drupal\Core\Render\Placeholder;
 
 /**
  * Renders placeholders using a chain of placeholder strategies.
- *
- * Render arrays may specify a denylist of placeholder strategies by using
- * $element['#placeholder_strategy_denylist'][ClassName::class] = TRUE at the
- * same level as #lazy_builder. When this is set, placeholder strategies
- * specified will be skipped.
  */
 class ChainedPlaceholderStrategy implements PlaceholderStrategyInterface {
 
@@ -45,17 +40,10 @@ class ChainedPlaceholderStrategy implements PlaceholderStrategyInterface {
     $new_placeholders = [];
 
     // Give each placeholder strategy a chance to replace all not-yet replaced
-    // placeholders. The order of placeholder strategies is well defined and
-    // this uses a variation of the "chain of responsibility" design pattern.
+    // placeholders. The order of placeholder strategies is well defined
+    // and this uses a variation of the "chain of responsibility" design pattern.
     foreach ($this->placeholderStrategies as $strategy) {
-      $candidate_placeholders = [];
-      foreach ($placeholders as $key => $placeholder) {
-        if (empty($placeholder['#placeholder_strategy_denylist'][$strategy::class])) {
-          $candidate_placeholders[$key] = $placeholder;
-        }
-      }
-
-      $processed_placeholders = $strategy->processPlaceholders($candidate_placeholders);
+      $processed_placeholders = $strategy->processPlaceholders($placeholders);
       assert(array_intersect_key($processed_placeholders, $placeholders) === $processed_placeholders, 'Processed placeholders must be a subset of all placeholders.');
       $placeholders = array_diff_key($placeholders, $processed_placeholders);
       $new_placeholders += $processed_placeholders;
@@ -64,7 +52,6 @@ class ChainedPlaceholderStrategy implements PlaceholderStrategyInterface {
         break;
       }
     }
-    assert(empty($placeholders), 'It was not possible to replace all placeholders in ChainedPlaceholderStrategy::processPlaceholders()');
 
     return $new_placeholders;
   }

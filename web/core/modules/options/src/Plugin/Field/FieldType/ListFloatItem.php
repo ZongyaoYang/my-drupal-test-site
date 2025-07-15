@@ -22,7 +22,6 @@ use Drupal\Core\TypedData\DataDefinition;
   ],
   category: "selection_list",
   weight: -10,
-  no_ui: TRUE,
   default_widget: "options_select",
   default_formatter: "list_default",
 )]
@@ -90,7 +89,6 @@ class ListFloatItem extends ListItemBase {
     if (!is_numeric($option)) {
       return new TranslatableMarkup('Allowed values list: each key must be a valid integer or decimal.');
     }
-    return NULL;
   }
 
   /**

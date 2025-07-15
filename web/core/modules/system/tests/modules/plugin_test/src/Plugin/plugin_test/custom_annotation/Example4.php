@@ -1,10 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\plugin_test\Plugin\plugin_test\custom_annotation;
 
-use Drupal\plugin_test\Plugin\Attribute\PluginExample;
+use Drupal\plugin_test\Plugin;
 
 /**
  * Provides a test plugin with a custom attribute.
@@ -14,7 +12,7 @@ use Drupal\plugin_test\Plugin\Attribute\PluginExample;
  *
  * @see \Drupal\Component\Annotation\Doctrine\StaticReflectionParser::parse()
  */
-#[PluginExample(
+#[Plugin\Attribute\PluginExample(
   id: "example_4",
   custom: "Example 4"
 )]

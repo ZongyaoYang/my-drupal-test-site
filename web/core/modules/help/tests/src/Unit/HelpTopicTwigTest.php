@@ -100,12 +100,7 @@ class HelpTopicTwigTest extends UnitTestCase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $template = $this
-      ->getMockBuilder(Template::class)
-      ->onlyMethods(['render', 'getTemplateName', 'getDebugInfo', 'getSourceContext', 'doDisplay'])
-      ->setConstructorArgs([$twig])
-      ->getMock();
-
+    $template = $this->getMockForAbstractClass(Template::class, [$twig], '', TRUE, TRUE, TRUE, ['render']);
     $template
       ->method('render')
       ->willReturn(self::PLUGIN_INFORMATION['body']);

@@ -15,20 +15,44 @@ use Drupal\Core\Routing\UrlGeneratorInterface;
 class FormSubmitter implements FormSubmitterInterface {
 
   /**
+   * The URL generator.
+   *
+   * @var \Drupal\Core\Routing\UrlGeneratorInterface
+   */
+  protected $urlGenerator;
+
+  /**
+   * The request stack.
+   *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $requestStack;
+
+  /**
+   * The redirect response subscriber.
+   *
+   * @var \Drupal\Core\EventSubscriber\RedirectResponseSubscriber
+   */
+  protected RedirectResponseSubscriber $redirectResponseSubscriber;
+
+  /**
    * Constructs a new FormSubmitter.
    *
-   * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
+   * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
    *   The request stack.
-   * @param \Drupal\Core\Routing\UrlGeneratorInterface $urlGenerator
+   * @param \Drupal\Core\Routing\UrlGeneratorInterface $url_generator
    *   The URL generator.
-   * @param \Drupal\Core\EventSubscriber\RedirectResponseSubscriber $redirectResponseSubscriber
+   * @param \Drupal\Core\EventSubscriber\RedirectResponseSubscriber|null $redirect_response_subscriber
    *   The redirect response subscriber.
    */
-  public function __construct(
-    protected RequestStack $requestStack,
-    protected UrlGeneratorInterface $urlGenerator,
-    protected RedirectResponseSubscriber $redirectResponseSubscriber,
-  ) {
+  public function __construct(RequestStack $request_stack, UrlGeneratorInterface $url_generator, ?RedirectResponseSubscriber $redirect_response_subscriber = NULL) {
+    $this->requestStack = $request_stack;
+    $this->urlGenerator = $url_generator;
+    if (is_null($redirect_response_subscriber)) {
+      @trigger_error('Calling ' . __CLASS__ . '::__construct() without the $redirect_response_subscriber argument is deprecated in drupal:10.2.0 and is required in drupal:11.0.0. See https://www.drupal.org/node/3377297', E_USER_DEPRECATED);
+      $redirect_response_subscriber = \Drupal::service('redirect_response_subscriber');
+    }
+    $this->redirectResponseSubscriber = $redirect_response_subscriber;
   }
 
   /**
@@ -128,15 +152,12 @@ class FormSubmitter implements FormSubmitterInterface {
     // If no redirect was specified, redirect to the current path.
     elseif ($redirect === NULL) {
       $request = $this->requestStack->getCurrentRequest();
-      $url = $this->urlGenerator->generateFromRoute('<current>', [], [
-        'query' => $request->query->all(),
-        'absolute' => TRUE,
-      ]);
+      $url = $this->urlGenerator->generateFromRoute('<current>', [], ['query' => $request->query->all(), 'absolute' => TRUE]);
     }
 
     if ($url) {
-      // According to RFC 7231, 303 See Other status code must be used to
-      // redirect user agent (and not default 302 Found).
+      // According to RFC 7231, 303 See Other status code must be used to redirect
+      // user agent (and not default 302 Found).
       // @see http://tools.ietf.org/html/rfc7231#section-6.4.4
       return new RedirectResponse($url, Response::HTTP_SEE_OTHER);
     }

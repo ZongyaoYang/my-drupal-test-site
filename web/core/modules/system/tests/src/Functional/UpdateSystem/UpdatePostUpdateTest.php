@@ -8,8 +8,6 @@ use Drupal\Core\Database\Database;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\UpdatePathTestTrait;
 
-// cspell:ignore postupdate
-
 /**
  * Tests hook_post_update().
  *
@@ -67,7 +65,7 @@ class UpdatePostUpdateTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function doSelectionTest(): void {
+  protected function doSelectionTest() {
     // Ensure that normal and post_update updates are merged together on the
     // selection page.
     $this->assertSession()->responseContains('<ul><li>8001 - Normal update_N() function.</li><li>First update.</li><li>Second update.</li><li>Test0 update.</li><li>Test1 update.</li><li>Testing batch processing in post updates update.</li></ul>');

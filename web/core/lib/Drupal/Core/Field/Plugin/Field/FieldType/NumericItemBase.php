@@ -64,9 +64,10 @@ abstract class NumericItemBase extends FieldItemBase {
    * {@inheritdoc}
    */
   public function isEmpty() {
-    $value = $this->get('value')->getValue();
-
-    return empty($value) && (string) $value !== '0';
+    if (empty($this->value) && (string) $this->value !== '0') {
+      return TRUE;
+    }
+    return FALSE;
   }
 
   /**

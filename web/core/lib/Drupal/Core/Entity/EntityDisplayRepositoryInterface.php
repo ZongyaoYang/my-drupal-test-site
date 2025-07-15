@@ -18,10 +18,7 @@ interface EntityDisplayRepositoryInterface {
    * Gets the entity view mode info for all entity types.
    *
    * @return array
-   *   An associative array containing information about view modes for all
-   *   entity types. The array is keyed by the entity type ID, and each value
-   *   is an array of view mode details. View mode details typically include
-   *   keys like 'id', 'label', 'custom_settings', etc.
+   *   The view mode info for all entity types.
    */
   public function getAllViewModes();
 
@@ -32,10 +29,7 @@ interface EntityDisplayRepositoryInterface {
    *   The entity type whose view mode info should be returned.
    *
    * @return array
-   *   An associative array containing information about view modes for the
-   *   specified entity type. The array is keyed by the display mode ID, and
-   *   each value is an array of view mode details. View mode details typically
-   *   include keys like 'id', 'label', 'custom_settings', etc.
+   *   The view mode info for a specific entity type.
    */
   public function getViewModes($entity_type_id);
 
@@ -43,10 +37,7 @@ interface EntityDisplayRepositoryInterface {
    * Gets the entity form mode info for all entity types.
    *
    * @return array
-   *   An associative array containing information about form modes for all
-   *   entity types. The array is keyed by the entity type ID, and each value
-   *   is an array of form mode details. Form mode details typically include
-   *   keys like 'id', 'label', 'custom_settings', etc.
+   *   The form mode info for all entity types.
    */
   public function getAllFormModes();
 
@@ -57,10 +48,7 @@ interface EntityDisplayRepositoryInterface {
    *   The entity type whose form mode info should be returned.
    *
    * @return array
-   *   An associative array containing information about form modes for the
-   *   specified entity type. The array is keyed by the display mode ID, and
-   *   each value is an array of form mode details. Form mode details typically
-   *   include keys like 'id', 'label', 'custom_settings', etc.
+   *   The form mode info for a specific entity type.
    */
   public function getFormModes($entity_type_id);
 
@@ -71,9 +59,7 @@ interface EntityDisplayRepositoryInterface {
    *   The entity type whose view mode options should be returned.
    *
    * @return array
-   *   An associative array containing view mode options for the specified
-   *   entity type. The array is keyed by the display mode ID, and each value
-   *   is a view mode label.
+   *   An array of view mode labels, keyed by the display mode ID.
    */
   public function getViewModeOptions($entity_type_id);
 
@@ -84,9 +70,7 @@ interface EntityDisplayRepositoryInterface {
    *   The entity type whose form mode options should be returned.
    *
    * @return array
-   *   An associative array containing form mode options for the specified
-   *   entity type. The array is keyed by the display mode ID, and each value
-   *   is a form mode label.
+   *   An array of form mode labels, keyed by the display mode ID.
    */
   public function getFormModeOptions($entity_type_id);
 
@@ -99,9 +83,7 @@ interface EntityDisplayRepositoryInterface {
    *   The name of the bundle.
    *
    * @return array
-   *   An associative array containing enabled view mode options for the
-   *   specified entity type and bundle. The array is keyed by the display
-   *   mode ID, and each value is a view mode label.
+   *   An array of view mode labels, keyed by the display mode ID.
    */
   public function getViewModeOptionsByBundle($entity_type_id, $bundle);
 
@@ -114,9 +96,7 @@ interface EntityDisplayRepositoryInterface {
    *   The name of the bundle.
    *
    * @return array
-   *   An associative array containing enabled form mode options for the
-   *   specified entity type and bundle. The array is keyed by the display
-   *   mode ID, and each value is a form mode label.
+   *   An array of form mode labels, keyed by the display mode ID.
    */
   public function getFormModeOptionsByBundle($entity_type_id, $bundle);
 

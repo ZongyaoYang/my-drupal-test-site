@@ -20,13 +20,12 @@
     background-image: url(../../images/icons/8e929c/chevron-down.svg);
   }
 
-  [dir="rtl"] & {
+  @nest [dir="rtl"] & {
     background-position: 0 50%;
   }
 
-  .no-touchevents & {
-    &.form-element--extrasmall,
-    &[name$="][_weight]"] {
+  @nest .no-touchevents & {
+    &.form-element--extrasmall, &[name$="][_weight]"] {
       padding-inline-end: calc(1.5rem - var(--input-border-size));
       background-size: 1.75rem 0.4375rem; /* w: 14px + (2 * 7px), h: 7px */
     }

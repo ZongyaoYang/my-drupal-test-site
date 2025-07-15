@@ -61,7 +61,7 @@ class KeyValueContentEntityStorageTest extends KernelTestBase {
       $empty->toUrl();
       $this->fail('EntityMalformedException was thrown.');
     }
-    catch (EntityMalformedException) {
+    catch (EntityMalformedException $e) {
       // Expected exception; just continue testing.
     }
 
@@ -70,7 +70,7 @@ class KeyValueContentEntityStorageTest extends KernelTestBase {
       $empty->save();
       $this->fail('EntityMalformedException was thrown.');
     }
-    catch (EntityMalformedException) {
+    catch (EntityMalformedException $e) {
       // Expected exception; just continue testing.
     }
 
@@ -83,7 +83,7 @@ class KeyValueContentEntityStorageTest extends KernelTestBase {
       $empty_id->save();
       $this->fail('EntityMalformedException was thrown.');
     }
-    catch (EntityMalformedException) {
+    catch (EntityMalformedException $e) {
       // Expected exception; just continue testing.
     }
 
@@ -109,7 +109,7 @@ class KeyValueContentEntityStorageTest extends KernelTestBase {
     try {
       $status = $entity_test->save();
     }
-    catch (EntityMalformedException) {
+    catch (EntityMalformedException $e) {
       $this->fail('EntityMalformedException was not thrown.');
     }
 
@@ -141,7 +141,7 @@ class KeyValueContentEntityStorageTest extends KernelTestBase {
       $same_id->save();
       $this->fail('Not possible to overwrite an entity.');
     }
-    catch (EntityStorageException) {
+    catch (EntityStorageException $e) {
       // Expected exception; just continue testing.
     }
 

@@ -39,7 +39,7 @@ class User extends FieldMigration {
           $this->process[$name] = $name;
         }
       }
-      catch (RequirementsException) {
+      catch (RequirementsException $e) {
         // The checkRequirements() call will fail when the profile module does
         // not exist on the source site.
       }

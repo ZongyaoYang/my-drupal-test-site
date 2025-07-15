@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\performance_test;
 
 use Drupal\Core\Database\Connection;
@@ -10,9 +8,6 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * Enables database event logging for the main request.
- */
 class DatabaseEventEnabler implements HttpKernelInterface {
 
   public function __construct(protected readonly HttpKernelInterface $httpKernel, protected readonly Connection $connection) {}

@@ -320,7 +320,7 @@ class CacheContextsManager {
     try {
       $this->validateTokens($context_tokens);
     }
-    catch (\LogicException) {
+    catch (\LogicException $e) {
       return FALSE;
     }
 

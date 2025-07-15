@@ -9,7 +9,6 @@ use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Url;
 use Drupal\entity_test\Entity\EntityTest;
-use Drupal\entity_test\EntityTestHelper;
 use Drupal\Tests\field\Traits\EntityReferenceFieldCreationTrait;
 use Drupal\Tests\jsonapi\Functional\ResourceTestBase;
 use GuzzleHttp\RequestOptions;
@@ -37,7 +36,7 @@ trait CommonCollectionFilterAccessTestPatternsTrait {
 
     // Set up data model.
     $this->assertTrue($this->container->get('module_installer')->install(['entity_test'], TRUE), 'Installed modules.');
-    EntityTestHelper::createBundle('bar', NULL, 'entity_test');
+    entity_test_create_bundle('bar', NULL, 'entity_test');
     $this->createEntityReferenceField(
       'entity_test',
       'bar',
@@ -110,7 +109,7 @@ trait CommonCollectionFilterAccessTestPatternsTrait {
       'url.site',
       'user.permissions',
     ];
-    $this->assertResourceErrorResponse(403, $message, $collection_filter_url, $response, FALSE, $expected_cache_tags, $expected_cache_contexts, NULL, 'MISS');
+    $this->assertResourceErrorResponse(403, $message, $collection_filter_url, $response, FALSE, $expected_cache_tags, $expected_cache_contexts, FALSE, 'MISS');
     // And ensure the it is allowed when the proper permission is granted.
     $this->grantPermissionsToTestedRole(['filter by spotlight field']);
     $response = $this->request('GET', $collection_filter_url, $request_options);

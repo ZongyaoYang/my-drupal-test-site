@@ -210,7 +210,7 @@ class RowEntityRenderersTest extends ViewsKernelTestBase {
    *   associated with language keys appropriate for the translation of that
    *   node.
    */
-  protected function checkLanguageRenderers($display, $values): void {
+  protected function checkLanguageRenderers($display, $values) {
     $expected = [
       $values[0]['en'],
       $values[0]['en'],
@@ -294,7 +294,7 @@ class RowEntityRenderersTest extends ViewsKernelTestBase {
    *   associated with language keys appropriate for the translation of that
    *   node.
    */
-  protected function checkLanguageRenderersRelationship($display, $values): void {
+  protected function checkLanguageRenderersRelationship($display, $values) {
     $expected = [
       $values[1]['en'],
       $values[1]['en'],

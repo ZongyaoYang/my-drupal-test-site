@@ -53,9 +53,6 @@ class RouteProviderTest extends KernelTestBase {
     $role->save();
   }
 
-  /**
-   * Returns the handle of the HTTP kernel service.
-   */
   protected function httpKernelHandle($url) {
     $request = Request::create($url);
     /** @var \Symfony\Component\HttpKernel\HttpKernelInterface $http_kernel */

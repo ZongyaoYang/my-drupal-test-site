@@ -56,7 +56,7 @@ class ImmutablePropertiesConstraintValidatorTest extends KernelTestBase {
 
     $this->expectException(LogicException::class);
     $this->expectExceptionMessage("The entity does not have a 'non_existent' property.");
-    $this->container->get(TypedDataManagerInterface::class)
+    $violations = $this->container->get(TypedDataManagerInterface::class)
       ->create($definition, $entity)
       ->validate();
   }

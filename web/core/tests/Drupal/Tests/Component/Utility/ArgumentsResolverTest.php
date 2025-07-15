@@ -14,6 +14,13 @@ use PHPUnit\Framework\TestCase;
 class ArgumentsResolverTest extends TestCase {
 
   /**
+   * {@inheritdoc}
+   */
+  protected function setUp(): void {
+    parent::setUp();
+  }
+
+  /**
    * Tests the getArgument() method.
    *
    * @dataProvider providerTestGetArgument
@@ -119,8 +126,7 @@ class ArgumentsResolverTest extends TestCase {
   /**
    * Tests getArgument() with a wildcard parameter with no type hint.
    *
-   * Without the type hint, the wildcard object will not be passed to the
-   * callable.
+   * Without the type hint, the wildcard object will not be passed to the callable.
    */
   public function testGetWildcardArgumentNoTypeHint(): void {
     $a = $this->getMockBuilder('\Drupal\Tests\Component\Utility\Test1Interface')->getMock();
@@ -197,9 +203,6 @@ class TestClass {
 
 }
 
-/**
- * Provides a class for testing a static method.
- */
 class TestStaticMethodClass {
 
   public static function access($foo) {

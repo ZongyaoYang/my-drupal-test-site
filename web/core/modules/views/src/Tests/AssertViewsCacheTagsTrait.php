@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\views\Tests;
 
 use Drupal\Core\Cache\Cache;
@@ -11,9 +9,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
-/**
- * Provides assert methods for testing Views cache tags.
- */
 trait AssertViewsCacheTagsTrait {
 
   /**

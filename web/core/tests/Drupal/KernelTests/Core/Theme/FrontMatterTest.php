@@ -42,7 +42,7 @@ class FrontMatterTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public function register(ContainerBuilder $container): void {
+  public function register(ContainerBuilder $container) {
     parent::register($container);
 
     $definition = new Definition(FilesystemLoader::class, [[sys_get_temp_dir()]]);

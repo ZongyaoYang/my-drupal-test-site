@@ -4,7 +4,6 @@ namespace Drupal\Core\Theme;
 
 use Drupal\Component\Assertion\Inspector;
 use Drupal\Component\Discovery\YamlDirectoryDiscovery;
-use Drupal\Component\Plugin\CategorizingPluginManagerInterface;
 use Drupal\Component\Plugin\Exception\PluginException;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Cache\CacheBackendInterface;
@@ -12,7 +11,6 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drupal\Core\File\FileSystemInterface;
-use Drupal\Core\Plugin\CategorizingPluginManagerTrait;
 use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\Core\Plugin\Factory\ContainerFactory;
 use Drupal\Core\Theme\Component\ComponentValidator;
@@ -30,9 +28,7 @@ use Drupal\Core\Plugin\Discovery\DirectoryWithMetadataPluginDiscovery;
  *
  * @see plugin_api
  */
-class ComponentPluginManager extends DefaultPluginManager implements CategorizingPluginManagerInterface {
-
-  use CategorizingPluginManagerTrait;
+class ComponentPluginManager extends DefaultPluginManager {
 
   /**
    * {@inheritdoc}
@@ -84,11 +80,10 @@ class ComponentPluginManager extends DefaultPluginManager implements Categorizin
     $this->moduleHandler = $module_handler;
     $this->factory = new ContainerFactory($this);
     $this->setCacheBackend($cacheBackend, 'component_plugins');
-    // Note that we are intentionally skipping
-    // $this->alterInfo('component_info'); We want to ensure that everything
-    // related to a component is in the single directory. If the alteration of a
-    // component is necessary, component replacement is the preferred tool for
-    // that.
+    // Note that we are intentionally skipping $this->alterInfo('component_info');
+    // We want to ensure that everything related to a component is in the
+    // single directory. If the alteration of a component is necessary,
+    // component replacement is the preferred tool for that.
   }
 
   /**
@@ -164,10 +159,6 @@ class ComponentPluginManager extends DefaultPluginManager implements Categorizin
   public function clearCachedDefinitions(): void {
     parent::clearCachedDefinitions();
     $this->componentNegotiator->clearCache();
-    // When clearing cached definitions from theme install or uninstall, the
-    // container is not rebuilt. Unset discovery so it will be re-instantiated
-    // in getDiscovery() with the updated list of theme directories.
-    $this->discovery = NULL;
   }
 
   /**
@@ -244,21 +235,6 @@ class ComponentPluginManager extends DefaultPluginManager implements Categorizin
   /**
    * {@inheritdoc}
    */
-  public function processDefinition(&$definition, $plugin_id): void {
-    parent::processDefinition($definition, $plugin_id);
-    $this->processDefinitionCategory($definition);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function processDefinitionCategory(&$definition): void {
-    $definition['category'] = $definition['group'] ?? $this->t('Other');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   protected function alterDefinitions(&$definitions) {
     // Save in the definition whether this is a module or a theme. This is
     // important because when creating the plugin instance (the Component
@@ -310,20 +286,6 @@ class ComponentPluginManager extends DefaultPluginManager implements Categorizin
     if (!empty($validation_errors)) {
       throw new IncompatibleComponentSchema(implode("\n", $validation_errors));
     }
-
-    // Sort the definitions by module weight during discovery so that it can be
-    // cached. Components provided by themes are sorted at runtime in
-    // \Drupal\Core\Theme\ComponentNegotiator::maybeNegotiateByTheme() as their
-    // order can vary based on the active theme.
-    $module_list = $this->getModuleExtensionList()->getList();
-    $sort_by_module_weight_and_name = static function (array $definition_a, array $definition_b) use ($module_list) {
-      $a_weight = $module_list[$definition_a['provider']]?->weight ?? -999;
-      $b_weight = $module_list[$definition_b['provider']]?->weight ?? -999;
-      return $a_weight !== $b_weight
-        ? $a_weight <=> $b_weight
-        : $definition_a['provider'] <=> $definition_b['provider'];
-    };
-    uasort($definitions, $sort_by_module_weight_and_name);
   }
 
   /**

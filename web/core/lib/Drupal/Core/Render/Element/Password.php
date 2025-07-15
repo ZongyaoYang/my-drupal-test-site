@@ -33,16 +33,17 @@ class Password extends FormElementBase {
    * {@inheritdoc}
    */
   public function getInfo() {
+    $class = static::class;
     return [
       '#input' => TRUE,
       '#size' => 60,
       '#maxlength' => 128,
       '#process' => [
-        [static::class, 'processAjaxForm'],
-        [static::class, 'processPattern'],
+        [$class, 'processAjaxForm'],
+        [$class, 'processPattern'],
       ],
       '#pre_render' => [
-        [static::class, 'preRenderPassword'],
+        [$class, 'preRenderPassword'],
       ],
       '#theme' => 'input__password',
       '#theme_wrappers' => ['form_element'],

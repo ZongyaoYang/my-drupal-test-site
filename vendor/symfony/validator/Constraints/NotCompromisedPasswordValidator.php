@@ -40,7 +40,7 @@ class NotCompromisedPasswordValidator extends ConstraintValidator
     public function __construct(?HttpClientInterface $httpClient = null, string $charset = 'UTF-8', bool $enabled = true, ?string $endpoint = null)
     {
         if (null === $httpClient && !class_exists(HttpClient::class)) {
-            throw new LogicException(\sprintf('The "%s" class requires the "HttpClient" component. Try running "composer require symfony/http-client".', self::class));
+            throw new LogicException(sprintf('The "%s" class requires the "HttpClient" component. Try running "composer require symfony/http-client".', self::class));
         }
 
         $this->httpClient = $httpClient ?? HttpClient::create();
@@ -50,9 +50,11 @@ class NotCompromisedPasswordValidator extends ConstraintValidator
     }
 
     /**
+     * @return void
+     *
      * @throws ExceptionInterface
      */
-    public function validate(mixed $value, Constraint $constraint): void
+    public function validate(mixed $value, Constraint $constraint)
     {
         if (!$constraint instanceof NotCompromisedPassword) {
             throw new UnexpectedTypeException($constraint, NotCompromisedPassword::class);
@@ -77,7 +79,7 @@ class NotCompromisedPasswordValidator extends ConstraintValidator
 
         $hash = strtoupper(sha1($value));
         $hashPrefix = substr($hash, 0, 5);
-        $url = \sprintf($this->endpoint, $hashPrefix);
+        $url = sprintf($this->endpoint, $hashPrefix);
 
         try {
             $result = $this->httpClient->request('GET', $url, ['headers' => ['Add-Padding' => 'true']])->getContent();

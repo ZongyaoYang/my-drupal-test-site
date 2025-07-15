@@ -42,17 +42,18 @@ class Details extends RenderElementBase {
    * {@inheritdoc}
    */
   public function getInfo() {
+    $class = static::class;
     return [
       '#open' => FALSE,
       '#summary_attributes' => [],
       '#value' => NULL,
       '#process' => [
-        [static::class, 'processGroup'],
-        [static::class, 'processAjaxForm'],
+        [$class, 'processGroup'],
+        [$class, 'processAjaxForm'],
       ],
       '#pre_render' => [
-        [static::class, 'preRenderDetails'],
-        [static::class, 'preRenderGroup'],
+        [$class, 'preRenderDetails'],
+        [$class, 'preRenderGroup'],
       ],
       '#theme_wrappers' => ['details'],
     ];
@@ -61,7 +62,7 @@ class Details extends RenderElementBase {
   /**
    * Adds form element theming to details.
    *
-   * @param array $element
+   * @param $element
    *   An associative array containing the properties and children of the
    *   details.
    *

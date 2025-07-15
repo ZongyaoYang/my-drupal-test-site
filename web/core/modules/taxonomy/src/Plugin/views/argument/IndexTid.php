@@ -16,9 +16,6 @@ use Drupal\views\Plugin\views\argument\ManyToOne;
 )]
 class IndexTid extends ManyToOne {
 
-  /**
-   * {@inheritdoc}
-   */
   public function titleQuery() {
     $titles = [];
     $terms = Term::loadMultiple($this->value);

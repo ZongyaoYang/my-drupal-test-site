@@ -45,7 +45,7 @@ class FileDeleteTest extends FileTestBase {
       \Drupal::service('file_system')->delete($directory);
       $this->fail('Expected NotRegularFileException');
     }
-    catch (NotRegularFileException) {
+    catch (NotRegularFileException $e) {
       // Ignore.
     }
     $this->assertDirectoryExists($directory);

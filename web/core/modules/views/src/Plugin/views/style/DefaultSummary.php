@@ -20,9 +20,6 @@ use Drupal\views\Attribute\ViewsStyle;
 )]
 class DefaultSummary extends StylePluginBase {
 
-  /**
-   * {@inheritdoc}
-   */
   protected function defineOptions() {
     $options = parent::defineOptions();
 
@@ -34,18 +31,12 @@ class DefaultSummary extends StylePluginBase {
     return $options;
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function query() {
     if (!empty($this->options['override'])) {
       $this->view->setItemsPerPage(intval($this->options['items_per_page']));
     }
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     $form['base_path'] = [
       '#type' => 'textfield',
@@ -80,9 +71,6 @@ class DefaultSummary extends StylePluginBase {
     ];
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function render() {
     $rows = [];
     foreach ($this->view->result as $row) {

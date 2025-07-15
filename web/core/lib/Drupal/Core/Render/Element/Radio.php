@@ -21,14 +21,15 @@ class Radio extends FormElementBase {
    * {@inheritdoc}
    */
   public function getInfo() {
+    $class = static::class;
     return [
       '#input' => TRUE,
       '#default_value' => NULL,
       '#process' => [
-        [static::class, 'processAjaxForm'],
+        [$class, 'processAjaxForm'],
       ],
       '#pre_render' => [
-        [static::class, 'preRenderRadio'],
+        [$class, 'preRenderRadio'],
       ],
       '#theme' => 'input__radio',
       '#theme_wrappers' => ['form_element'],

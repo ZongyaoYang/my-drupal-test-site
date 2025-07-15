@@ -118,7 +118,7 @@ class ContextHandler implements ContextHandlerInterface {
       try {
         $context = $plugin->getContext($context_id);
       }
-      catch (ContextException) {
+      catch (ContextException $e) {
         $context = NULL;
       }
 

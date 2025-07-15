@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\settings_tray_override_test;
 
 use Drupal\Core\Cache\CacheableMetadata;

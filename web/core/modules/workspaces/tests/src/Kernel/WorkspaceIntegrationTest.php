@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\workspaces\Kernel;
 
-// cspell:ignore differring
-
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Session\AnonymousUserSession;
@@ -105,18 +103,8 @@ class WorkspaceIntegrationTest extends KernelTestBase {
     // Create two nodes, a published and an unpublished one, so we can test the
     // behavior of the module with default/existing content.
     $this->createdTimestamp = \Drupal::time()->getRequestTime();
-    $this->nodes[] = $this->createNode([
-      'title' => 'live - 1 - r1 - published',
-      'body' => 'node 1',
-      'created' => $this->createdTimestamp++,
-      'status' => TRUE,
-    ]);
-    $this->nodes[] = $this->createNode([
-      'title' => 'live - 2 - r2 - unpublished',
-      'body' => 'node 2',
-      'created' => $this->createdTimestamp++,
-      'status' => FALSE,
-    ]);
+    $this->nodes[] = $this->createNode(['title' => 'live - 1 - r1 - published', 'body' => 'node 1', 'created' => $this->createdTimestamp++, 'status' => TRUE]);
+    $this->nodes[] = $this->createNode(['title' => 'live - 2 - r2 - unpublished', 'body' => 'node 2', 'created' => $this->createdTimestamp++, 'status' => FALSE]);
 
     $translation = $this->nodes[0]->addTranslation('de');
     $translation->setTitle('live - 1 - r1 - published - de');
@@ -341,21 +329,13 @@ class WorkspaceIntegrationTest extends KernelTestBase {
 
     // Add a new unpublished node on 'stage'.
     $this->switchToWorkspace('stage');
-    $this->createNode([
-      'title' => 'stage - 3 - r5 - unpublished',
-      'created' => $this->createdTimestamp++,
-      'status' => FALSE,
-    ]);
+    $this->createNode(['title' => 'stage - 3 - r5 - unpublished', 'created' => $this->createdTimestamp++, 'status' => FALSE]);
     $this->assertWorkspaceStatus($test_scenarios['add_unpublished_node_in_stage'], 'node');
     $this->assertWorkspaceAssociation($expected_workspace_association['add_unpublished_node_in_stage'], 'node');
 
     // Add a new published node on 'stage'.
     $this->switchToWorkspace('stage');
-    $this->createNode([
-      'title' => 'stage - 4 - r6 - published',
-      'created' => $this->createdTimestamp++,
-      'status' => TRUE,
-    ]);
+    $this->createNode(['title' => 'stage - 4 - r6 - published', 'created' => $this->createdTimestamp++, 'status' => TRUE]);
     $this->assertWorkspaceStatus($test_scenarios['add_published_node_in_stage'], 'node');
     $this->assertWorkspaceAssociation($expected_workspace_association['add_published_node_in_stage'], 'node');
 
@@ -392,10 +372,10 @@ class WorkspaceIntegrationTest extends KernelTestBase {
   /**
    * Tests the workspace association data integrity for entity CRUD operations.
    *
-   * @covers \Drupal\workspaces\Hook\EntityOperations::entityPresave
-   * @covers \Drupal\workspaces\Hook\EntityOperations::entityInsert
-   * @covers \Drupal\workspaces\Hook\EntityOperations::entityDelete
-   * @covers \Drupal\workspaces\Hook\EntityOperations::entityRevisionDelete
+   * @covers ::workspaces_entity_presave
+   * @covers ::workspaces_entity_insert
+   * @covers ::workspaces_entity_delete
+   * @covers ::workspaces_entity_revision_delete
    */
   public function testWorkspaceAssociationDataIntegrity(): void {
     $this->initializeWorkspacesModule();
@@ -407,11 +387,7 @@ class WorkspaceIntegrationTest extends KernelTestBase {
     // Add a new unpublished node in 'stage' and check that new revision is
     // tracked in the workspace association data.
     $this->switchToWorkspace('stage');
-    $unpublished_node = $this->createNode([
-      'title' => 'stage - 3 - r3 - unpublished',
-      'created' => $this->createdTimestamp++,
-      'status' => FALSE,
-    ]);
+    $unpublished_node = $this->createNode(['title' => 'stage - 3 - r3 - unpublished', 'created' => $this->createdTimestamp++, 'status' => FALSE]);
     $expected_workspace_association = ['stage' => [3]];
     $this->assertWorkspaceAssociation($expected_workspace_association, 'node');
 
@@ -431,11 +407,7 @@ class WorkspaceIntegrationTest extends KernelTestBase {
     // revision is tracked in the workspace association data. Note that revision
     // '5' has been created as an unpublished default revision in Live, so it is
     // not tracked.
-    $node = $this->createNode([
-      'title' => 'stage - 4 - r6 - published',
-      'created' => $this->createdTimestamp++,
-      'status' => TRUE,
-    ]);
+    $node = $this->createNode(['title' => 'stage - 4 - r6 - published', 'created' => $this->createdTimestamp++, 'status' => TRUE]);
     $expected_workspace_association = ['stage' => [6]];
     $this->assertWorkspaceAssociation($expected_workspace_association, 'node');
 
@@ -487,11 +459,7 @@ class WorkspaceIntegrationTest extends KernelTestBase {
     // Create a new published node in 'stage' (which creates two revisions), and
     // check that it's tracked in all its descendants.
     $this->switchToWorkspace('stage');
-    $this->createNode([
-      'title' => 'stage - 3 - r5 - published',
-      'created' => $this->createdTimestamp++,
-      'status' => TRUE,
-    ]);
+    $this->createNode(['title' => 'stage - 3 - r5 - published', 'created' => $this->createdTimestamp++, 'status' => TRUE]);
     $expected_workspace_association = [
       'stage' => [3, 5],
       'dev' => [3, 5],
@@ -1032,10 +1000,6 @@ class WorkspaceIntegrationTest extends KernelTestBase {
     $expected_result = array_combine(array_column($expected_default_revisions, $revision_key), array_column($expected_default_revisions, $id_key));
     $this->assertEquals($expected_result, $result);
 
-    // Check latest revision queries.
-    $result = $storage->getQuery()->accessCheck(FALSE)->latestRevision()->execute();
-    $this->assertEquals($expected_result, $result);
-
     // Check querying each revision individually.
     foreach ($expected_values as $expected_value) {
       $query = $storage->getQuery()->accessCheck(FALSE);
@@ -1067,7 +1031,7 @@ class WorkspaceIntegrationTest extends KernelTestBase {
    *   An array where all the entity IDs and revision IDs are merged inside each
    *   expected values array.
    */
-  protected function flattenExpectedValues(array $expected, $entity_type_id): array {
+  protected function flattenExpectedValues(array $expected, $entity_type_id) {
     $flattened = [];
 
     $entity_keys = $this->entityTypeManager->getDefinition($entity_type_id)->getKeys();

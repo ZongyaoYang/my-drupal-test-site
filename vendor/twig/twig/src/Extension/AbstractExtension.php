@@ -43,11 +43,6 @@ abstract class AbstractExtension implements LastModifiedExtensionInterface
         return [[], []];
     }
 
-    public function getExpressionParsers(): array
-    {
-        return [];
-    }
-
     public function getLastModified(): int
     {
         $filename = (new \ReflectionClass($this))->getFileName();

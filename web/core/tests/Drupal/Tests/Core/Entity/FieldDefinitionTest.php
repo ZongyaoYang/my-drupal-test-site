@@ -368,7 +368,6 @@ class FieldDefinitionTest extends UnitTestCase {
    *   The factory name to use.
    *
    * @return \Drupal\Core\Field\FieldDefinition
-   *   A field definition instance created using the specified factory.
    */
   protected function initializeFieldUsingFactory($factory_name) {
     switch ($factory_name) {

@@ -75,17 +75,11 @@ class Permissions extends PrerenderList {
     $this->additional_fields['uid'] = ['table' => 'users_field_data', 'field' => 'uid'];
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function query() {
     $this->addAdditionalFields();
     $this->field_alias = $this->aliases['uid'];
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function preRender(&$values) {
     $this->items = [];
 
@@ -120,9 +114,6 @@ class Permissions extends PrerenderList {
     }
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function render_item($count, $item) {
     return $item['permission'];
   }

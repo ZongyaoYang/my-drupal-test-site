@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\update_script_test\PathProcessor;
 
 use Drupal\Core\PathProcessor\InboundPathProcessorInterface;

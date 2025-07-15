@@ -132,9 +132,6 @@ field.formatter.settings.file_video:
     muted:
       type: boolean
       label: 'Muted'
-    playsinline:
-      type: boolean
-      label: 'Plays inline'
     width:
       type: integer
       label: 'Width'

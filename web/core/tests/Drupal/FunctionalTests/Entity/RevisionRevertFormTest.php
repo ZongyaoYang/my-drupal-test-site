@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\FunctionalTests\Entity;
 
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\entity_test\Entity\EntityTestRev;
 use Drupal\entity_test\Entity\EntityTestRevPub;
@@ -100,7 +101,7 @@ class RevisionRevertFormTest extends BrowserTestBase {
   protected static function providerPageTitle(): array {
     return [
       ['entity_test_rev', 'Are you sure you want to revert the revision?'],
-      ['entity_test_revlog', 'Are you sure you want to revert to the revision from Sun, 11 Jan 2009 - 16:00?'],
+      ['entity_test_revlog', 'Are you sure you want to revert to the revision from Sun, 01/11/2009 - 16:00?'],
     ];
   }
 
@@ -191,7 +192,7 @@ class RevisionRevertFormTest extends BrowserTestBase {
    * @covers ::submitForm
    * @dataProvider providerSubmitForm
    */
-  public function testSubmitForm(array $permissions, string $entityTypeId, string $entityLabel, array $expectedLog, string $expectedMessage, string $expectedDestination): void {
+  public function testSubmitForm(array $permissions, string $entityTypeId, string $entityLabel, string $expectedLog, string $expectedMessage, string $expectedDestination): void {
     if (count($permissions) > 0) {
       $this->drupalLogin($this->createUser($permissions));
     }
@@ -230,10 +231,7 @@ class RevisionRevertFormTest extends BrowserTestBase {
 
     // Logger log.
     $logs = $this->getLogs($entity->getEntityType()->getProvider());
-    $this->assertCount(1, $logs);
-    $this->assertEquals('@type: reverted %title revision %revision.', $logs[0]->message);
-    $this->assertEquals($expectedLog, unserialize($logs[0]->variables));
-
+    $this->assertEquals([0 => $expectedLog], $logs);
     // Messenger message.
     $this->assertSession()->pageTextContains($expectedMessage);
   }
@@ -248,11 +246,7 @@ class RevisionRevertFormTest extends BrowserTestBase {
       ['view test entity'],
       'entity_test_rev',
       'view, revert',
-      [
-        '@type' => 'entity_test_rev',
-        '%title' => 'view, revert',
-        '%revision' => '1',
-      ],
+      'entity_test_rev: reverted <em class="placeholder">view, revert</em> revision <em class="placeholder">1</em>.',
       'Entity Test Bundle view, revert has been reverted.',
       '/entity_test_rev/manage/1',
     ];
@@ -261,11 +255,7 @@ class RevisionRevertFormTest extends BrowserTestBase {
       ['view test entity'],
       'entity_test_rev',
       'view, view all revisions, revert',
-      [
-        '@type' => 'entity_test_rev',
-        '%title' => 'view, view all revisions, revert',
-        '%revision' => '1',
-      ],
+      'entity_test_rev: reverted <em class="placeholder">view, view all revisions, revert</em> revision <em class="placeholder">1</em>.',
       'Entity Test Bundle view, view all revisions, revert has been reverted.',
       '/entity_test_rev/1/revisions',
     ];
@@ -274,12 +264,8 @@ class RevisionRevertFormTest extends BrowserTestBase {
       [],
       'entity_test_revlog',
       'view, revert',
-      [
-        '@type' => 'entity_test_revlog',
-        '%title' => 'view, revert',
-        '%revision' => '1',
-      ],
-      'Test entity - revisions log view, revert has been reverted to the revision from Sun, 11 Jan 2009 - 16:00.',
+      'entity_test_revlog: reverted <em class="placeholder">view, revert</em> revision <em class="placeholder">1</em>.',
+      'Test entity - revisions log view, revert has been reverted to the revision from Sun, 01/11/2009 - 16:00.',
       '/entity_test_revlog/manage/1',
     ];
 
@@ -287,12 +273,8 @@ class RevisionRevertFormTest extends BrowserTestBase {
       [],
       'entity_test_revlog',
       'view, view all revisions, revert',
-      [
-        '@type' => 'entity_test_revlog',
-        '%title' => 'view, view all revisions, revert',
-        '%revision' => '1',
-      ],
-      'Test entity - revisions log view, view all revisions, revert has been reverted to the revision from Sun, 11 Jan 2009 - 16:00.',
+      'entity_test_revlog: reverted <em class="placeholder">view, view all revisions, revert</em> revision <em class="placeholder">1</em>.',
+      'Test entity - revisions log view, view all revisions, revert has been reverted to the revision from Sun, 01/11/2009 - 16:00.',
       '/entity_test_revlog/1/revisions',
     ];
 
@@ -349,7 +331,7 @@ class RevisionRevertFormTest extends BrowserTestBase {
     /** @var \Drupal\entity_test_revlog\Entity\EntityTestWithRevisionLog $latestRevision */
     $latestRevision = $storage->loadUnchanged($entity->id());
     $this->assertEquals($count + 1, $this->countRevisions($entity->getEntityTypeId()));
-    $this->assertEquals('Copy of the revision from <em class="placeholder">Sun, 11 Jan 2009 - 17:00</em>.', $latestRevision->getRevisionLogMessage());
+    $this->assertEquals('Copy of the revision from <em class="placeholder">Sun, 01/11/2009 - 17:00</em>.', $latestRevision->getRevisionLogMessage());
     $this->assertGreaterThan($revisionCreationTime, $latestRevision->getRevisionCreationTime());
     $this->assertEquals($user->id(), $latestRevision->getRevisionUserId());
     $this->assertTrue($latestRevision->isDefaultRevision());
@@ -365,11 +347,10 @@ class RevisionRevertFormTest extends BrowserTestBase {
    *   Watchdog entries.
    */
   protected function getLogs(string $channel): array {
-    return \Drupal::database()->select('watchdog')
-      ->fields('watchdog')
-      ->condition('type', $channel)
-      ->execute()
-      ->fetchAll();
+    $logs = \Drupal::database()->query("SELECT * FROM {watchdog} WHERE type = :type", [':type' => $channel])->fetchAll();
+    return array_map(function (object $log) {
+      return (string) new FormattableMarkup($log->message, unserialize($log->variables));
+    }, $logs);
   }
 
   /**

@@ -24,18 +24,16 @@ class WorkspaceContentModerationIntegrationTest extends ModerationStateTestBase 
 
   /**
    * {@inheritdoc}
+   *
+   * @todo Remove and fix test to not rely on super user.
+   * @see https://www.drupal.org/project/drupal/issues/3437620
    */
-  protected $defaultTheme = 'stark';
+  protected bool $usesSuperUserAccessPolicy = TRUE;
 
   /**
    * {@inheritdoc}
    */
-  protected function getAdministratorPermissions(): array {
-    return array_merge($this->permissions, [
-      'bypass node access',
-      'administer workspaces',
-    ]);
-  }
+  protected $defaultTheme = 'stark';
 
   /**
    * {@inheritdoc}
@@ -43,14 +41,12 @@ class WorkspaceContentModerationIntegrationTest extends ModerationStateTestBase 
   protected function setUp(): void {
     parent::setUp();
 
-    $this->adminUser = $this->drupalCreateUser($this->getAdministratorPermissions());
-    $this->drupalLogin($this->adminUser);
+    $this->drupalLogin($this->rootUser);
 
     // Enable moderation on Article node type.
     $this->createContentTypeFromUi('Article', 'article', TRUE);
 
     $this->setupWorkspaceSwitcherBlock();
-    $this->createWorkspaceThroughUi('Stage', 'stage');
   }
 
   /**

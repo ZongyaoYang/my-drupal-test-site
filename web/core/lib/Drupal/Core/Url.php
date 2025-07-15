@@ -112,7 +112,7 @@ class Url implements TrustedCallbackInterface {
    * code more self-documenting.
    *
    * @param string $route_name
-   *   The name of the route.
+   *   The name of the route
    * @param array $route_parameters
    *   (optional) An associative array of parameter names and values.
    * @param array $options
@@ -138,7 +138,7 @@ class Url implements TrustedCallbackInterface {
    * path (like robots.txt) use Url::fromUri() with the base: scheme.
    *
    * @param string $route_name
-   *   The name of the route.
+   *   The name of the route
    * @param array $route_parameters
    *   (optional) An associative array of route parameter names and values.
    * @param array $options
@@ -482,12 +482,8 @@ class Url implements TrustedCallbackInterface {
    *   would get an access denied running the same request via the normal page
    *   flow.
    *
-   * @throws Symfony\Component\Routing\Exception\NoConfigurationException
-   *   If no routing configuration could be found.
-   * @throws Symfony\Component\Routing\Exception\ResourceNotFoundException
-   *   If no matching resource could be found.
-   * @throws Symfony\Component\Routing\Exception\MethodNotAllowedException
-   *   If a matching resource was found but the request method is not allowed.
+   * @throws \Drupal\Core\Routing\MatchingRouteNotFoundException
+   *   Thrown when the request cannot be matched.
    */
   public static function createFromRequest(Request $request) {
     // We use the router without access checks because URL objects might be
@@ -544,7 +540,6 @@ class Url implements TrustedCallbackInterface {
    * Indicates if this URL is external.
    *
    * @return bool
-   *   TRUE if the URL is external, FALSE otherwise.
    */
   public function isExternal() {
     return $this->external;
@@ -554,7 +549,6 @@ class Url implements TrustedCallbackInterface {
    * Indicates if this URL has a Drupal route.
    *
    * @return bool
-   *   TRUE if there is a Drupal route for the URL, FALSE otherwise.
    */
   public function isRouted() {
     return !$this->unrouted;
@@ -564,9 +558,8 @@ class Url implements TrustedCallbackInterface {
    * Returns the route name.
    *
    * @return string
-   *   The name of the route.
    *
-   * @throws \UnexpectedValueException
+   * @throws \UnexpectedValueException.
    *   If this is a URI with no corresponding route.
    */
   public function getRouteName() {
@@ -581,9 +574,8 @@ class Url implements TrustedCallbackInterface {
    * Returns the route parameters.
    *
    * @return array
-   *   An associative array of route parameters.
    *
-   * @throws \UnexpectedValueException
+   * @throws \UnexpectedValueException.
    *   If this is a URI with no corresponding route.
    */
   public function getRouteParameters() {
@@ -602,7 +594,7 @@ class Url implements TrustedCallbackInterface {
    *
    * @return $this
    *
-   * @throws \UnexpectedValueException
+   * @throws \UnexpectedValueException.
    *   If this is a URI with no corresponding route.
    */
   public function setRouteParameters($parameters) {
@@ -623,7 +615,7 @@ class Url implements TrustedCallbackInterface {
    *
    * @return $this
    *
-   * @throws \UnexpectedValueException
+   * @throws \UnexpectedValueException.
    *   If this is a URI with no corresponding route.
    */
   public function setRouteParameter($key, $value) {
@@ -753,7 +745,7 @@ class Url implements TrustedCallbackInterface {
    * If this Url object was constructed from a Drupal route or from an internal
    * URI (URIs using the internal:, base:, or entity: schemes), the returned
    * string will either be a relative URL like /node/1 or an absolute URL like
-   * https://example.com/node/1 depending on the options array, plus any
+   * http://example.com/node/1 depending on the options array, plus any
    * specified query string or fragment.
    *
    * @param bool $collect_bubbleable_metadata
@@ -774,6 +766,29 @@ class Url implements TrustedCallbackInterface {
   }
 
   /**
+   * Returns the route information for a render array.
+   *
+   * @return array
+   *   An associative array suitable for a render array.
+   *
+   * @deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. There is no
+   *   replacement.
+   *
+   * @see https://www.drupal.org/node/3342977
+   */
+  public function toRenderArray() {
+    @trigger_error(__METHOD__ . '() is deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. There is no replacement. See https://www.drupal.org/node/3342977', E_USER_DEPRECATED);
+    $render_array = [
+      '#url' => $this,
+      '#options' => $this->getOptions(),
+    ];
+    if (!$this->unrouted) {
+      $render_array['#access_callback'] = [self::class, 'renderAccess'];
+    }
+    return $render_array;
+  }
+
+  /**
    * Returns the internal path (system path) for this route.
    *
    * This path will not include any prefixes, fragments, or query strings.
@@ -781,7 +796,7 @@ class Url implements TrustedCallbackInterface {
    * @return string
    *   The internal path for this route.
    *
-   * @throws \UnexpectedValueException
+   * @throws \UnexpectedValueException.
    *   If this is a URI with no corresponding system path.
    */
   public function getInternalPath() {
@@ -820,8 +835,26 @@ class Url implements TrustedCallbackInterface {
   }
 
   /**
+   * Checks a URL render element against applicable access check services.
+   *
+   * @param array $element
+   *   A render element as returned from \Drupal\Core\Url::toRenderArray().
+   *
+   * @return bool
+   *   Returns TRUE if the current user has access to the URL, otherwise FALSE.
+   *
+   * @deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. There is no
+   *   replacement.
+   *
+   * @see https://www.drupal.org/node/3342977
+   */
+  public static function renderAccess(array $element) {
+    @trigger_error(__METHOD__ . '() is deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. There is no replacement. See https://www.drupal.org/node/3342977', E_USER_DEPRECATED);
+    return $element['#url']->access();
+  }
+
+  /**
    * @return \Drupal\Core\Access\AccessManagerInterface
-   *   The access manager service.
    */
   protected function accessManager() {
     if (!isset($this->accessManager)) {
@@ -887,7 +920,8 @@ class Url implements TrustedCallbackInterface {
    * {@inheritdoc}
    */
   public static function trustedCallbacks() {
-    return [];
+    // @todo Clean-up in https://www.drupal.org/i/3343153
+    return ['renderAccess'];
   }
 
 }

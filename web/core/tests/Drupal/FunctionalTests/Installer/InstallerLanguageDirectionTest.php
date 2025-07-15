@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\FunctionalTests\Installer;
 
-// cspell:ignore nmsgid nmsgstr
-
 /**
  * Verifies that the early installer uses the correct language direction.
  *
@@ -28,7 +26,7 @@ class InstallerLanguageDirectionTest extends InstallerTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUpLanguage(): void {
+  protected function setUpLanguage() {
     // Place a custom local translation in the translations directory.
     mkdir($this->root . '/' . $this->siteDirectory . '/files/translations', 0777, TRUE);
     file_put_contents($this->root . '/' . $this->siteDirectory . '/files/translations/drupal-8.0.0.ar.po', "msgid \"\"\nmsgstr \"\"\nmsgid \"Save and continue\"\nmsgstr \"Save and continue Arabic\"");

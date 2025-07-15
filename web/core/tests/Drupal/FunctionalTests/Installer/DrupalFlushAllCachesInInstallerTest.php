@@ -27,7 +27,7 @@ class DrupalFlushAllCachesInInstallerTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function prepareEnvironment(): void {
+  protected function prepareEnvironment() {
     parent::prepareEnvironment();
     $info = [
       'type' => 'profile',

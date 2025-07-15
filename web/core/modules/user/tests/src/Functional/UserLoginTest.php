@@ -152,6 +152,7 @@ class UserLoginTest extends BrowserTestBase {
     $this->drupalLogout();
 
     // Load the stored user. The password hash shouldn't need a rehash.
+    $user_storage = $this->container->get('entity_type.manager')->getStorage('user');
     $account = User::load($account->id());
 
     // Check that the stored password doesn't need rehash.
@@ -176,7 +177,8 @@ class UserLoginTest extends BrowserTestBase {
     $this->submitForm($edit, 'Log in');
 
     // Load the stored user, which should have a different password hash now.
-    $account = User::load($account->id());
+    $user_storage->resetCache([$account->id()]);
+    $account = $user_storage->load($account->id());
 
     // Check that the stored password doesn't need rehash.
     $this->assertFalse($password_hasher->needsRehash($account->getPassword()));
@@ -336,7 +338,7 @@ class UserLoginTest extends BrowserTestBase {
    * @param object $user
    *   A user object.
    */
-  public function resetUserPassword($user): void {
+  public function resetUserPassword($user) {
     $this->drupalGet('user/password');
     $edit['name'] = $user->getDisplayName();
     $this->submitForm($edit, 'Submit');

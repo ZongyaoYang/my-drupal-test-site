@@ -311,7 +311,7 @@ class ExtensionListTest extends UnitTestCase {
     return $test_extension_list;
   }
 
-  protected function getMocks(): array {
+  protected function getMocks() {
     $cache = $this->prophesize(CacheBackendInterface::class);
     $info_parser = $this->prophesize(InfoParserInterface::class);
     $module_handler = $this->prophesize(ModuleHandlerInterface::class);
@@ -321,9 +321,6 @@ class ExtensionListTest extends UnitTestCase {
 
 }
 
-/**
- * Stub class for testing ExtensionList.
- */
 class TestExtension extends ExtensionList {
 
   /**
@@ -340,11 +337,11 @@ class TestExtension extends ExtensionList {
    * @param \Drupal\Core\Extension\ExtensionDiscovery $extension_discovery
    *   The extension discovery class.
    */
-  public function setExtensionDiscovery(ExtensionDiscovery $extension_discovery): void {
+  public function setExtensionDiscovery(ExtensionDiscovery $extension_discovery) {
     $this->extensionDiscovery = $extension_discovery;
   }
 
-  public function setInstalledExtensions(array $extension_names): void {
+  public function setInstalledExtensions(array $extension_names) {
     $this->installedExtensions = $extension_names;
   }
 

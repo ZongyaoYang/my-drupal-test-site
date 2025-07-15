@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drupal\Tests\comment\Kernel\Views;
 
 use Drupal\comment\Entity\Comment;
-use Drupal\comment\Entity\CommentType;
 use Drupal\Core\Session\AnonymousUserSession;
 use Drupal\entity_test\Entity\EntityTest;
 use Drupal\Tests\views\Kernel\ViewsKernelTestBase;
@@ -58,7 +57,6 @@ class CommentUserNameTest extends ViewsKernelTestBase {
     $admin_role = Role::create([
       'id' => 'admin',
       'permissions' => [
-        'view test entity',
         'administer comments',
         'access user profiles',
         'access comments',
@@ -81,13 +79,6 @@ class CommentUserNameTest extends ViewsKernelTestBase {
     $host = EntityTest::create(['name' => $this->randomString()]);
     $host->save();
 
-    $commentType = CommentType::create([
-      'id' => 'entity_test_comment',
-      'label' => 'Entity Test Comment',
-      'target_entity_type_id' => 'entity_test',
-    ]);
-    $commentType->save();
-
     // Create some comments.
     $comment = Comment::create([
       'subject' => 'My comment title',
@@ -96,7 +87,7 @@ class CommentUserNameTest extends ViewsKernelTestBase {
       'entity_type' => 'entity_test',
       'field_name' => 'comment',
       'entity_id' => $host->id(),
-      'comment_type' => 'entity_test_comment',
+      'comment_type' => 'entity_test',
       'status' => 1,
     ]);
     $comment->save();
@@ -110,7 +101,7 @@ class CommentUserNameTest extends ViewsKernelTestBase {
       'entity_type' => 'entity_test',
       'field_name' => 'comment',
       'entity_id' => $host->id(),
-      'comment_type' => 'entity_test_comment',
+      'comment_type' => 'entity_test',
       'created' => 123456,
       'status' => 1,
     ]);

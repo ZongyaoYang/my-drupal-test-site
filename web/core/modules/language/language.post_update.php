@@ -8,7 +8,7 @@
 /**
  * Implements hook_removed_post_updates().
  */
-function language_removed_post_updates(): array {
+function language_removed_post_updates() {
   return [
     'language_post_update_language_select_widget' => '9.0.0',
   ];

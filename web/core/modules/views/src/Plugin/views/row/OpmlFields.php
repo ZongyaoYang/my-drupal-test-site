@@ -204,9 +204,9 @@ class OpmlFields extends RowPluginBase {
   /**
    * Retrieves a views field value from the style plugin.
    *
-   * @param int $index
+   * @param $index
    *   The index count of the row as expected by views_plugin_style::getField().
-   * @param string $field_id
+   * @param $field_id
    *   The ID assigned to the required field in the display.
    *
    * @return string

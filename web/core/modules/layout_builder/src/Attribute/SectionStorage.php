@@ -37,13 +37,7 @@ class SectionStorage extends Plugin {
    *   permission checking. If FALSE, the 'configure any layout' permission
    *   will be required during routing access. If TRUE, Layout Builder will
    *   not enforce any access restrictions for the storage, so the section
-   *   storage's implementation of access() must perform the access checking
-   *   itself.
-   * @param bool $allow_inline_blocks
-   *   (optional) If TRUE, the 'Create content block' link will be shown as
-   *   part of the choose block off-canvas dialog. If FALSE, the link will be
-   *   hidden and will not be possible to add new inline blocks from the Layout
-   *   Builder UI.
+   *   storage's implementation of access() must perform the access checking itself.
    * @param string|null $deriver
    *   (optional) The deriver class.
    */
@@ -52,7 +46,6 @@ class SectionStorage extends Plugin {
     public readonly int $weight = 0,
     public readonly array $context_definitions = [],
     public readonly bool $handles_permission_check = FALSE,
-    public readonly bool $allow_inline_blocks = TRUE,
     public readonly ?string $deriver = NULL,
   ) {}
 
@@ -66,7 +59,6 @@ class SectionStorage extends Plugin {
       'weight' => $this->weight,
       'context_definitions' => $this->context_definitions,
       'handles_permission_check' => $this->handles_permission_check,
-      'allow_inline_blocks' => $this->allow_inline_blocks,
     ]);
   }
 

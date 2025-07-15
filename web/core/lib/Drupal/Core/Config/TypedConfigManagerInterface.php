@@ -34,7 +34,7 @@ interface TypedConfigManagerInterface extends TypedDataManagerInterface {
    * @param array $definition
    *   The base type definition array, for which a data definition should be
    *   created.
-   * @param mixed $value
+   * @param $value
    *   Optional value of the configuration element.
    * @param string $name
    *   Optional name of the configuration element.

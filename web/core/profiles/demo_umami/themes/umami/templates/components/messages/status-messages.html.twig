@@ -22,30 +22,36 @@
 <div data-drupal-messages>
   <div class="messages__wrapper container">
   {% block messages %}
-    {% for type, messages in message_list %}
-      {%
-        set classes = [
-          'messages',
-          'messages--' ~ type,
-        ]
-      %}
-      <drupal-umami-messages aria-label="{{ status_headings[type] }}" {{ attributes.addClass(classes)|without('aria-label') }} role={{ type == 'error' or type == 'warning' ? 'alert' : 'status' }}>
+  {% for type, messages in message_list %}
+    {%
+      set classes = [
+        'messages',
+        'messages--' ~ type,
+      ]
+    %}
+    <div
+      aria-label="{{ status_headings[type] }}"
+      {{ attributes.addClass(classes)|without('aria-label') }}
+      role={{ type == 'error' or type == 'warning' ? 'alert' : 'status' }}
+    >
+      <div class="messages__content">
         {% if status_headings[type] %}
-          <span slot="title">{{ status_headings[type] }}</span>
+          <h2 class="visually-hidden">{{ status_headings[type] }}</h2>
         {% endif %}
-        {% if messages|length > 0 %}
-          <ul class="messages__list" slot="content">
+        {% if messages|length > 1 %}
+          <ul class="messages__list">
             {% for message in messages %}
               <li class="messages__item">{{ message }}</li>
             {% endfor %}
           </ul>
         {% else %}
-          <span class="messages__item" slot="content">{{ messages|first }}</span>
+          <span class="messages__item">{{ messages|first }}</span>
         {% endif %}
-      </drupal-umami-messages>
-      {# Remove type specific classes. #}
-      {% set attributes = attributes.removeClass(classes) %}
-    {% endfor %}
+      </div>
+    </div>
+    {# Remove type specific classes. #}
+    {% set attributes = attributes.removeClass(classes) %}
+  {% endfor %}
   {% endblock messages %}
   </div>
 </div>

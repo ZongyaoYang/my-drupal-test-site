@@ -24,16 +24,6 @@ class AjaxTest extends WebDriverTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp(): void {
-    if ($this->name() === 'testAjaxFocus') {
-      $this->markTestSkipped("Skipped due to frequent random test failures. See https://www.drupal.org/project/drupal/issues/3396536");
-    }
-    parent::setUp();
-  }
-
   public function testAjaxWithAdminRoute(): void {
     \Drupal::service('theme_installer')->install(['stable9', 'claro']);
     $theme_config = \Drupal::configFactory()->getEditable('system.theme');
@@ -311,6 +301,7 @@ JS;
    * Tests ajax focus handling.
    */
   public function testAjaxFocus(): void {
+    $this->markTestSkipped("Skipped due to frequent random test failures. See https://www.drupal.org/project/drupal/issues/3396536");
     $this->drupalGet('/ajax_forms_test_get_form');
 
     $this->assertNotNull($select = $this->assertSession()->elementExists('css', '#edit-select'));

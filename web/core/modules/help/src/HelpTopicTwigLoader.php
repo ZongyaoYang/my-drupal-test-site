@@ -53,7 +53,7 @@ class HelpTopicTwigLoader extends FilesystemLoader {
   /**
    * Adds an extensions help_topics directory to the Twig loader.
    *
-   * @param string $path
+   * @param $path
    *   The path to the extension.
    */
   protected function addExtension($path) {
@@ -96,7 +96,7 @@ class HelpTopicTwigLoader extends FilesystemLoader {
   /**
    * {@inheritdoc}
    */
-  protected function findTemplate($name, $throw = TRUE): ?string {
+  protected function findTemplate($name, $throw = TRUE) {
     if (!str_ends_with($name, '.html.twig')) {
       if (!$throw) {
         return NULL;

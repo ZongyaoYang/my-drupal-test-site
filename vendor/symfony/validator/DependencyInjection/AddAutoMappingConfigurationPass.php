@@ -22,7 +22,10 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class AddAutoMappingConfigurationPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container): void
+    /**
+     * @return void
+     */
+    public function process(ContainerBuilder $container)
     {
         if (!$container->hasParameter('validator.auto_mapping') || !$container->hasDefinition('validator.builder')) {
             return;
@@ -79,6 +82,6 @@ class AddAutoMappingConfigurationPass implements CompilerPassInterface
             $regexps[] = '^'.$regex;
         }
 
-        return \sprintf('{%s}', implode('|', $regexps));
+        return sprintf('{%s}', implode('|', $regexps));
     }
 }

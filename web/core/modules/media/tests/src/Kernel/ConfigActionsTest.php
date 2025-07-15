@@ -19,9 +19,6 @@ class ConfigActionsTest extends KernelTestBase {
    */
   protected static $modules = ['media'];
 
-  /**
-   * The configuration action manager.
-   */
   private readonly ConfigActionManager $configActionManager;
 
   /**
@@ -35,9 +32,6 @@ class ConfigActionsTest extends KernelTestBase {
     $this->configActionManager = $this->container->get('plugin.manager.config_action');
   }
 
-  /**
-   * Tests the application of configuration actions on a media type.
-   */
   public function testConfigActions(): void {
     $media_type = MediaType::load('test');
     $this->assertSame('Test type.', $media_type->getDescription());

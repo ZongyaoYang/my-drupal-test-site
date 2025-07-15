@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\field_discovery_test;
 
 use Drupal\migrate\Plugin\MigrationPluginManagerInterface;

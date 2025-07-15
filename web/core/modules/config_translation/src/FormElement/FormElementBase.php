@@ -97,7 +97,6 @@ abstract class FormElementBase implements ElementInterface {
       '#type' => 'item',
       '#title' => $this->t('@label <span class="visually-hidden">(@source_language)</span>', [
         // Labels originate from configuration schema and are translatable.
-        // phpcs:ignore Drupal.Semantics.FunctionT.NotLiteralString
         '@label' => $this->t($this->definition->getLabel()),
         '@source_language' => $source_language->getName(),
       ]),
@@ -161,7 +160,6 @@ abstract class FormElementBase implements ElementInterface {
     return [
       '#title' => $this->t('@label <span class="visually-hidden">(@source_language)</span>', [
         // Labels originate from configuration schema and are translatable.
-        // phpcs:ignore Drupal.Semantics.FunctionT.NotLiteralString
         '@label' => $this->t($this->definition->getLabel()),
         '@source_language' => $translation_language->getName(),
       ]),

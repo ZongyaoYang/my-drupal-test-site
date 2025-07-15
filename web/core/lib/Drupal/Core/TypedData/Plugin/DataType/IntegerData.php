@@ -2,7 +2,6 @@
 
 namespace Drupal\Core\TypedData\Plugin\DataType;
 
-use Drupal\Core\Serialization\Attribute\JsonSchema;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\TypedData\Attribute\DataType;
 use Drupal\Core\TypedData\PrimitiveBase;
@@ -23,7 +22,6 @@ class IntegerData extends PrimitiveBase implements IntegerInterface {
   /**
    * {@inheritdoc}
    */
-  #[JsonSchema(['type' => 'integer'])]
   public function getCastedValue() {
     return (int) $this->value;
   }

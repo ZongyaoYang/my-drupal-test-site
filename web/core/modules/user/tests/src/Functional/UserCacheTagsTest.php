@@ -56,7 +56,7 @@ class UserCacheTagsTest extends EntityWithUriCacheTagsTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function getAdditionalCacheTagsForEntityListing(): array {
+  protected function getAdditionalCacheTagsForEntityListing() {
     return ['user:0', 'user:1'];
   }
 

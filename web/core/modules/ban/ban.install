@@ -8,7 +8,7 @@
 /**
  * Implements hook_schema().
  */
-function ban_schema(): array {
+function ban_schema() {
   $schema['ban_ip'] = [
     'description' => 'Stores banned IP addresses.',
     'fields' => [

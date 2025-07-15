@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\session_test\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

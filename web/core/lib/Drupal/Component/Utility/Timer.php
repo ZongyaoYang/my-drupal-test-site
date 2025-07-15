@@ -9,11 +9,6 @@ namespace Drupal\Component\Utility;
  */
 class Timer {
 
-  /**
-   * An associative array of timers.
-   *
-   * @var array
-   */
   protected static $timers = [];
 
   /**
@@ -22,7 +17,7 @@ class Timer {
    * If you start and stop the same timer multiple times, the measured intervals
    * will be accumulated.
    *
-   * @param string $name
+   * @param $name
    *   The name of the timer.
    */
   public static function start($name) {

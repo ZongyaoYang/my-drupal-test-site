@@ -1,12 +1,9 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\form_test\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\form_test\Callbacks;
 
 /**
  * Provides a base class for tableselect forms.
@@ -22,14 +19,14 @@ abstract class FormTestTableSelectFormBase extends FormBase {
    *   An associative array containing the structure of the form.
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The current state of the form.
-   * @param array $element_properties
+   * @param $element_properties
    *   An array of element properties for the tableselect element.
    *
    * @return array
    *   A form with a tableselect element and a submit button.
    */
   public function tableselectFormBuilder($form, FormStateInterface $form_state, $element_properties) {
-    [$header, $options] = Callbacks::tableselectGetData();
+    [$header, $options] = _form_test_tableselect_get_data();
 
     $form['tableselect'] = $element_properties;
 
@@ -40,26 +37,19 @@ abstract class FormTestTableSelectFormBase extends FormBase {
       '#header' => $header,
       '#options' => $options,
       '#multiple' => FALSE,
-      '#empty' => $this->t('Empty text.'),
+      '#empty' => t('Empty text.'),
       '#ajax' => [
-        'callback' => '::tableselectAjaxCallback',
+        'callback' => 'form_test_tableselect_ajax_callback',
         'wrapper' => 'tableselect-wrapper',
       ],
     ];
 
     $form['submit'] = [
       '#type' => 'submit',
-      '#value' => $this->t('Submit'),
+      '#value' => t('Submit'),
     ];
 
     return $form;
-  }
-
-  /**
-   * Ajax callback that returns the form element.
-   */
-  public function tableselectAjaxCallback(array $form, FormStateInterface $form_state): array {
-    return $form['tableselect'];
   }
 
 }

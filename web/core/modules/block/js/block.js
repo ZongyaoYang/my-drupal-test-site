@@ -78,7 +78,10 @@
   Drupal.behaviors.blockDrag = {
     attach(context, settings) {
       // tableDrag is required and we should be on the blocks admin page.
-      if (typeof Drupal?.tableDrag?.blocks === 'undefined') {
+      if (
+        typeof Drupal.tableDrag === 'undefined' ||
+        typeof Drupal.tableDrag.blocks === 'undefined'
+      ) {
         return;
       }
 

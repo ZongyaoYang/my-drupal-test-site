@@ -102,21 +102,15 @@ class Permission extends AccessPluginBase implements CacheableDependencyInterfac
     $route->setRequirement('_permission', $this->options['perm']);
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function summaryTitle() {
     $permissions = $this->permissionHandler->getPermissions();
     if (isset($permissions[$this->options['perm']])) {
       return $permissions[$this->options['perm']]['title'];
     }
-    // phpcs:ignore Drupal.Semantics.FunctionT.NotLiteralString
+
     return $this->t($this->options['perm']);
   }
 
-  /**
-   * {@inheritdoc}
-   */
   protected function defineOptions() {
     $options = parent::defineOptions();
     $options['perm'] = ['default' => 'access content'];
@@ -124,9 +118,6 @@ class Permission extends AccessPluginBase implements CacheableDependencyInterfac
     return $options;
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
     // Get list of permissions

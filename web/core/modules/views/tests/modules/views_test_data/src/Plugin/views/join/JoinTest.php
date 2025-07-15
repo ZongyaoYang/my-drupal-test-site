@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\views_test_data\Plugin\views\join;
 
 use Drupal\views\Attribute\ViewsJoin;
@@ -23,7 +21,6 @@ class JoinTest extends JoinPluginBase {
    * Returns the joinValue property.
    *
    * @return int
-   *   The value of the join.
    */
   public function getJoinValue() {
     return $this->joinValue;

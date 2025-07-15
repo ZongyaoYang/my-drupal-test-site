@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\field_test\Form;
 
 use Drupal\Core\Entity\EntityChangedInterface;
@@ -40,7 +38,7 @@ class NestedEntityTestForm extends FormBase {
     $form_state->set('form_display_2', $form_display_2);
     $form['entity_2'] = [
       '#type' => 'details',
-      '#title' => $this->t('Second entity'),
+      '#title' => t('Second entity'),
       '#tree' => TRUE,
       '#parents' => ['entity_2'],
       '#weight' => 50,
@@ -60,7 +58,7 @@ class NestedEntityTestForm extends FormBase {
 
     $form['save'] = [
       '#type' => 'submit',
-      '#value' => $this->t('Save'),
+      '#value' => t('Save'),
       '#weight' => 100,
     ];
 
@@ -105,11 +103,7 @@ class NestedEntityTestForm extends FormBase {
     $entity_2 = $form_state->get('entity_2');
     $entity_2->save();
 
-    $this->messenger()
-      ->addStatus($this->t('test_entities @id_1 and @id_2 have been updated.', [
-        '@id_1' => $entity_1->id(),
-        '@id_2' => $entity_2->id(),
-      ]));
+    $this->messenger()->addStatus($this->t('test_entities @id_1 and @id_2 have been updated.', ['@id_1' => $entity_1->id(), '@id_2' => $entity_2->id()]));
   }
 
 }

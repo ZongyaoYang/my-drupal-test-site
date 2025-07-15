@@ -2,12 +2,6 @@
 
 /**
  * @file
- */
-
-use Drupal\file\FileInterface;
-
-/**
- * @file
  * Hooks for file module.
  */
 
@@ -66,6 +60,38 @@ use Drupal\file\FileInterface;
  */
 
 /**
+ * Check that files meet a given criteria.
+ *
+ * This hook lets modules perform additional validation on files. They're able
+ * to report a failure by returning one or more error messages.
+ *
+ * @param \Drupal\file\FileInterface $file
+ *   The file entity being validated.
+ *
+ * @return array
+ *   An array of error messages. If there are no problems with the file return
+ *   an empty array.
+ *
+ * @deprecated in drupal:10.2.0 and is removed from drupal:11.0.0. Use the
+ *    'file.validator' service instead.
+ *
+ * @see https://www.drupal.org/node/3363700
+ * @see \Drupal\file\Validation\FileValidatorInterface
+ */
+function hook_file_validate(\Drupal\file\FileInterface $file) {
+  $errors = [];
+
+  if (!$file->getFilename()) {
+    $errors[] = t("The file's name is empty. Give a name to the file.");
+  }
+  if (strlen($file->getFilename()) > 255) {
+    $errors[] = t("The file's name exceeds the 255 characters limit. Rename the file and try again.");
+  }
+
+  return $errors;
+}
+
+/**
  * Respond to a file that has been copied.
  *
  * @param \Drupal\file\FileInterface $file
@@ -75,7 +101,7 @@ use Drupal\file\FileInterface;
  *
  * @see \Drupal\file\FileRepositoryInterface::copy()
  */
-function hook_file_copy(FileInterface $file, FileInterface $source): void {
+function hook_file_copy(\Drupal\file\FileInterface $file, \Drupal\file\FileInterface $source) {
   // Make sure that the file name starts with the owner's user name.
   if (!str_starts_with($file->getFilename(), $file->getOwner()->name)) {
     $file->setFilename($file->getOwner()->name . '_' . $file->getFilename());
@@ -95,7 +121,7 @@ function hook_file_copy(FileInterface $file, FileInterface $source): void {
  *
  * @see \Drupal\file\FileRepositoryInterface::move()
  */
-function hook_file_move(FileInterface $file, FileInterface $source): void {
+function hook_file_move(\Drupal\file\FileInterface $file, \Drupal\file\FileInterface $source) {
   // Make sure that the file name starts with the owner's user name.
   if (!str_starts_with($file->getFilename(), $file->getOwner()->name)) {
     $file->setFilename($file->getOwner()->name . '_' . $file->getFilename());

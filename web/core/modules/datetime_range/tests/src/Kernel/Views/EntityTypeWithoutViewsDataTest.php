@@ -20,7 +20,6 @@ class EntityTypeWithoutViewsDataTest extends KernelTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
-    'datetime',
     'datetime_range',
     'datetime_range_test',
     'node',

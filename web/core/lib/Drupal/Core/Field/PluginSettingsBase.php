@@ -22,9 +22,9 @@ abstract class PluginSettingsBase extends PluginBase implements PluginSettingsIn
   /**
    * The plugin settings injected by third party modules.
    *
-   * @var array
-   *
    * @see hooks
+   *
+   * @var array
    */
   protected $thirdPartySettings = [];
 

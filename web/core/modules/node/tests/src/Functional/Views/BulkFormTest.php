@@ -295,6 +295,7 @@ class BulkFormTest extends NodeTestBase {
   protected function loadNode($id) {
     /** @var \Drupal\node\NodeStorage $storage */
     $storage = $this->container->get('entity_type.manager')->getStorage('node');
+    $storage->resetCache([$id]);
     return $storage->load($id);
   }
 

@@ -82,7 +82,7 @@ class FilterDefaultFormatTest extends BrowserTestBase {
   /**
    * Rebuilds text format and permission caches in the thread running the tests.
    */
-  protected function resetFilterCaches(): void {
+  protected function resetFilterCaches() {
     filter_formats_reset();
   }
 

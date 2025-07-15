@@ -7,7 +7,6 @@ const selectors = {
     expanded: '[data-admin-toolbar="expanded"]',
     collapsed: '[data-admin-toolbar="collapsed"]',
   },
-  clearCacheButton: 'input[data-drupal-selector="edit-clear"]',
 };
 
 module.exports = {
@@ -16,7 +15,6 @@ module.exports = {
     browser
       .drupalInstall()
       .drupalInstallModule('navigation', true)
-      .drupalInstallModule('big_pipe')
       .setWindowSize(1220, 800);
   },
   after(browser) {
@@ -26,22 +24,19 @@ module.exports = {
   'Expand/Collapse': (browser) => {
     browser.drupalLoginAsAdmin(() => {
       browser
-        .drupalRelativeURL('/admin/config/development/performance')
-        .click(selectors.clearCacheButton)
+        .drupalRelativeURL('/')
         .waitForElementPresent(
-          '[data-once="admin-toolbar-document-triggers-listener"]',
+          '[data-once="admin-toolbar-document-triggers-listener"][data-admin-toolbar="expanded"]',
         )
         // This pause required to wait for first init event.
+        .waitForElementVisible(selectors.expandButton.expanded)
+        .click(selectors.expandButton.expanded)
         .waitForElementNotPresent(selectors.expandButton.expanded)
         .waitForElementPresent(selectors.expandButton.collapsed)
         .waitForElementPresent(selectors.htmlAttribute.collapsed)
         .click(selectors.expandButton.collapsed)
         .waitForElementPresent(selectors.expandButton.expanded)
-        .waitForElementPresent(selectors.htmlAttribute.expanded)
-        .click(selectors.expandButton.expanded)
-        .waitForElementNotPresent(selectors.expandButton.expanded)
-        .waitForElementPresent(selectors.expandButton.collapsed)
-        .waitForElementPresent(selectors.htmlAttribute.collapsed);
+        .waitForElementPresent(selectors.htmlAttribute.expanded);
     });
   },
 };

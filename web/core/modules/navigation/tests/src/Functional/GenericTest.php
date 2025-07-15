@@ -7,8 +7,8 @@ namespace Drupal\Tests\navigation\Functional;
 use Drupal\Tests\system\Functional\Module\GenericModuleTestBase;
 
 /**
- * Generic module test for navigation.
+ * Generic module test for contextual.
  *
- * @group navigation
+ * @group contextual
  */
 class GenericTest extends GenericModuleTestBase {}

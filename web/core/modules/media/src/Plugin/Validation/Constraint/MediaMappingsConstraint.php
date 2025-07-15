@@ -2,21 +2,20 @@
 
 namespace Drupal\media\Plugin\Validation\Constraint;
 
-use Drupal\Core\Validation\Attribute\Constraint;
-use Drupal\Core\StringTranslation\TranslatableMarkup;
-use Symfony\Component\Validator\Constraint as SymfonyConstraint;
+use Symfony\Component\Validator\Constraint;
 
 /**
  * Validates media mappings.
  *
  * @internal
+ *
+ * @Constraint(
+ *   id = "MediaMappingsConstraint",
+ *   label = @Translation("Media Mapping Constraint", context = "Validation"),
+ *   type = {"string"}
+ * )
  */
-#[Constraint(
-  id: 'MediaMappingsConstraint',
-  label: new TranslatableMarkup('Media Mapping Constraint', [], ['context' => 'Validation']),
-  type: 'string'
-)]
-class MediaMappingsConstraint extends SymfonyConstraint {
+class MediaMappingsConstraint extends Constraint {
 
   /**
    * The error message if source is used in media mapping.

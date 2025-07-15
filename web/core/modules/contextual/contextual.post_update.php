@@ -8,7 +8,7 @@
 /**
  * Implements hook_removed_post_updates().
  */
-function contextual_removed_post_updates(): array {
+function contextual_removed_post_updates() {
   return [
     'contextual_post_update_fixed_endpoint_and_markup' => '9.0.0',
   ];

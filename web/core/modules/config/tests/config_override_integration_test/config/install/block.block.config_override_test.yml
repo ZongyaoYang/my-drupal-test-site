@@ -14,6 +14,9 @@ settings:
   label: 'Test HTML block'
   label_display: visible
   provider: block_test
+  status: true
+  info: ''
+  view_mode: default
 visibility:
   request_path:
     id: request_path

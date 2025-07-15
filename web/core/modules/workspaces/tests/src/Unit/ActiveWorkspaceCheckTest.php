@@ -45,7 +45,6 @@ class ActiveWorkspaceCheckTest extends UnitTestCase {
    * Provides data for the testAccess method.
    *
    * @return array
-   *   An array of test data.
    */
   public static function providerTestAccess() {
     return [

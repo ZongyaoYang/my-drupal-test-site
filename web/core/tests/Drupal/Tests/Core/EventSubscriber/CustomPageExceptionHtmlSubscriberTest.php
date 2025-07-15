@@ -69,7 +69,6 @@ class CustomPageExceptionHtmlSubscriberTest extends UnitTestCase {
 
   /**
    * The mocked access unaware router.
-   *
    * @var \Symfony\Component\Routing\Matcher\UrlMatcherInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $accessUnawareRouter;

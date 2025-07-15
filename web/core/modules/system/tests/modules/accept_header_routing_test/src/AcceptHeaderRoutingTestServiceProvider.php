@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\accept_header_routing_test;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;

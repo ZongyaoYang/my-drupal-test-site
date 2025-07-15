@@ -32,21 +32,21 @@ class MigrateProcessErrorMessagesTest extends MigrateTestBase {
   ];
 
   /**
-   * A mock Process Plugin Manager.
+   * A prophesized Process Plugin Manager.
    *
    * @var \Prophecy\Prophecy\ObjectProphecy
    */
   protected ObjectProphecy $processPluginManager;
 
   /**
-   * A mock ID Map Plugin Manager.
+   * A prophesized ID Map Plugin Manager.
    *
    * @var \Prophecy\Prophecy\ObjectProphecy
    */
   protected ObjectProphecy $idMapPluginManager;
 
   /**
-   * A mock ID Map.
+   * A prophesized ID Map.
    *
    * @var \Prophecy\Prophecy\ObjectProphecy
    */
@@ -148,7 +148,7 @@ class MigrateProcessErrorMessagesTest extends MigrateTestBase {
   /**
    * Prepares and sets the prophesized plugin managers.
    */
-  protected function setPluginManagers(): void {
+  protected function setPluginManagers() {
     $error_plugin_prophecy = $this->prophesize(MigrateProcessInterface::class);
     $error_plugin_prophecy->getPluginDefinition()->willReturn(['plugin_id' => 'test_error']);
     $error_plugin_prophecy->getPluginId()->willReturn('test_error');

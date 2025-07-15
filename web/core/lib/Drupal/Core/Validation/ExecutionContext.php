@@ -110,8 +110,12 @@ class ExecutionContext implements ExecutionContextInterface {
 
   /**
    * {@inheritdoc}
+   *
+   * phpcs:ignore Drupal.Commenting.FunctionComment.VoidReturn
+   *
+   * @return void
    */
-  public function addViolation(string $message, array $params = []): void {
+  public function addViolation(string $message, array $params = []) {
     $this->violations->add(new ConstraintViolation($this->translator->trans($message, $params, $this->translationDomain), $message, $params, $this->root, $this->propertyPath, $this->value, NULL, NULL, $this->constraint));
   }
 
@@ -239,13 +243,6 @@ class ExecutionContext implements ExecutionContextInterface {
    */
   public function isObjectInitialized(string $cacheKey): bool {
     throw new \LogicException(ExecutionContextInterface::class . '::isObjectInitialized is unsupported.');
-  }
-
-  /**
-   * Clone this context.
-   */
-  public function __clone(): void {
-    $this->violations = clone $this->violations;
   }
 
 }

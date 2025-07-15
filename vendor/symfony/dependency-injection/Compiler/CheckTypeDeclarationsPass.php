@@ -61,6 +61,9 @@ final class CheckTypeDeclarationsPass extends AbstractRecursivePass
         'string' => true,
     ];
 
+    private bool $autoload;
+    private array $skippedIds;
+
     private ExpressionLanguage $expressionLanguage;
 
     /**
@@ -68,10 +71,10 @@ final class CheckTypeDeclarationsPass extends AbstractRecursivePass
      *                          Defaults to false to save loading code during compilation.
      * @param array $skippedIds An array indexed by the service ids to skip
      */
-    public function __construct(
-        private bool $autoload = false,
-        private array $skippedIds = [],
-    ) {
+    public function __construct(bool $autoload = false, array $skippedIds = [])
+    {
+        $this->autoload = $autoload;
+        $this->skippedIds = $skippedIds;
     }
 
     protected function processValue(mixed $value, bool $isRoot = false): mixed
@@ -126,7 +129,7 @@ final class CheckTypeDeclarationsPass extends AbstractRecursivePass
         $numberOfRequiredParameters = $reflectionFunction->getNumberOfRequiredParameters();
 
         if (\count($values) < $numberOfRequiredParameters) {
-            throw new InvalidArgumentException(\sprintf('Invalid definition for service "%s": "%s::%s()" requires %d arguments, %d passed.', $this->currentId, $reflectionFunction->class, $reflectionFunction->name, $numberOfRequiredParameters, \count($values)));
+            throw new InvalidArgumentException(sprintf('Invalid definition for service "%s": "%s::%s()" requires %d arguments, %d passed.', $this->currentId, $reflectionFunction->class, $reflectionFunction->name, $numberOfRequiredParameters, \count($values)));
         }
 
         $reflectionParameters = $reflectionFunction->getParameters();
@@ -274,7 +277,7 @@ final class CheckTypeDeclarationsPass extends AbstractRecursivePass
             return;
         }
 
-        if ('string' === $type && $class instanceof \Stringable) {
+        if ('string' === $type && method_exists($class, '__toString')) {
             return;
         }
 
@@ -315,7 +318,7 @@ final class CheckTypeDeclarationsPass extends AbstractRecursivePass
                 return;
             }
         } elseif ($reflectionType->isBuiltin()) {
-            $checkFunction = \sprintf('is_%s', $type);
+            $checkFunction = sprintf('is_%s', $type);
             if ($checkFunction($value)) {
                 return;
             }

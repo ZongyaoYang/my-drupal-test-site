@@ -16,11 +16,6 @@ use Drupal\Core\Validation\Plugin\Validation\Constraint\UniqueFieldValueValidato
 )]
 class FileUriUnique extends UniqueFieldConstraint {
 
-  /**
-   * The error message.
-   *
-   * @var string
-   */
   public $message = 'The file %value already exists. Enter a unique file URI.';
 
   /**

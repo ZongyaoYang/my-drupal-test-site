@@ -29,20 +29,16 @@ class ModerationFormTest extends ModerationStateTestBase {
 
   /**
    * {@inheritdoc}
+   *
+   * @todo Remove and fix test to not rely on super user.
+   * @see https://www.drupal.org/project/drupal/issues/3437620
    */
-  protected $defaultTheme = 'stark';
+  protected bool $usesSuperUserAccessPolicy = TRUE;
 
   /**
    * {@inheritdoc}
    */
-  protected function getAdministratorPermissions(): array {
-    return array_merge($this->permissions, [
-      'administer entity_test content',
-      'view test entity',
-      'translate any entity',
-      'bypass node access',
-    ]);
-  }
+  protected $defaultTheme = 'stark';
 
   /**
    * {@inheritdoc}
@@ -200,8 +196,7 @@ class ModerationFormTest extends ModerationStateTestBase {
    * Tests moderation non-bundle entity type.
    */
   public function testNonBundleModerationForm(): void {
-    $this->adminUser = $this->drupalCreateUser($this->getAdministratorPermissions());
-    $this->drupalLogin($this->adminUser);
+    $this->drupalLogin($this->rootUser);
     $this->workflow->getTypePlugin()->addEntityTypeAndBundle('entity_test_mulrevpub', 'entity_test_mulrevpub');
     $this->workflow->save();
 
@@ -295,8 +290,7 @@ class ModerationFormTest extends ModerationStateTestBase {
    * Tests translated and moderated nodes.
    */
   public function testContentTranslationNodeForm(): void {
-    $this->adminUser = $this->drupalCreateUser($this->getAdministratorPermissions());
-    $this->drupalLogin($this->adminUser);
+    $this->drupalLogin($this->rootUser);
 
     // Add French language.
     static::createLanguageFromLangcode('fr');

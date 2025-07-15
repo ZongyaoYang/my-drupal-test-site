@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\theme_test\Theme;
 
 use Drupal\Core\Routing\RouteMatchInterface;

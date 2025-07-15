@@ -81,11 +81,6 @@ class ExtensionDiscovery {
    * The file cache object.
    *
    * @var \Drupal\Component\FileCache\FileCacheInterface
-   *
-   * @deprecated in drupal:11.2.0 and is removed from drupal:12.0.0. There is no
-   *   direct replacement.
-   *
-   * @see https://www.drupal.org/node/3490431
    */
   protected $fileCache;
 
@@ -97,35 +92,22 @@ class ExtensionDiscovery {
   protected $sitePath;
 
   /**
-   * The info parser.
-   *
-   * Reads .info.yml files efficiently.
-   *
-   * @var \Drupal\Core\Extension\InfoParser|null
-   */
-  protected ?InfoParser $infoParser;
-
-  /**
    * Constructs a new ExtensionDiscovery object.
    *
    * @param string $root
    *   The app root.
-   * @param bool $use_info_parser
-   *   Whether the info_parser should be used. Note this argument also
-   *   determines if the deprecated file cache property is set to maintain BC in
-   *   Drupal 11.
+   * @param bool $use_file_cache
+   *   Whether file cache should be used.
    * @param string[] $profile_directories
-   *   The available profile directories.
+   *   The available profile directories
    * @param string $site_path
    *   The path to the site.
    */
-  public function __construct(string $root, $use_info_parser = TRUE, ?array $profile_directories = NULL, ?string $site_path = NULL) {
+  public function __construct(string $root, $use_file_cache = TRUE, ?array $profile_directories = NULL, ?string $site_path = NULL) {
     $this->root = $root;
-    // @phpstan-ignore property.deprecated
-    $this->fileCache = $use_info_parser ? FileCacheFactory::get('extension_discovery') : NULL;
+    $this->fileCache = $use_file_cache ? FileCacheFactory::get('extension_discovery') : NULL;
     $this->profileDirectories = $profile_directories;
     $this->sitePath = $site_path;
-    $this->infoParser = $use_info_parser ? new InfoParser($root) : NULL;
   }
 
   /**
@@ -471,9 +453,12 @@ class ExtensionDiscovery {
         continue;
       }
 
-      // Determine the extension type from the info file.
-      $type = FALSE;
-      if ($this->infoParser === NULL) {
+      $extension_arguments = $this->fileCache ? $this->fileCache->get($fileinfo->getPathName()) : FALSE;
+      // Ensure $extension_arguments is an array. Previously, the Extension
+      // object was cached and now needs to be replaced with the array.
+      if (empty($extension_arguments) || !is_array($extension_arguments)) {
+        // Determine extension type from info file.
+        $type = FALSE;
         $file = $fileinfo->openFile('r');
         while (!$type && !$file->eof()) {
           preg_match('@^type:\s*(\'|")?(\w+)\1?\s*(?:\#.*)?$@', $file->fgets(), $matches);
@@ -481,37 +466,43 @@ class ExtensionDiscovery {
             $type = $matches[2];
           }
         }
-      }
-      else {
-        $type = $this->infoParser->parse($fileinfo->getPathname())['type'] ?? FALSE;
-      }
-      if (empty($type)) {
-        continue;
+        if (empty($type)) {
+          continue;
+        }
+        $name = $fileinfo->getBasename('.info.yml');
+        $pathname = $dir_prefix . $fileinfo->getSubPathname();
+
+        // Determine whether the extension has a main extension file.
+        // For theme engines, the file extension is .engine.
+        if ($type == 'theme_engine') {
+          $filename = $name . '.engine';
+        }
+        // For profiles/modules/themes, it is the extension type.
+        else {
+          $filename = $name . '.' . $type;
+        }
+        if (!file_exists($this->root . '/' . dirname($pathname) . '/' . $filename)) {
+          $filename = NULL;
+        }
+        $extension_arguments = [
+          'type' => $type,
+          'pathname' => $pathname,
+          'filename' => $filename,
+          'subpath' => $fileinfo->getSubPath(),
+        ];
+
+        if ($this->fileCache) {
+          $this->fileCache->set($fileinfo->getPathName(), $extension_arguments);
+        }
       }
 
-      $name = $fileinfo->getBasename('.info.yml');
-      $pathname = $dir_prefix . $fileinfo->getSubPathname();
-
-      // Determine whether the extension has a main extension file.
-      // For theme engines, the file extension is .engine.
-      if ($type == 'theme_engine') {
-        $filename = $name . '.engine';
-      }
-      // For profiles/modules/themes, it is the extension type.
-      else {
-        $filename = $name . '.' . $type;
-      }
-      if (!file_exists($this->root . '/' . dirname($pathname) . '/' . $filename)) {
-        $filename = NULL;
-      }
-
-      $extension = new Extension($this->root, $type, $pathname, $filename);
+      $extension = new Extension($this->root, $extension_arguments['type'], $extension_arguments['pathname'], $extension_arguments['filename']);
 
       // Track the originating directory for sorting purposes.
-      $extension->subpath = $fileinfo->getSubPath();
+      $extension->subpath = $extension_arguments['subpath'];
       $extension->origin = $dir;
 
-      $files[$type][$key] = $extension;
+      $files[$extension_arguments['type']][$key] = $extension;
     }
     return $files;
   }

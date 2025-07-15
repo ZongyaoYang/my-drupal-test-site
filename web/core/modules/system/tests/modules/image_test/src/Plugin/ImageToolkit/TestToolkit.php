@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\image_test\Plugin\ImageToolkit;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -253,11 +251,7 @@ class TestToolkit extends ImageToolkitBase {
    *   IMAGETYPE_* constant (e.g. IMAGETYPE_JPEG, IMAGETYPE_PNG, etc.).
    */
   protected static function supportedTypes() {
-    $types = [IMAGETYPE_PNG, IMAGETYPE_JPEG, IMAGETYPE_GIF];
-    if (\Drupal::keyValue('image_test')->get('avif_enabled', FALSE)) {
-      $types[] = IMAGETYPE_AVIF;
-    }
-    return $types;
+    return [IMAGETYPE_PNG, IMAGETYPE_JPEG, IMAGETYPE_GIF];
   }
 
   /**

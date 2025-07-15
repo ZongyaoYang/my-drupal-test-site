@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\search_embedded_form\Form;
 
 use Drupal\Core\Form\FormBase;

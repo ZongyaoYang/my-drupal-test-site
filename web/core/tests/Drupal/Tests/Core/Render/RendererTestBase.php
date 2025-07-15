@@ -286,15 +286,11 @@ abstract class RendererTestBase extends UnitTestCase {
 
 }
 
-/**
- * Placeholders test class with implemented trusted callbacks.
- */
+
 class PlaceholdersTest implements TrustedCallbackInterface {
 
   /**
-   * Render API callback: Attaches setting and generates markup.
-   *
-   * This function is assigned as an #lazy_builder callback.
+   * #lazy_builder callback; attaches setting, generates markup.
    *
    * @param string $animal
    *   An animal.
@@ -321,7 +317,7 @@ class PlaceholdersTest implements TrustedCallbackInterface {
   }
 
   /**
-   * The #lazy_builder callback; attaches setting, generates markup, user-specific.
+   * #lazy_builder callback; attaches setting, generates markup, user-specific.
    *
    * @param string $animal
    *   An animal.
@@ -341,7 +337,7 @@ class PlaceholdersTest implements TrustedCallbackInterface {
   }
 
   /**
-   * The #lazy_builder callback; attaches setting, generates markup, cache tag.
+   * #lazy_builder callback; attaches setting, generates markup, cache tag.
    *
    * @param string $animal
    *   An animal.

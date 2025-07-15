@@ -50,7 +50,7 @@
 
   function getDimensions(elem) {
     const raw = elem[0];
-    if (raw.nodeType === Node.DOCUMENT_NODE) {
+    if (raw.nodeType === 9) {
       return {
         width: elem.width(),
         height: elem.height(),
@@ -351,8 +351,7 @@
       const withinElement = $(element || window);
       const isWindow =
         !!withinElement[0] && withinElement[0] === withinElement[0].window;
-      const isDocument =
-        !!withinElement[0] && withinElement[0].nodeType === Node.DOCUMENT_NODE;
+      const isDocument = !!withinElement[0] && withinElement[0].nodeType === 9;
       const hasOffset = !isWindow && !isDocument;
       return {
         element: withinElement,

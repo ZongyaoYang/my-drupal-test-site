@@ -1,9 +1,9 @@
-no_version:
+versionless:
   css:
     theme:
-      no_version.css: {}
+      versionless.css: {}
   js:
-    no_version.js: {}
+    versionless.js: {}
 
 versioned:
   version: "9.8.7.6"

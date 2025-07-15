@@ -20,9 +20,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ContainerParametersResourceChecker implements ResourceCheckerInterface
 {
-    public function __construct(
-        private ContainerInterface $container,
-    ) {
+    private ContainerInterface $container;
+
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
     }
 
     public function supports(ResourceInterface $metadata): bool

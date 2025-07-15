@@ -13,6 +13,20 @@ use Drupal\Core\Language\LanguageManagerInterface;
 class AliasManager implements AliasManagerInterface {
 
   /**
+   * The path alias repository.
+   *
+   * @var \Drupal\path_alias\AliasRepositoryInterface
+   */
+  protected $pathAliasRepository;
+
+  /**
+   * Cache backend service.
+   *
+   * @var \Drupal\Core\Cache\CacheBackendInterface
+   */
+  protected $cache;
+
+  /**
    * The cache key to use when caching paths.
    *
    * @var string
@@ -27,6 +41,13 @@ class AliasManager implements AliasManagerInterface {
   protected $cacheNeedsWriting = FALSE;
 
   /**
+   * Language manager for retrieving the default langcode when none is specified.
+   *
+   * @var \Drupal\Core\Language\LanguageManagerInterface
+   */
+  protected $languageManager;
+
+  /**
    * Holds the map of path lookups per language.
    *
    * @var array
@@ -39,6 +60,13 @@ class AliasManager implements AliasManagerInterface {
    * @var array
    */
   protected $noPath = [];
+
+  /**
+   * Holds the array of whitelisted path aliases.
+   *
+   * @var \Drupal\path_alias\AliasWhitelistInterface
+   */
+  protected $whitelist;
 
   /**
    * Holds an array of paths that have no alias.
@@ -64,13 +92,35 @@ class AliasManager implements AliasManagerInterface {
    */
   protected $preloadedPathLookups = FALSE;
 
+  /**
+   * Constructs an AliasManager.
+   *
+   * @param \Drupal\path_alias\AliasRepositoryInterface $alias_repository
+   *   The path alias repository.
+   * @param \Drupal\path_alias\AliasWhitelistInterface $whitelist
+   *   The whitelist implementation to use.
+   * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
+   *   The language manager.
+   * @param \Drupal\Core\Cache\CacheBackendInterface $cache
+   *   Cache backend.
+   * @param \Drupal\Component\Datetime\TimeInterface|null $time
+   *   The time service.
+   */
   public function __construct(
-    protected AliasRepositoryInterface $pathAliasRepository,
-    protected AliasPrefixListInterface $pathPrefixes,
-    protected LanguageManagerInterface $languageManager,
-    protected CacheBackendInterface $cache,
-    protected TimeInterface $time,
+    AliasRepositoryInterface $alias_repository,
+    AliasWhitelistInterface $whitelist,
+    LanguageManagerInterface $language_manager,
+    CacheBackendInterface $cache,
+    protected ?TimeInterface $time = NULL,
   ) {
+    $this->pathAliasRepository = $alias_repository;
+    $this->languageManager = $language_manager;
+    $this->whitelist = $whitelist;
+    $this->cache = $cache;
+    if (!$time) {
+      @trigger_error('Calling ' . __METHOD__ . '() without the $time argument is deprecated in drupal:10.3.0 and it will be required in drupal:11.0.0. See https://www.drupal.org/node/3387233', E_USER_DEPRECATED);
+      $this->time = \Drupal::service(TimeInterface::class);
+    }
   }
 
   /**
@@ -153,10 +203,10 @@ class AliasManager implements AliasManagerInterface {
     // alias matching the URL path.
     $langcode = $langcode ?: $this->languageManager->getCurrentLanguage(LanguageInterface::TYPE_URL)->getId();
 
-    // Check the path prefix, if the top-level part before the first / is not in
-    // the list, then there is no need to do anything further, it is not in the
-    // database.
-    if ($path === '/' || !$this->pathPrefixes->get(strtok(trim($path, '/'), '/'))) {
+    // Check the path whitelist, if the top-level part before the first /
+    // is not in the list, then there is no need to do anything further,
+    // it is not in the database.
+    if ($path === '/' || !$this->whitelist->get(strtok(trim($path, '/'), '/'))) {
       return $path;
     }
 
@@ -230,42 +280,39 @@ class AliasManager implements AliasManagerInterface {
     $this->noAlias = [];
     $this->langcodePreloaded = [];
     $this->preloadedPathLookups = [];
-    $this->pathAliasPrefixListRebuild($source);
+    $this->pathAliasWhitelistRebuild($source);
   }
 
   /**
-   * Rebuild the path alias prefix list.
+   * Rebuild the path alias white list.
    *
    * @param string $path
    *   An optional path for which an alias is being inserted.
    */
-  protected function pathAliasPrefixListRebuild($path = NULL) {
-    // When paths are inserted, only rebuild the prefix list if the path has a
-    // top level component which is not already in the prefix list.
+  protected function pathAliasWhitelistRebuild($path = NULL) {
+    // When paths are inserted, only rebuild the whitelist if the path has a top
+    // level component which is not already in the whitelist.
     if (!empty($path)) {
-      if ($this->pathPrefixes->get(strtok($path, '/'))) {
+      if ($this->whitelist->get(strtok($path, '/'))) {
         return;
       }
     }
-    $this->pathPrefixes->clear();
+    $this->whitelist->clear();
   }
 
   /**
-   * Rebuild the path alias prefix list.
+   * Wrapper method for REQUEST_TIME constant.
    *
-   * @param string $path
-   *   An optional path for which an alias is being inserted.
+   * @return int
    *
-   * @deprecated in drupal:11.1.0 and is removed from drupal:12.0.0.
-   *  Use \Drupal\path_alias\AliasManager::pathAliasPrefixListRebuild instead.
+   * @deprecated in drupal:10.3.0 and is removed from drupal:11.0.0. Use
+   *   the $this->time->getRequestTime() service instead.
    *
-   * @see https://www.drupal.org/node/3467559
-   *
-   * cspell:ignore whitelist
+   * @see https://www.drupal.org/node/3387233
    */
-  protected function pathAliasWhitelistRebuild($path = NULL) {
-    @trigger_error(__METHOD__ . '() is deprecated in drupal:11.1.0 and is removed from drupal:12.0.0. Use \Drupal\path_alias\AliasManager::pathAliasPrefixListRebuild() instead. See https://www.drupal.org/node/3467559', E_USER_DEPRECATED);
-    $this->pathAliasPrefixListRebuild($path);
+  protected function getRequestTime() {
+    @trigger_error(__METHOD__ . '() is deprecated in drupal:10.3.0 and is removed from drupal:11.0.0. Use the $this->time->getRequestTime() instead. See https://www.drupal.org/node/3387233', E_USER_DEPRECATED);
+    return $this->time->getRequestTime();
   }
 
 }

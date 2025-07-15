@@ -27,7 +27,7 @@ class Fixtures {
    * @return array
    *   composer.json fixture data.
    */
-  protected function composerJson(): array {
+  protected function composerJson() {
     return [
       'name' => 'drupal/project-fixture',
       'description' => 'A fixture for testing the metapackage generator.',
@@ -52,7 +52,7 @@ class Fixtures {
    * @return array
    *   composer.lock fixture data.
    */
-  protected function composerLock(): array {
+  protected function composerLock() {
     return [
       '_readme' =>
       [

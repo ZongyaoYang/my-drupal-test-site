@@ -5,7 +5,6 @@
  * Hooks for the Help system.
  */
 
-use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Url;
 
 /**
@@ -65,11 +64,11 @@ use Drupal\Core\Url;
  *   The current route match. This can be used to generate different help
  *   output for different pages that share the same route.
  *
- * @return string|\Stringable|array|null
+ * @return string|array
  *   A render array, localized string, or object that can be rendered into
  *   a string, containing the help text.
  */
-function hook_help($route_name, RouteMatchInterface $route_match): string|\Stringable|array|null {
+function hook_help($route_name, \Drupal\Core\Routing\RouteMatchInterface $route_match) {
   switch ($route_name) {
     // Main module help for the block module.
     case 'help.page.block':
@@ -79,7 +78,6 @@ function hook_help($route_name, RouteMatchInterface $route_match): string|\Strin
     case 'block.admin_display':
       return '<p>' . t('This page provides a drag-and-drop interface for assigning a block to a region, and for controlling the order of blocks within regions. Since not all themes implement the same regions, or display regions in the same way, blocks are positioned on a per-theme basis. Remember that your changes will not be saved until you click the <em>Save blocks</em> button at the bottom of the page.') . '</p>';
   }
-  return NULL;
 }
 
 /**

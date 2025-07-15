@@ -46,7 +46,7 @@ abstract class AttributeValueBase {
    * While __toString only returns the value in a string form, render()
    * contains the name of the attribute as well.
    *
-   * @return string|null
+   * @return string
    *   The string representation of the attribute.
    */
   public function render() {
@@ -54,7 +54,6 @@ abstract class AttributeValueBase {
     if (isset($this->value) && static::RENDER_EMPTY_ATTRIBUTE || !empty($value)) {
       return Html::escape($this->name) . '="' . $value . '"';
     }
-    return NULL;
   }
 
   /**

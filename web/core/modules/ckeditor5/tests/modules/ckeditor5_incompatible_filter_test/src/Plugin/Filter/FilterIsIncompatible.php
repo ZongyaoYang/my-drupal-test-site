@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\ckeditor5_incompatible_filter_test\Plugin\Filter;
 
 use Drupal\Core\StringTranslation\TranslatableMarkup;

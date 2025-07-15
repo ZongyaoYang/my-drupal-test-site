@@ -316,12 +316,10 @@ class FieldTest extends UnitTestCase {
   }
 
   /**
-   * Tests the click sort order.
+   * @dataProvider providerSortOrders
    *
    * @param string $order
    *   The sort order.
-   *
-   * @dataProvider providerSortOrders
    */
   public function testClickSortWithOutConfiguredColumn($order): void {
     $definition = [
@@ -338,11 +336,12 @@ class FieldTest extends UnitTestCase {
   }
 
   /**
-   * @covers ::clickSort
    * @dataProvider providerSortOrders
    *
    * @param string $order
    *   The sort order.
+   *
+   * @covers ::clickSort
    */
   public function testClickSortWithBaseField($order): void {
     $definition = [
@@ -397,11 +396,12 @@ class FieldTest extends UnitTestCase {
   }
 
   /**
-   * @covers ::clickSort
    * @dataProvider providerSortOrders
    *
    * @param string $order
    *   The sort order.
+   *
+   * @covers ::clickSort
    */
   public function testClickSortWithConfiguredField($order): void {
     $definition = [
@@ -667,7 +667,6 @@ class FieldTest extends UnitTestCase {
    * Returns a mocked base field storage object.
    *
    * @return \Drupal\Core\Field\FieldStorageDefinitionInterface|\PHPUnit\Framework\MockObject\MockObject
-   *   The mocked field storage object.
    */
   protected function getBaseFieldStorage() {
     $title_storage = $this->createMock('Drupal\Core\Field\FieldStorageDefinitionInterface');
@@ -687,7 +686,6 @@ class FieldTest extends UnitTestCase {
    * Returns a mocked configurable field storage object.
    *
    * @return \Drupal\field\FieldStorageConfigInterface|\PHPUnit\Framework\MockObject\MockObject
-   *   The mocked field storage object.
    */
   protected function getConfigFieldStorage() {
     $title_storage = $this->createMock('Drupal\field\FieldStorageConfigInterface');
@@ -707,7 +705,6 @@ class FieldTest extends UnitTestCase {
    * Provides sort orders for clickSort() test methods.
    *
    * @return array
-   *   An array of sort orders.
    */
   public static function providerSortOrders() {
     return [
@@ -723,10 +720,10 @@ class FieldTest extends UnitTestCase {
    *
    * @param \Drupal\views\Plugin\views\field\EntityField $handler
    *   The field handler.
-   * @param array $definition
+   * @param $definition
    *   An array with entity type definition data.
    */
-  protected function setupLanguageRenderer(EntityField $handler, $definition): void {
+  protected function setupLanguageRenderer(EntityField $handler, $definition) {
     $display_handler = $this->getMockBuilder('\Drupal\views\Plugin\views\display\DisplayPluginBase')
       ->disableOriginalConstructor()
       ->getMock();
@@ -757,14 +754,8 @@ class FieldTest extends UnitTestCase {
 
 }
 
-/**
- * Stub class for testing EntityField methods.
- */
 class FieldTestEntityField extends EntityField {
 
-  /**
-   * {@inheritdoc}
-   */
   public function executePrepareItemsByDelta(array $all_values) {
     return $this->prepareItemsByDelta($all_values);
   }

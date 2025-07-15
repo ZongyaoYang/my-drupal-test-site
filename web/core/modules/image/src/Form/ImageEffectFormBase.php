@@ -58,7 +58,7 @@ abstract class ImageEffectFormBase extends FormBase {
     try {
       $this->imageEffect = $this->prepareImageEffect($image_effect);
     }
-    catch (PluginNotFoundException) {
+    catch (PluginNotFoundException $e) {
       throw new NotFoundHttpException("Invalid effect id: '$image_effect'.");
     }
     $request = $this->getRequest();

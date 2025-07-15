@@ -244,9 +244,6 @@ class FormStateValuesTraitTest extends UnitTestCase {
 
 }
 
-/**
- * Stub class with trait for testing.
- */
 class FormStateValuesTraitStub {
 
   use FormStateValuesTrait;

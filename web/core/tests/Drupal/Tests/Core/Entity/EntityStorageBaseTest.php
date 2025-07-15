@@ -53,10 +53,10 @@ class EntityStorageBaseTest extends UnitTestCase {
     }
     $entity_fixture = array_map([$this, 'generateEntityInterface'], $entity_fixture);
 
-    $mock_base = $this->getMockBuilder(StubEntityStorageBase::class)
+    $mock_base = $this->getMockBuilder('\Drupal\Core\Entity\EntityStorageBase')
       ->disableOriginalConstructor()
       ->onlyMethods(['loadMultiple'])
-      ->getMock();
+      ->getMockForAbstractClass();
 
     // load() always calls loadMultiple().
     $mock_base->expects($this->once())
@@ -105,10 +105,10 @@ class EntityStorageBaseTest extends UnitTestCase {
     $load_multiple = array_map([$this, 'generateEntityInterface'], $load_multiple);
 
     // Make our EntityStorageBase mock.
-    $mock_base = $this->getMockBuilder(StubEntityStorageBase::class)
+    $mock_base = $this->getMockBuilder('\Drupal\Core\Entity\EntityStorageBase')
       ->disableOriginalConstructor()
       ->onlyMethods(['doLoadMultiple', 'postLoad'])
-      ->getMock();
+      ->getMockForAbstractClass();
 
     // For all non-cached queries, we call doLoadMultiple().
     $mock_base->expects($this->once())

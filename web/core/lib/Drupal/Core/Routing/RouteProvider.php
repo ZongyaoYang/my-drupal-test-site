@@ -5,7 +5,6 @@ namespace Drupal\Core\Routing;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
-use Drupal\Core\Database\Statement\FetchAs;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Path\CurrentPathStack;
@@ -13,7 +12,6 @@ use Drupal\Core\PathProcessor\InboundPathProcessorInterface;
 use Drupal\Core\State\StateInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Alias;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\RouteCollection;
 use Drupal\Core\Database\Connection;
@@ -123,8 +121,7 @@ class RouteProvider implements CacheableRouteProviderInterface, PreloadableRoute
    * @param \Drupal\Core\Cache\CacheTagsInvalidatorInterface $cache_tag_invalidator
    *   The cache tag invalidator.
    * @param string $table
-   *   (Optional) The table in the database to use for matching. Defaults to
-   *   'router'.
+   *   (Optional) The table in the database to use for matching. Defaults to 'router'
    * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
    *   (Optional) The language manager.
    */
@@ -200,7 +197,7 @@ class RouteProvider implements CacheableRouteProviderInterface, PreloadableRoute
    * Find the route using the provided route name.
    *
    * @param string $name
-   *   The route name to fetch.
+   *   The route name to fetch
    *
    * @return \Symfony\Component\Routing\Route
    *   The found route.
@@ -214,16 +211,7 @@ class RouteProvider implements CacheableRouteProviderInterface, PreloadableRoute
       throw new RouteNotFoundException(sprintf('Route "%s" does not exist.', $name));
     }
 
-    $result = reset($routes);
-    if ($result instanceof Alias) {
-      $alias = $result->getId();
-      if ($result->isDeprecated()) {
-        $deprecation = $result->getDeprecation($name);
-        @trigger_error($deprecation['message'], E_USER_DEPRECATED);
-      }
-      return $this->getRouteByName($alias);
-    }
-    return $result;
+    return reset($routes);
   }
 
   /**
@@ -248,7 +236,7 @@ class RouteProvider implements CacheableRouteProviderInterface, PreloadableRoute
 
           $this->cache->set($cid, $routes, Cache::PERMANENT, ['routes']);
         }
-        catch (\Exception) {
+        catch (\Exception $e) {
           $routes = [];
         }
       }
@@ -316,8 +304,7 @@ class RouteProvider implements CacheableRouteProviderInterface, PreloadableRoute
         continue;
       }
       elseif ($i < (1 << $length)) {
-        // We have exhausted the masks of a given length, so decrease the
-        // length.
+        // We have exhausted the masks of a given length, so decrease the length.
         --$length;
       }
       $current = '';
@@ -384,9 +371,9 @@ class RouteProvider implements CacheableRouteProviderInterface, PreloadableRoute
         ':patterns[]' => $ancestors,
         ':count_parts' => count($parts),
       ])
-        ->fetchAll(FetchAs::Associative);
+        ->fetchAll(\PDO::FETCH_ASSOC);
     }
-    catch (\Exception) {
+    catch (\Exception $e) {
       $routes = [];
     }
 
@@ -418,8 +405,7 @@ class RouteProvider implements CacheableRouteProviderInterface, PreloadableRoute
    */
   public function getAllRoutes() {
     $select = $this->connection->select($this->tableName, 'router')
-      ->fields('router', ['name', 'route'])
-      ->isNull('alias');
+      ->fields('router', ['name', 'route']);
     $routes = $select->execute()->fetchAllKeyed();
 
     $result = [];
@@ -495,7 +481,6 @@ class RouteProvider implements CacheableRouteProviderInterface, PreloadableRoute
    *   Request.
    *
    * @return string
-   *   The query parameters identifier for the route collection cache.
    */
   protected function getQueryParametersCacheIdPart(Request $request) {
     // @todo Use \Symfony\Component\HttpFoundation\Request::normalizeQueryString
@@ -510,7 +495,7 @@ class RouteProvider implements CacheableRouteProviderInterface, PreloadableRoute
     };
     // Recursively normalize the query parameters to ensure maximal cache hits.
     // If we did not normalize the order, functionally identical query string
-    // sets could be sent in different order creating a potential DoS vector
+    // sets could be sent in differing order creating a potential DoS vector
     // and decreasing cache hit rates.
     $sorted_resolved_parameters = $request->query->all();
     $recursive_sort($sorted_resolved_parameters);
@@ -541,18 +526,6 @@ class RouteProvider implements CacheableRouteProviderInterface, PreloadableRoute
     // \Drupal\path_alias\AliasManager::getPathByAlias().
     // @todo Update this if necessary in https://www.drupal.org/node/1125428.
     return $this->languageManager->getCurrentLanguage(LanguageInterface::TYPE_URL)->getId();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getRouteAliases(string $route_name): iterable {
-    $alias_route_names = $this->connection->select($this->tableName, 'router')
-      ->fields('router', ['name'])
-      ->condition('alias', $route_name)
-      ->execute()->fetchCol();
-
-    return $this->getRoutesByNames($alias_route_names);
   }
 
 }

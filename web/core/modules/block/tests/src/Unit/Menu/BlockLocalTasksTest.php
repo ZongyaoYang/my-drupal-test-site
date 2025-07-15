@@ -85,26 +85,8 @@ class BlockLocalTasksTest extends LocalTaskIntegrationTestBase {
    */
   public static function providerTestBlockAdminDisplay() {
     return [
-      [
-        'block.admin_display',
-        [
-          ['block.admin_display'],
-          [
-            'block.admin_display_theme:test_b',
-            'block.admin_display_theme:test_c',
-          ],
-        ],
-      ],
-      [
-        'block.admin_display_theme',
-        [
-          ['block.admin_display'],
-          [
-            'block.admin_display_theme:test_b',
-            'block.admin_display_theme:test_c',
-          ],
-        ],
-      ],
+      ['block.admin_display', [['block.admin_display'], ['block.admin_display_theme:test_b', 'block.admin_display_theme:test_c']]],
+      ['block.admin_display_theme', [['block.admin_display'], ['block.admin_display_theme:test_b', 'block.admin_display_theme:test_c']]],
     ];
   }
 

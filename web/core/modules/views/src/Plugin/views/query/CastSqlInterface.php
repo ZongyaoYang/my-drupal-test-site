@@ -10,11 +10,10 @@ interface CastSqlInterface {
   /**
    * Returns a database expression to cast the field to int.
    *
-   * @param string $field
+   * @param $field string
    *   The database field to cast.
    *
    * @return string
-   *   The database expression to cast the field to int.
    */
   public function getFieldAsInt(string $field): string;
 

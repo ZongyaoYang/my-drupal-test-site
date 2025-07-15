@@ -42,7 +42,6 @@ class FieldUiPermissions implements ContainerInjectionInterface {
    * Returns an array of field UI permissions.
    *
    * @return array
-   *   An array of field UI permissions keyed by permission name.
    */
   public function fieldPermissions() {
     $permissions = [];

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\file_test\StreamWrapper;
 
 use Drupal\Core\StreamWrapper\PublicStream;
@@ -19,14 +17,14 @@ class DummyRemoteStreamWrapper extends PublicStream {
    * {@inheritdoc}
    */
   public function getName() {
-    return 'Dummy files (remote)';
+    return t('Dummy files (remote)');
   }
 
   /**
    * {@inheritdoc}
    */
   public function getDescription() {
-    return 'Dummy wrapper for testing (remote).';
+    return t('Dummy wrapper for testing (remote).');
   }
 
   public function realpath() {

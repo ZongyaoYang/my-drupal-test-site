@@ -39,8 +39,6 @@ class EntityFormDisplayValidationTest extends ConfigEntityValidationTestBase {
   protected function setUp(): void {
     parent::setUp();
 
-    $this->installEntitySchema('node');
-    $this->installEntitySchema('user');
     $this->installConfig('node');
     $this->createContentType(['type' => 'one']);
     $this->createContentType(['type' => 'two']);

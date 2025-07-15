@@ -1,15 +1,10 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\config_test;
 
 use Drupal\Core\Config\Entity\ConfigEntityStorage;
 use Drupal\Core\Config\Config;
 
-/**
- * Storage class for testing configuration entity storage.
- */
 class ConfigTestStorage extends ConfigEntityStorage {
 
   /**

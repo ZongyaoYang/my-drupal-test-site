@@ -57,6 +57,7 @@ class FileFieldRSSContentTest extends FileFieldTestBase {
     $nid = $this->uploadNodeFile($test_file, $field_name, $node->id());
 
     // Get the uploaded file from the node.
+    $node_storage->resetCache([$nid]);
     $node = $node_storage->load($nid);
     $node_file = File::load($node->{$field_name}->target_id);
 

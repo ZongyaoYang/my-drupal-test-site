@@ -19,9 +19,9 @@ class PlainTextOutputTest extends TestCase {
   /**
    * Tests ::renderFromHtml().
    *
-   * @param string $expected
+   * @param $expected
    *   The expected formatted value.
-   * @param string $string
+   * @param $string
    *   A string to be formatted.
    * @param array $args
    *   (optional) An associative array of replacements to make. Defaults to

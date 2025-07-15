@@ -19,17 +19,8 @@ class PerformanceController extends ControllerBase {
    *   configuration form.
    */
   public function build(): array {
-    // Load the cache form and embed it in a details element.
-    $cache_clear = $this->formBuilder()->getForm(ClearCacheForm::class);
-    $cache_clear['clear_cache'] = [
-      '#type' => 'details',
-      '#title' => $this->t('Clear cache'),
-      '#open' => TRUE,
-      'clear' => $cache_clear['clear'],
-    ];
-    unset($cache_clear['clear']);
     return [
-      'cache_clear' => $cache_clear,
+      'cache_clear' => $this->formBuilder()->getForm(ClearCacheForm::class),
       'performance' => $this->formBuilder()->getForm(PerformanceForm::class),
     ];
   }

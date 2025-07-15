@@ -13,9 +13,6 @@ use Drupal\views\Plugin\views\sort\SortPluginBase;
 #[ViewsSort("comment_thread")]
 class Thread extends SortPluginBase {
 
-  /**
-   * {@inheritdoc}
-   */
   public function query() {
     $this->ensureMyTable();
 

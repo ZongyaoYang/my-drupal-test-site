@@ -4,7 +4,6 @@ namespace Drupal\field_ui\Access;
 
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Access\AccessResultInterface;
-use Drupal\Core\Cache\CacheableDependencyInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldTypePluginManagerInterface;
@@ -82,14 +81,7 @@ class FieldReuseAccessCheck implements AccessInterface {
           $access = $access->orIf(AccessResult::allowedIfHasPermission($account, $permission));
         }
       }
-      // @todo https://www.drupal.org/project/drupal/issues/3446507 Decide if
-      // this logic needs to be changed or removed.
-      if ($this->entityFieldManager instanceof CacheableDependencyInterface) {
-        $access->addCacheableDependency($this->entityFieldManager);
-      }
-      else {
-        $access->setCacheMaxAge(0);
-      }
+      $access->addCacheableDependency($this->entityFieldManager);
     }
     return $access;
   }

@@ -14,10 +14,7 @@ use Symfony\Component\Routing\Route;
  * - have an accompanying outbound route processor, that overwrites this empty
  *   route definition with the redirected route's definition.
  *
- * @deprecated in drupal:11.2.0 and is removed from drupal:12.0.0. Use route
- * aliases instead.
- *
- * @see https://www.drupal.org/node/3317784
+ * @see \Drupal\rest\RouteProcessor\RestResourceGetRouteProcessorBC
  */
 class BcRoute extends Route {
 
@@ -27,7 +24,6 @@ class BcRoute extends Route {
   public function __construct() {
     parent::__construct('');
     $this->setOption('bc_route', TRUE);
-    @trigger_error(__CLASS__ . ' is deprecated in drupal:11.2.0 and is removed from drupal:12.0.0. Use route aliases instead. See https://www.drupal.org/node/3317784', E_USER_DEPRECATED);
   }
 
 }

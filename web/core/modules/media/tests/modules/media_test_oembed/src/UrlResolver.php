@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\media_test_oembed;
 
 use Drupal\media\OEmbed\UrlResolver as BaseUrlResolver;

@@ -5,11 +5,9 @@
  * Provides hook implementations for Layout Test.
  */
 
-declare(strict_types=1);
-
 /**
  * Implements hook_preprocess_HOOK() for layout templates.
  */
-function template_preprocess_layout_test_2col(&$variables): void {
+function template_preprocess_layout_test_2col(&$variables) {
   $variables['region_attributes']['left']->addClass('class-added-by-preprocess');
 }

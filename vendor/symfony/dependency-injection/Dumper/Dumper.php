@@ -20,8 +20,10 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 abstract class Dumper implements DumperInterface
 {
-    public function __construct(
-        protected ContainerBuilder $container,
-    ) {
+    protected $container;
+
+    public function __construct(ContainerBuilder $container)
+    {
+        $this->container = $container;
     }
 }

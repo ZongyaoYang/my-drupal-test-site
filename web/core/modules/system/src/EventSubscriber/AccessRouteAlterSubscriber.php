@@ -17,13 +17,13 @@ class AccessRouteAlterSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents(): array {
+  public static function getSubscribedEvents() {
     $events[RoutingEvents::ALTER][] = 'accessAdminMenuBlockPage';
     return $events;
   }
 
   /**
-   * Adds requirements to some System Controller routes.
+   * Adds _access_admin_menu_block_page requirement to routes pointing to SystemController::systemAdminMenuBlockPage.
    *
    * @param \Drupal\Core\Routing\RouteBuildEvent $event
    *   The event to process.

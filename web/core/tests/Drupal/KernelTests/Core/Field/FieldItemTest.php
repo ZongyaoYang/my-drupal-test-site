@@ -36,6 +36,7 @@ class FieldItemTest extends EntityKernelTestBase {
 
     $this->fieldName = $this->randomMachineName();
 
+    /** @var \Drupal\field\Entity\FieldStorageConfig $field_storage */
     FieldStorageConfig::create([
       'field_name' => $this->fieldName,
       'type' => 'field_test',

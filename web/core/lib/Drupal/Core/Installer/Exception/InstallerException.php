@@ -38,7 +38,6 @@ class InstallerException extends \RuntimeException {
    * Returns the exception page title.
    *
    * @return string
-   *   The page title.
    */
   public function getTitle() {
     return $this->title;

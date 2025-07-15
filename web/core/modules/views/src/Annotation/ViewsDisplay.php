@@ -30,7 +30,7 @@ class ViewsDisplay extends ViewsPluginAnnotationBase {
   public $title = '';
 
   /**
-   * An optional short title used in the views UI.
+   * (optional) The short title used in the views UI.
    *
    * @var \Drupal\Core\Annotation\Translation
    *
@@ -83,14 +83,20 @@ class ViewsDisplay extends ViewsPluginAnnotationBase {
   /**
    * A list of places where contextual links should be added.
    *
-   * For example, ['page','block' ]
+   * For example:
+   * @code
+   * [
+   *   'page',
+   *   'block',
+   * ]
+   * @endcode
    *
    * If you don't specify it there will be contextual links rendered for all
    * displays of a view. If this is not set or regions have been specified,
    * views will display an option to 'hide contextual links'. Use an empty
    * array to disable.
    *
-   * @var string[]
+   * @var array
    */
   public $contextual_links_locations;
 

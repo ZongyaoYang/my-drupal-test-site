@@ -103,7 +103,7 @@ class ThemeHandlerTest extends UnitTestCase {
       $this->themeHandler->addTheme($theme);
       $this->assertTrue(TRUE, 'Empty libraries key in theme.info.yml does not cause PHP warning');
     }
-    catch (\Exception) {
+    catch (\Exception $e) {
       $this->fail('Empty libraries key in theme.info.yml causes PHP warning.');
     }
   }
@@ -142,14 +142,14 @@ class StubThemeHandler extends ThemeHandler {
   /**
    * {@inheritdoc}
    */
-  protected function clearCssCache(): void {
+  protected function clearCssCache() {
     $this->clearedCssCache = TRUE;
   }
 
   /**
    * {@inheritdoc}
    */
-  protected function themeRegistryRebuild(): void {
+  protected function themeRegistryRebuild() {
     $this->registryRebuild = TRUE;
   }
 

@@ -20,19 +20,18 @@ use Psr\Container\NotFoundExceptionInterface;
  */
 class ServiceNotFoundException extends InvalidArgumentException implements NotFoundExceptionInterface
 {
-    public function __construct(
-        private string $id,
-        private ?string $sourceId = null,
-        ?\Throwable $previous = null,
-        private array $alternatives = [],
-        ?string $msg = null,
-    ) {
+    private string $id;
+    private ?string $sourceId;
+    private array $alternatives;
+
+    public function __construct(string $id, ?string $sourceId = null, ?\Throwable $previous = null, array $alternatives = [], ?string $msg = null)
+    {
         if (null !== $msg) {
             // no-op
         } elseif (null === $sourceId) {
-            $msg = \sprintf('You have requested a non-existent service "%s".', $id);
+            $msg = sprintf('You have requested a non-existent service "%s".', $id);
         } else {
-            $msg = \sprintf('The service "%s" has a dependency on a non-existent service "%s".', $sourceId, $id);
+            $msg = sprintf('The service "%s" has a dependency on a non-existent service "%s".', $sourceId, $id);
         }
 
         if ($alternatives) {
@@ -45,19 +44,32 @@ class ServiceNotFoundException extends InvalidArgumentException implements NotFo
         }
 
         parent::__construct($msg, 0, $previous);
+
+        $this->id = $id;
+        $this->sourceId = $sourceId;
+        $this->alternatives = $alternatives;
     }
 
-    public function getId(): string
+    /**
+     * @return string
+     */
+    public function getId()
     {
         return $this->id;
     }
 
-    public function getSourceId(): ?string
+    /**
+     * @return string|null
+     */
+    public function getSourceId()
     {
         return $this->sourceId;
     }
 
-    public function getAlternatives(): array
+    /**
+     * @return array
+     */
+    public function getAlternatives()
     {
         return $this->alternatives;
     }

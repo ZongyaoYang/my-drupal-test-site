@@ -62,7 +62,7 @@ abstract class QueryPluginBase extends PluginBase implements CacheableDependency
   /**
    * Generate a query and a countQuery from all of the information supplied.
    *
-   * @param bool $get_count
+   * @param $get_count
    *   Provide a countQuery if this is true, otherwise provide a normal query.
    */
   public function query($get_count = FALSE) {}
@@ -115,19 +115,10 @@ abstract class QueryPluginBase extends PluginBase implements CacheableDependency
    */
   public function getAggregationInfo() {}
 
-  /**
-   * {@inheritdoc}
-   */
   public function validateOptionsForm(&$form, FormStateInterface $form_state) {}
 
-  /**
-   * {@inheritdoc}
-   */
   public function submitOptionsForm(&$form, FormStateInterface $form_state) {}
 
-  /**
-   * {@inheritdoc}
-   */
   public function summaryTitle() {
     return $this->t('Settings');
   }
@@ -171,13 +162,13 @@ abstract class QueryPluginBase extends PluginBase implements CacheableDependency
   /**
    * Create a new grouping for the WHERE or HAVING clause.
    *
-   * @param string $type
+   * @param $type
    *   Either 'AND' or 'OR'. All items within this group will be added
    *   to the WHERE clause with this logical operator.
-   * @param string|null $group
+   * @param $group
    *   An ID to use for this group. If unspecified, an ID will be generated.
-   * @param string $where
-   *   The type of clause, either 'where' or 'having'.
+   * @param $where
+   *   'where' or 'having'.
    *
    * @return int|string
    *   The group ID generated.
@@ -202,8 +193,8 @@ abstract class QueryPluginBase extends PluginBase implements CacheableDependency
   /**
    * Control how all WHERE and HAVING groups are put together.
    *
-   * @param string $type
-   *   Either 'AND' or 'OR'.
+   * @param $type
+   *   Either 'AND' or 'OR'
    */
   public function setGroupOperator($type = 'AND') {
     $this->groupOperator = strtoupper($type);

@@ -10,7 +10,8 @@ namespace Drupal\Tests\Core\Render;
  */
 class RendererRecursionTest extends RendererTestBase {
 
-  protected function setUpRenderRecursionComplexElements(): array {
+  protected function setUpRenderRecursionComplexElements() {
+    $complex_child_markup = '<p>Imagine this is a render array for an entity.</p>';
     $parent_markup = '<p>Rendered!</p>';
 
     $complex_child_template = [
@@ -23,18 +24,18 @@ class RendererRecursionTest extends RendererTestBase {
       '#create_placeholder' => TRUE,
     ];
 
-    return [$parent_markup, $complex_child_template];
+    return [$complex_child_markup, $parent_markup, $complex_child_template];
   }
 
   /**
-   * Tests that renderRoot() may not be called recursively.
+   * ::renderRoot() may not be called inside of another ::renderRoot() call.
    *
    * @covers ::renderRoot
    * @covers ::render
    * @covers ::doRender
    */
   public function testRenderRecursionWithNestedRenderRoot(): void {
-    [$parent_markup, $complex_child_template] = $this->setUpRenderRecursionComplexElements();
+    [$complex_child_markup, $parent_markup, $complex_child_template] = $this->setUpRenderRecursionComplexElements();
     $renderer = $this->renderer;
     $this->setUpRequest();
 
@@ -56,7 +57,7 @@ class RendererRecursionTest extends RendererTestBase {
   }
 
   /**
-   * Tests that render() may be called from anywhere.
+   * ::render() may be called from anywhere.
    *
    * Including from inside of another ::renderRoot() call. Bubbling must be
    * performed.
@@ -66,7 +67,7 @@ class RendererRecursionTest extends RendererTestBase {
    * @covers ::doRender
    */
   public function testRenderRecursionWithNestedRender(): void {
-    [$parent_markup, $complex_child_template] = $this->setUpRenderRecursionComplexElements();
+    [$complex_child_markup, $parent_markup, $complex_child_template] = $this->setUpRenderRecursionComplexElements();
     $renderer = $this->renderer;
     $this->setUpRequest();
 
@@ -92,13 +93,15 @@ class RendererRecursionTest extends RendererTestBase {
   }
 
   /**
-   * Tests that renderRoot() can be called from anywhere including recursively.
+   * ::renderInIsolation() may be called from anywhere.
+   *
+   * Including from inside of another ::renderRoot() call.
    *
    * @covers ::renderRoot
    * @covers ::renderInIsolation
    */
   public function testRenderRecursionWithNestedRenderInIsolation(): void {
-    [$parent_markup, $complex_child_template] = $this->setUpRenderRecursionComplexElements();
+    [$complex_child_markup, $parent_markup, $complex_child_template] = $this->setUpRenderRecursionComplexElements();
     $renderer = $this->renderer;
     $this->setUpRequest();
 

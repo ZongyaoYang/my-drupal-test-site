@@ -60,6 +60,7 @@ class Composer {
     }
     if ($repository->findPackage('symfony/dependency-injection', $constraint)) {
       $autoload['classmap'] = array_merge($autoload['classmap'], [
+        $vendor_dir . '/symfony/dependency-injection/ContainerAwareInterface.php',
         $vendor_dir . '/symfony/dependency-injection/ContainerInterface.php',
       ]);
     }
@@ -91,7 +92,7 @@ class Composer {
       return;
     }
 
-    // If the PHP version is 8.4 or above and PHPUnit is less than version 11
+    // If the PHP version is 7.4 or above and PHPUnit is less than version 9
     // call the drupal-phpunit-upgrade script to upgrade PHPUnit.
     if (!static::upgradePHPUnitCheck($phpunit_package->getVersion())) {
       $event->getComposer()
@@ -115,7 +116,7 @@ class Composer {
    * @internal
    */
   public static function upgradePHPUnitCheck($phpunit_version) {
-    return !(version_compare(PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION, '8.4') >= 0 && version_compare($phpunit_version, '11.0') < 0);
+    return !(version_compare(PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION, '7.4') >= 0 && version_compare($phpunit_version, '9.0') < 0);
   }
 
 }

@@ -160,10 +160,10 @@ class UpdateFetcherTest extends UnitTestCase {
   /**
    * Mocks the HTTP client.
    *
-   * @param \GuzzleHttp\Psr7\Response ...$responses
+   * @param \GuzzleHttp\Psr7\Response ...
    *   Variable number of Response objects that the mocked client should return.
    */
-  protected function mockClient(Response ...$responses): void {
+  protected function mockClient(Response ...$responses) {
     // Create a mock and queue responses.
     $mock_handler = new MockHandler($responses);
     $handler_stack = HandlerStack::create($mock_handler);

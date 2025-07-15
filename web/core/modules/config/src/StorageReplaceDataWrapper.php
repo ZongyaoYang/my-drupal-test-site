@@ -188,7 +188,7 @@ class StorageReplaceDataWrapper implements StorageInterface {
   /**
    * Replaces the configuration object data with the supplied data.
    *
-   * @param string $name
+   * @param $name
    *   The configuration object name whose data to replace.
    * @param array $data
    *   The configuration data.

@@ -28,7 +28,7 @@ class Node extends FieldPluginBase {
   public function init(ViewExecutable $view, DisplayPluginBase $display, ?array &$options = NULL) {
     parent::init($view, $display, $options);
 
-    // Don't add the additional fields to group by.
+    // Don't add the additional fields to groupby
     if (!empty($this->options['link_to_node'])) {
       $this->additional_fields['nid'] = ['table' => 'node_field_data', 'field' => 'nid'];
     }

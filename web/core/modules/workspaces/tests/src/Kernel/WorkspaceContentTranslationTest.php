@@ -35,7 +35,6 @@ class WorkspaceContentTranslationTest extends KernelTestBase {
     'language',
     'user',
     'workspaces',
-    'workspaces_test',
   ];
 
   /**
@@ -66,13 +65,12 @@ class WorkspaceContentTranslationTest extends KernelTestBase {
   /**
    * Tests translations created in a workspace.
    *
-   * @covers \Drupal\workspaces\Hook\EntityOperations::entityTranslationInsert
+   * @covers \Drupal\workspaces\EntityOperations::entityTranslationInsert
    */
   public function testTranslations(): void {
     $storage = $this->entityTypeManager->getStorage('entity_test_mulrevpub');
 
-    // Create two untranslated nodes in Live, a published and an unpublished
-    // one.
+    // Create two untranslated nodes in Live, a published and an unpublished one.
     $entity_published = $storage->create(['name' => 'live - 1 - published', 'status' => TRUE]);
     $entity_published->save();
     $entity_unpublished = $storage->create(['name' => 'live - 2 - unpublished', 'status' => FALSE]);
@@ -84,9 +82,6 @@ class WorkspaceContentTranslationTest extends KernelTestBase {
     // Add a translation for each entity.
     $entity_published->addTranslation('ro', ['name' => 'live - 1 - published - RO']);
     $entity_published->save();
-
-    // Test that the default revision translation is created in a WS.
-    $this->assertTrue(\Drupal::keyValue('ws_test')->get('workspace_was_active'));
 
     $entity_unpublished->addTranslation('ro', ['name' => 'live - 2 - unpublished - RO']);
     $entity_unpublished->save();

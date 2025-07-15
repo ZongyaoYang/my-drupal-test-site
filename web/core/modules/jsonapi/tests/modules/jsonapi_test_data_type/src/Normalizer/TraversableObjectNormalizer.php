@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\jsonapi_test_data_type\Normalizer;
 
 use Drupal\jsonapi_test_data_type\TraversableObject;

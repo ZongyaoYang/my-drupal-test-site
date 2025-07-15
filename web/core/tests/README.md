@@ -1,5 +1,3 @@
-<!-- cspell:ignore skiptags -->
-
 # Running tests
 
 ## Setting up
@@ -31,6 +29,9 @@ Settings to change in this file:
 * SIMPLETEST_DB: The URL of your Drupal database
 * The bootstrap attribute of the top-level phpunit tag, to take into account
   the location of the file
+* BROWSERTEST_OUTPUT_DIRECTORY: Set to sites/simpletest/browser_output;
+  you will also want to uncomment the printerClass attribute of the
+  top-level phpunit tag.
 
 ### Additional setup for JavaScript tests
 
@@ -52,7 +53,7 @@ a particular group:
 ```
 ./vendor/bin/phpunit -c /path/to/your/phpunit.xml path/to/your/class/file.php
 ./vendor/bin/phpunit --list-groups
-./vendor/bin/phpunit -c /path/to/your/phpunit.xml --group group_name
+./vendor/bin/phpunit -c /path/to/your/phpunit.xml --group Groupname
 ```
 
 Drupal core currently has a number of different types of tests that can be run
@@ -156,7 +157,7 @@ If you run into file permission problems while running tests, you may need to
 invoke the phpunit executable with a user in the same group as the web server
 user, or with access to files owned by the web server user. For example:
 ```
-sudo -u www-data ./vendor/bin/phpunit -c /path/to/your/phpunit.xml --group group_name
+sudo -u www-data ./vendor/bin/phpunit -c /path/to/your/phpunit.xml --group Groupname
 ```
 
 If you have permission problems accessing files after running tests, try

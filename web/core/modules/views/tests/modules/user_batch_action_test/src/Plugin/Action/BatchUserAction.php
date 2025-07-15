@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\user_batch_action_test\Plugin\Action;
 
 use Drupal\Core\Action\ActionBase;

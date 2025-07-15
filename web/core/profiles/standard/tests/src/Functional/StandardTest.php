@@ -15,9 +15,6 @@ use Drupal\Tests\standard\Traits\StandardTestTrait;
 class StandardTest extends BrowserTestBase {
   use StandardTestTrait;
 
-  /**
-   * {@inheritdoc}
-   */
   protected $profile = 'standard';
 
 }

@@ -108,7 +108,7 @@ class SystemMenuBlock extends BlockBase implements ContainerFactoryPluginInterfa
     $form['menu_levels']['depth'] = [
       '#type' => 'select',
       '#title' => $this->t('Number of levels to display'),
-      '#default_value' => $config['depth'] ?? 0,
+      '#default_value' => $config['depth'],
       '#options' => $options,
       '#description' => $this->t('This maximum number includes the initial level.'),
       '#required' => TRUE,
@@ -139,7 +139,7 @@ class SystemMenuBlock extends BlockBase implements ContainerFactoryPluginInterfa
    */
   public function blockSubmit($form, FormStateInterface $form_state) {
     $this->configuration['level'] = $form_state->getValue('level');
-    $this->configuration['depth'] = $form_state->getValue('depth') ?: NULL;
+    $this->configuration['depth'] = $form_state->getValue('depth');
     $this->configuration['expand_all_items'] = $form_state->getValue('expand_all_items');
   }
 
@@ -203,7 +203,7 @@ class SystemMenuBlock extends BlockBase implements ContainerFactoryPluginInterfa
   public function defaultConfiguration() {
     return [
       'level' => 1,
-      'depth' => NULL,
+      'depth' => 0,
       'expand_all_items' => FALSE,
     ];
   }
@@ -233,13 +233,6 @@ class SystemMenuBlock extends BlockBase implements ContainerFactoryPluginInterfa
     // accessibility of a menu, will be bubbled automatically.
     $menu_name = $this->getDerivativeId();
     return Cache::mergeContexts(parent::getCacheContexts(), ['route.menu_active_trails:' . $menu_name]);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function createPlaceholder(): bool {
-    return TRUE;
   }
 
 }

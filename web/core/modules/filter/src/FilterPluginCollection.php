@@ -21,7 +21,6 @@ class FilterPluginCollection extends DefaultLazyPluginCollection {
    * {@inheritdoc}
    *
    * @return \Drupal\filter\Plugin\FilterInterface
-   *   The filter plugin instance.
    */
   public function &get($instance_id) {
     return parent::get($instance_id);

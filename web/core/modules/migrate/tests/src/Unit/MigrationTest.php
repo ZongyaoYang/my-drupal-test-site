@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Drupal\Tests\migrate\Unit;
 
 use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
+use Drupal\migrate\Plugin\MigrateDestinationPluginManager;
+use Drupal\migrate\Plugin\MigratePluginManagerInterface;
+use Drupal\migrate\Plugin\MigrateSourcePluginManager;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\Migration;
 use Drupal\migrate\Exception\RequirementsException;
@@ -30,6 +33,8 @@ class MigrationTest extends UnitTestCase {
    * @covers ::__construct
    *
    * @dataProvider getInvalidMigrationDependenciesProvider
+   *
+   * @group legacy
    */
   public function testMigrationDependenciesInConstructor(array $dependencies): void {
 
@@ -41,8 +46,7 @@ class MigrationTest extends UnitTestCase {
     $destination_plugin_manager = $this->createMock('\Drupal\migrate\Plugin\MigrateDestinationPluginManager');
     $id_map_plugin_manager = $this->createMock('\Drupal\migrate\Plugin\MigratePluginManagerInterface');
 
-    $this->expectException(InvalidPluginDefinitionException::class);
-    $this->expectExceptionMessage("Invalid migration dependencies configuration for migration test_migration");
+    $this->expectDeprecation("Invalid migration dependencies for {$plugin_id} is deprecated in drupal:10.1.0 and will cause an error in drupal:11.0.0. See https://www.drupal.org/node/3266691");
     new Migration($configuration, $plugin_id, [], $migration_plugin_manager, $source_plugin_manager, $process_plugin_manager, $destination_plugin_manager, $id_map_plugin_manager);
   }
 
@@ -174,7 +178,7 @@ class MigrationTest extends UnitTestCase {
     if (!is_null($source)) {
       $migration->set('migration_dependencies', $source);
     }
-    $this->assertSame($migration->getMigrationDependencies(), $expected_value);
+    $this->assertSame($migration->getMigrationDependencies(TRUE), $expected_value);
   }
 
   /**
@@ -197,11 +201,12 @@ class MigrationTest extends UnitTestCase {
     $migration->setPluginId($plugin_id);
 
     // Migration dependencies expects ['optional' => []] or ['required' => []]].
+    $this->expectDeprecation("Invalid migration dependencies for {$plugin_id} is deprecated in drupal:10.1.0 and will cause an error in drupal:11.0.0. See https://www.drupal.org/node/3266691");
     $migration->set('migration_dependencies', $dependencies);
 
     $this->expectException(InvalidPluginDefinitionException::class);
     $this->expectExceptionMessage("Invalid migration dependencies configuration for migration {$plugin_id}");
-    $migration->getMigrationDependencies();
+    $migration->getMigrationDependencies(TRUE);
   }
 
   /**
@@ -250,191 +255,29 @@ class MigrationTest extends UnitTestCase {
   }
 
   /**
-   * Tests the addition of required dependencies.
+   * Test trackLastImported deprecation message in Migration constructor.
    *
-   * @param string[]|null $initial_dependency
-   *   The migration dependencies configuration being tested.
-   * @param string[] $addition
-   *   Add array of additions.
-   * @param string[] $expected
-   *   The migration dependencies configuration array expected.
-   *
-   * @covers ::addRequiredDependencies
-   * @dataProvider providerTestAddRequiredDependencies
-   *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @group legacy
    */
-  public function testAddRequiredDependencies(?array $initial_dependency, array $addition, array $expected): void {
-    $migration = new TestMigration($initial_dependency);
-    $migration->setMigrationPluginManager($this->getMockPluginManager());
-
-    $migration->addRequiredDependencies($addition);
-    $this->assertSame($expected, $migration->getMigrationDependencies());
+  public function testTrackLastImportedDeprecation(): void {
+    $this->expectDeprecation("The key 'trackLastImported' is deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. There is no replacement. See https://www.drupal.org/node/3282894");
+    $migration_plugin_manager = $this->createMock(MigrationPluginManagerInterface::class);
+    $source_plugin_manager = $this->createMock(MigrateSourcePluginManager::class);
+    $process_Plugin_manager = $this->createMock(MigratePluginManagerInterface::class);
+    $destination_plugin_manager = $this->createMock(MigrateDestinationPluginManager::class);
+    $id_map_plugin_manager = $this->createMock(MigratePluginManagerInterface::class);
+    new Migration([], 'test', ['trackLastImported' => TRUE], $migration_plugin_manager, $source_plugin_manager, $process_Plugin_manager, $destination_plugin_manager, $id_map_plugin_manager);
   }
 
   /**
-   * Provides data for testAddRequiredDependencies.
-   */
-  public static function providerTestAddRequiredDependencies(): array {
-    return [
-      'NULL' => [
-        NULL,
-        ['foo'],
-        [
-          'required' => ['foo'],
-          'optional' => [],
-        ],
-      ],
-      'empty' => [
-        [],
-        ['foo', 'bar'],
-        [
-          'required' => ['foo', 'bar'],
-          'optional' => [],
-        ],
-      ],
-      'add empty' => [
-        ['required' => ['block']],
-        [],
-        [
-          'required' => ['block'],
-          'optional' => [],
-        ],
-      ],
-      'add one' => [
-        ['required' => ['block']],
-        ['foo'],
-        [
-          'required' => ['block', 'foo'],
-          'optional' => [],
-        ],
-      ],
-      'add two' => [
-        ['required' => ['block']],
-        ['foo', 'bar'],
-        [
-          'required' => ['block', 'foo', 'bar'],
-          'optional' => [],
-        ],
-      ],
-      'add existing' => [
-        ['required' => ['foo']],
-        ['foo', 'bar'],
-        [
-          'required' => [0 => 'foo', 2 => 'bar'],
-          'optional' => [],
-        ],
-      ],
-      'add two, with optional' => [
-        ['required' => ['block'], 'optional' => ['foo']],
-        ['foo', 'bar'],
-        [
-          'required' => ['block', 'foo', 'bar'],
-          'optional' => ['foo'],
-        ],
-      ],
-    ];
-  }
-
-  /**
-   * Tests the addition of optional dependencies.
+   * Tests deprecation of getMigrationDependencies(FALSE).
    *
-   * @param string[]|null $initial_dependency
-   *   The migration dependencies configuration being tested.
-   * @param string[] $addition
-   *   Add array of additions.
-   * @param string[] $expected
-   *   The migration dependencies configuration array expected.
-   *
-   * @covers ::addOptionalDependencies
-   * @dataProvider providerTestAddOptionalDependencies
+   * @group legacy
    */
-  public function testAddOptionalDependencies(?array $initial_dependency, array $addition, array $expected): void {
-    $migration = new TestMigration($initial_dependency);
-    $migration->setMigrationPluginManager($this->getMockPluginManager());
-
-    $migration->addOptionalDependencies($addition);
-    $this->assertSame($expected, $migration->getMigrationDependencies());
-  }
-
-  /**
-   * Provides data for testAddOptionalDependencies.
-   */
-  public static function providerTestAddOptionalDependencies(): array {
-    return [
-      'NULL' => [
-        NULL,
-        ['foo'],
-        [
-          'required' => [],
-          'optional' => ['foo'],
-        ],
-      ],
-      'empty' => [
-        [],
-        ['foo', 'bar'],
-        [
-          'required' => [],
-          'optional' => ['foo', 'bar'],
-        ],
-      ],
-      'add empty' => [
-        ['optional' => ['block']],
-        [],
-        [
-          'optional' => ['block'],
-          'required' => [],
-        ],
-      ],
-      'add one' => [
-        ['optional' => ['block']],
-        ['foo'],
-        [
-          'optional' => ['block', 'foo'],
-          'required' => [],
-        ],
-      ],
-      'add two' => [
-        ['optional' => ['block']],
-        ['foo', 'bar'],
-        [
-          'optional' => ['block', 'foo', 'bar'],
-          'required' => [],
-        ],
-      ],
-      'add existing' => [
-        ['optional' => ['foo']],
-        ['foo', 'bar'],
-        [
-          'optional' => [0 => 'foo', 1 => 'bar'],
-          'required' => [],
-        ],
-      ],
-      'add two, with optional' => [
-        ['optional' => ['block'], 'required' => ['foo']],
-        ['foo', 'bar'],
-        [
-          'optional' => ['block', 'foo', 'bar'],
-          'required' => ['foo'],
-        ],
-      ],
-    ];
-  }
-
-  // Set the plugin manager.
-
-  /**
-   * Returns a mock MigrationPluginManager.
-   *
-   * @return \Drupal\migrate\Plugin\MigrationPluginManagerInterface|\PHPUnit\Framework\MockObject\MockObject
-   *   A configured MigrationPluginManager test mock.
-   */
-  public function getMockPluginManager() {
-    $plugin_manager = $this->createMock('Drupal\migrate\Plugin\MigrationPluginManagerInterface');
-    $plugin_manager->expects($this->exactly(2))
-      ->method('expandPluginIds')
-      ->willReturnArgument(0);
-    return $plugin_manager;
+  public function testGetMigrationDependencies(): void {
+    $migration = new TestMigration();
+    $this->expectDeprecation('Calling Migration::getMigrationDependencies() without expanding the plugin IDs is deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. In most cases, use getMigrationDependencies(TRUE). See https://www.drupal.org/node/3266691');
+    $migration->getMigrationDependencies();
   }
 
 }
@@ -446,17 +289,9 @@ class TestMigration extends Migration {
 
   /**
    * Constructs an instance of TestMigration object.
-   *
-   * @param string[]|null $initial_dependency
-   *   An associative array of required and optional migrations IDs, keyed by
-   *   'required' and 'optional'.
    */
-  public function __construct(?array $initial_dependency = NULL) {
+  public function __construct() {
     $this->migration_dependencies = ($this->migration_dependencies ?: []) + ['required' => [], 'optional' => []];
-    if ($initial_dependency) {
-      $this->migration_dependencies = $initial_dependency;
-    }
-    $this->requirements = ['require1', 'require2'];
   }
 
   /**
@@ -465,7 +300,7 @@ class TestMigration extends Migration {
    * @param string $plugin_id
    *   The plugin ID of the plugin instance.
    */
-  public function setPluginId($plugin_id): void {
+  public function setPluginId($plugin_id) {
     $this->pluginId = $plugin_id;
   }
 
@@ -475,7 +310,7 @@ class TestMigration extends Migration {
    * @param array $requirements
    *   The array of requirement values.
    */
-  public function setRequirements(array $requirements): void {
+  public function setRequirements(array $requirements) {
     $this->requirements = $requirements;
   }
 
@@ -485,7 +320,7 @@ class TestMigration extends Migration {
    * @param \Drupal\migrate\Plugin\MigrateSourceInterface $source_plugin
    *   The source Plugin.
    */
-  public function setSourcePlugin(MigrateSourceInterface $source_plugin): void {
+  public function setSourcePlugin(MigrateSourceInterface $source_plugin) {
     $this->sourcePlugin = $source_plugin;
   }
 
@@ -495,7 +330,7 @@ class TestMigration extends Migration {
    * @param \Drupal\migrate\Plugin\MigrateDestinationInterface $destination_plugin
    *   The destination Plugin.
    */
-  public function setDestinationPlugin(MigrateDestinationInterface $destination_plugin): void {
+  public function setDestinationPlugin(MigrateDestinationInterface $destination_plugin) {
     $this->destinationPlugin = $destination_plugin;
   }
 
@@ -505,7 +340,7 @@ class TestMigration extends Migration {
    * @param \Drupal\migrate\Plugin\MigrationPluginManagerInterface $plugin_manager
    *   The plugin manager service.
    */
-  public function setMigrationPluginManager(MigrationPluginManagerInterface $plugin_manager): void {
+  public function setMigrationPluginManager(MigrationPluginManagerInterface $plugin_manager) {
     $this->migrationPluginManager = $plugin_manager;
   }
 

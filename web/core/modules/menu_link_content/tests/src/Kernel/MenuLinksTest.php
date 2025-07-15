@@ -209,9 +209,9 @@ class MenuLinksTest extends KernelTestBase {
   }
 
   /**
-   * Tests automatic update of parent menu links.
+   * Tests automatic reparenting of menu links.
    */
-  public function testMenuLinkParentUpdate($module = 'menu_test'): void {
+  public function testMenuLinkReparenting($module = 'menu_test'): void {
     // Check the initial hierarchy.
     $links = $this->createLinkHierarchy($module);
 
@@ -277,7 +277,7 @@ class MenuLinksTest extends KernelTestBase {
   /**
    * Tests the MenuLinkContent::preDelete function.
    */
-  public function testMenuLinkContentParentUpdate(): void {
+  public function testMenuLinkContentReparenting(): void {
     // Add new menu items in a hierarchy.
     $parent = MenuLinkContent::create([
       'title' => $this->randomMachineName(8),

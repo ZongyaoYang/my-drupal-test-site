@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\file\Functional;
 
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\file\FileInterface;
@@ -103,7 +104,7 @@ abstract class FileFieldTestBase extends BrowserTestBase {
    *   The File to be uploaded.
    * @param string $field_name
    *   The name of the field on which the files should be saved.
-   * @param int|string $nid_or_type
+   * @param $nid_or_type
    *   A numeric node id to upload files to an existing node, or a string
    *   indicating the desired bundle for a new node.
    * @param bool $new_revision
@@ -125,7 +126,7 @@ abstract class FileFieldTestBase extends BrowserTestBase {
    *   The files to be uploaded.
    * @param string $field_name
    *   The name of the field on which the files should be saved.
-   * @param int|string $nid_or_type
+   * @param $nid_or_type
    *   A numeric node id to upload files to an existing node, or a string
    *   indicating the desired bundle for a new node.
    * @param bool $new_revision
@@ -145,6 +146,7 @@ abstract class FileFieldTestBase extends BrowserTestBase {
     $node_storage = $this->container->get('entity_type.manager')->getStorage('node');
     if (is_numeric($nid_or_type)) {
       $nid = $nid_or_type;
+      $node_storage->resetCache([$nid]);
       $node = $node_storage->load($nid);
     }
     else {
@@ -155,6 +157,7 @@ abstract class FileFieldTestBase extends BrowserTestBase {
       // Save at least one revision to better simulate a real site.
       $node->setNewRevision();
       $node->save();
+      $node_storage->resetCache([$nid]);
       $node = $node_storage->load($nid);
       $this->assertNotEquals($nid, $node->getRevisionId(), 'Node revision exists.');
     }
@@ -221,7 +224,7 @@ abstract class FileFieldTestBase extends BrowserTestBase {
   public function assertFileEntryExists($file, $message = NULL) {
     $this->container->get('entity_type.manager')->getStorage('file')->resetCache();
     $db_file = File::load($file->id());
-    $message = $message ?? sprintf('File %s exists in database at the correct path.', $file->getFileUri());
+    $message = $message ?? new FormattableMarkup('File %file exists in database at the correct path.', ['%file' => $file->getFileUri()]);
     $this->assertEquals($file->getFileUri(), $db_file->getFileUri(), $message);
   }
 
@@ -230,7 +233,7 @@ abstract class FileFieldTestBase extends BrowserTestBase {
    */
   public function assertFileEntryNotExists($file, $message) {
     $this->container->get('entity_type.manager')->getStorage('file')->resetCache();
-    $message = $message ?? sprintf('File %s exists in database at the correct path.', $file->getFileUri());
+    $message = $message ?? new FormattableMarkup('File %file exists in database at the correct path.', ['%file' => $file->getFileUri()]);
     $this->assertNull(File::load($file->id()), $message);
   }
 
@@ -238,7 +241,7 @@ abstract class FileFieldTestBase extends BrowserTestBase {
    * Asserts that a file's status is set to permanent in the database.
    */
   public function assertFileIsPermanent(FileInterface $file, $message = NULL) {
-    $message = $message ?? sprintf('File %s is permanent.', $file->getFileUri());
+    $message = $message ?? new FormattableMarkup('File %file is permanent.', ['%file' => $file->getFileUri()]);
     $this->assertTrue($file->isPermanent(), $message);
   }
 

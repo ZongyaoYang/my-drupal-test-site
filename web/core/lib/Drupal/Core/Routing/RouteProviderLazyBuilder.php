@@ -153,11 +153,4 @@ class RouteProviderLazyBuilder implements PreloadableRouteProviderInterface, Eve
     $this->rebuilt = TRUE;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function getRouteAliases(string $route_name): iterable {
-    return $this->getRouteProvider()->getRouteAliases($route_name);
-  }
-
 }

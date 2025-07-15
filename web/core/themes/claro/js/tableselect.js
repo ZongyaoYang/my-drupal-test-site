@@ -73,7 +73,10 @@
         // To prevent this potential miscalculation, the spacer is momentarily
         // removed when blur occurs on rows preceding it. The spacer is
         // reintroduced immediately after the next item receives focus.
-        if (nextSibling?.getAttribute('data-drupal-table-row-spacer')) {
+        if (
+          nextSibling &&
+          nextSibling.getAttribute('data-drupal-table-row-spacer')
+        ) {
           nextSibling.parentNode.removeChild(nextSibling);
         }
       }
@@ -197,9 +200,9 @@
                 // be set to bypass scroll handler actions in just those
                 // instances.
                 const oldScrollTop =
-                  window.scrollY || document.documentElement.scrollTop;
+                  window.pageYOffset || document.documentElement.scrollTop;
                 const scrollLeft =
-                  window.scrollX || document.documentElement.scrollLeft;
+                  window.pageXOffset || document.documentElement.scrollLeft;
                 const rowContainsActiveElement = row.contains(
                   document.activeElement,
                 );
@@ -222,7 +225,7 @@
                 // Will be used to determine if a scroll position change
                 // occurred due to adding the spacer.
                 const newScrollTop =
-                  window.scrollY || document.documentElement.scrollTop;
+                  window.pageYOffset || document.documentElement.scrollTop;
 
                 // If the browser pushed the row back into the viewport after
                 // the spacer was added, return the scroll position to the

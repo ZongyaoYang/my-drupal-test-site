@@ -38,7 +38,6 @@ use Symfony\Component\Routing\RouteCollection;
     ),
   ],
   handles_permission_check: TRUE,
-  allow_inline_blocks: FALSE,
 )]
 final class NavigationSectionStorage extends PluginBase implements SectionStorageInterface, SectionStorageLocalTaskProviderInterface, ContainerFactoryPluginInterface, CacheableDependencyInterface {
 

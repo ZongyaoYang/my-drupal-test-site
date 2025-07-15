@@ -71,7 +71,7 @@ class NodeOwnerTest extends EntityKernelTestBase {
     $german->set('uid', ['target_id' => NULL]);
     $italian->set('uid', ['target_id' => NULL]);
 
-    // This saves all translations!
+    // Entity::save() saves all translations!
     $italian->save();
 
     $this->assertEquals(0, $english->getOwnerId());

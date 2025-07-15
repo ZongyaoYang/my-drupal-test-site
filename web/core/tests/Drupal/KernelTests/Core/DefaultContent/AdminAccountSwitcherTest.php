@@ -81,9 +81,6 @@ class AdminAccountSwitcherTest extends KernelTestBase {
     $this->assertSame(1, (int) $switcher->switchToAdministrator()->id());
   }
 
-  /**
-   * Tests switching and switching back.
-   */
   public function testSwitchToAndSwitchBack(): void {
     $this->assertTrue($this->container->get('current_user')->isAnonymous());
 

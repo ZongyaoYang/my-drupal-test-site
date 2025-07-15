@@ -46,7 +46,7 @@ class EntityOperationsTest extends KernelTestBase {
   /**
    * Creates a page node type to test with, ensuring that it's moderated.
    */
-  protected function createNodeType(): void {
+  protected function createNodeType() {
     $node_type = NodeType::create([
       'type' => 'page',
       'name' => 'Page',

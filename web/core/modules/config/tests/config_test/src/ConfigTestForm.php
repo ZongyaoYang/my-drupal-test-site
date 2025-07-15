@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\config_test;
 
 use Drupal\Component\Render\FormattableMarkup;
@@ -81,7 +79,7 @@ class ConfigTestForm extends EntityForm {
     ];
     $form['size_wrapper']['size_submit'] = [
       '#type' => 'submit',
-      '#value' => 'Change size',
+      '#value' => t('Change size'),
       '#attributes' => [
         'class' => ['js-hide'],
       ],
@@ -101,7 +99,7 @@ class ConfigTestForm extends EntityForm {
 
     $form['langcode'] = [
       '#type' => 'language_select',
-      '#title' => 'Language',
+      '#title' => t('Language'),
       '#languages' => LanguageInterface::STATE_ALL,
       '#default_value' => $entity->language()->getId(),
     ];

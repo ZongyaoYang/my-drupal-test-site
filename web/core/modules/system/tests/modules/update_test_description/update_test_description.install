@@ -2,15 +2,13 @@
 
 /**
  * @file
- * Update functions for the update_test_descriptions module.
+ * Install, update and uninstall functions for the update_test_descriptions module.
  */
-
-declare(strict_types=1);
 
 /**
  * Update test of slash in description and/or.
  */
-function update_test_description_update_8001(): void {
+function update_test_description_update_8001() {
 }
 
 // phpcs:disable Drupal.Commenting.DocComment.ShortSingleLine
@@ -19,5 +17,5 @@ function update_test_description_update_8001(): void {
  * lazy dog.
  */
 // phpcs:enable
-function update_test_description_update_8002(): void {
+function update_test_description_update_8002() {
 }

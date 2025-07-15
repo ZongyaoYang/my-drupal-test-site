@@ -313,11 +313,7 @@ class ViewsModerationStateFilterTest extends ViewsKernelTestBase {
 
     // Adding a new content moderation workflow will add additional states to
     // filter.
-    $workflow = Workflow::create([
-      'id' => 'moderation_test',
-      'type' => 'content_moderation',
-      'label' => 'Moderation test',
-    ]);
+    $workflow = Workflow::create(['id' => 'moderation_test', 'type' => 'content_moderation', 'label' => 'Moderation test']);
     $workflow->getTypePlugin()->addState('foo', 'Foo State');
     $workflow->getTypePlugin()->addEntityTypeAndBundle('node', 'example');
     $workflow->save();

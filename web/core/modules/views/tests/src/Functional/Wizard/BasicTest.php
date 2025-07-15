@@ -29,9 +29,6 @@ class BasicTest extends WizardTestBase {
     $this->drupalPlaceBlock('page_title_block');
   }
 
-  /**
-   * Tests the Views wizard and listing.
-   */
   public function testViewsWizardAndListing(): void {
     $this->drupalCreateContentType(['type' => 'article']);
     $this->drupalCreateContentType(['type' => 'page']);

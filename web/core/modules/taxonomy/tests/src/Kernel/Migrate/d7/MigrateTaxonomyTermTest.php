@@ -65,9 +65,9 @@ class MigrateTaxonomyTermTest extends MigrateDrupal7TestBase {
    *   Entity ID to load and check.
    * @param string $expected_language
    *   The language code for this term.
-   * @param string $expected_label
+   * @param $expected_label
    *   The label the migrated entity should have.
-   * @param string $expected_vid
+   * @param $expected_vid
    *   The parent vocabulary the migrated entity should have.
    * @param string|null $expected_description
    *   The description the migrated entity should have.
@@ -204,13 +204,13 @@ class MigrateTaxonomyTermTest extends MigrateDrupal7TestBase {
   /**
    * Retrieves the parent term IDs for a given term.
    *
-   * @param int $tid
+   * @param $tid
    *   ID of the term to check.
    *
    * @return array
    *   List of parent term IDs.
    */
-  protected function getParentIDs($tid): array {
+  protected function getParentIDs($tid) {
     return array_keys(\Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadParents($tid));
   }
 

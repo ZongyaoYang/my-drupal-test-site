@@ -43,6 +43,7 @@ class Button extends FormElementBase {
    * {@inheritdoc}
    */
   public function getInfo() {
+    $class = static::class;
     return [
       '#input' => TRUE,
       '#name' => 'op',
@@ -51,11 +52,11 @@ class Button extends FormElementBase {
       '#executes_submit_callback' => FALSE,
       '#limit_validation_errors' => FALSE,
       '#process' => [
-        [static::class, 'processButton'],
-        [static::class, 'processAjaxForm'],
+        [$class, 'processButton'],
+        [$class, 'processAjaxForm'],
       ],
       '#pre_render' => [
-        [static::class, 'preRenderButton'],
+        [$class, 'preRenderButton'],
       ],
       '#theme_wrappers' => ['input__submit'],
     ];

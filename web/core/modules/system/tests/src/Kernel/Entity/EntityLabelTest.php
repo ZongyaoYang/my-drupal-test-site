@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\system\Kernel\Entity;
 
-use Drupal\Core\Entity\Attribute\EntityType;
-use Drupal\Core\Plugin\Discovery\AttributeClassDiscovery;
+use Drupal\Core\Plugin\Discovery\AnnotatedClassDiscovery;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
@@ -23,10 +22,10 @@ class EntityLabelTest extends KernelTestBase {
     $modules = scandir($base_directory);
     $paths = [];
     foreach ($modules as $module) {
-      $paths["Drupal\\{$module}"] = $base_directory . $module . '/src/';
+      $paths["\Drupal\\{$module}\Entity"] = $base_directory . $module . '/src/';
     }
     $namespaces = new \ArrayObject($paths);
-    $discovery = new AttributeClassDiscovery('Entity', $namespaces, EntityType::class);
+    $discovery = new AnnotatedClassDiscovery('Entity', $namespaces, 'Drupal\Core\Entity\Annotation\EntityType');
     $definitions = $discovery->getDefinitions();
 
     foreach ($definitions as $definition) {

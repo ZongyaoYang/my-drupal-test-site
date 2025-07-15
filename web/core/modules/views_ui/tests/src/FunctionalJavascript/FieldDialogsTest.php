@@ -77,7 +77,7 @@ class FieldDialogsTest extends WebDriverTestBase {
   /**
    * Uses the 'And/Or Rearrange' link for fields to open a dialog.
    */
-  protected function openFieldDialog(): void {
+  protected function openFieldDialog() {
     $assert_session = $this->assertSession();
     $page = $this->getSession()->getPage();
     $dropbutton = $page->find('css', '.views-ui-display-tab-bucket.field .dropbutton-toggle button');

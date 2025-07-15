@@ -118,15 +118,7 @@ class ImageThemeFunctionTest extends KernelTestBase {
     // Test using theme_image_formatter() with a NULL value for the alt option.
     $element = $base_element;
     $this->setRawContent($renderer->renderRoot($element));
-    $elements = $this->xpath(
-      '//a[@href=:path]/img[@src=:url and @width=:width and @height=:height]',
-      [
-        ':path' => base_path() . $path,
-        ':url' => $url,
-        ':width' => $image->getWidth(),
-        ':height' => $image->getHeight(),
-      ]
-    );
+    $elements = $this->xpath('//a[@href=:path]/img[@src=:url and @width=:width and @height=:height]', [':path' => base_path() . $path, ':url' => $url, ':width' => $image->getWidth(), ':height' => $image->getHeight()]);
     $this->assertCount(1, $elements, 'theme_image_formatter() correctly renders with a NULL value for the alt option.');
 
     // Test using theme_image_formatter() without an image title, alt text, or
@@ -134,15 +126,7 @@ class ImageThemeFunctionTest extends KernelTestBase {
     $element = $base_element;
     $element['#item']->alt = '';
     $this->setRawContent($renderer->renderRoot($element));
-    $elements = $this->xpath(
-      '//a[@href=:path]/img[@src=:url and @width=:width and @height=:height and @alt=""]',
-      [
-        ':path' => base_path() . $path,
-        ':url' => $url,
-        ':width' => $image->getWidth(),
-        ':height' => $image->getHeight(),
-      ]
-    );
+    $elements = $this->xpath('//a[@href=:path]/img[@src=:url and @width=:width and @height=:height and @alt=""]', [':path' => base_path() . $path, ':url' => $url, ':width' => $image->getWidth(), ':height' => $image->getHeight()]);
     $this->assertCount(1, $elements, 'theme_image_formatter() correctly renders without title, alt, or path options.');
 
     // Link the image to a fragment on the page, and not a full URL.
@@ -215,12 +199,7 @@ class ImageThemeFunctionTest extends KernelTestBase {
     ];
 
     $this->setRawContent($renderer->renderRoot($image_with_alt_property));
-    $elements = $this->xpath(
-      '//img[contains(@class, class) and contains(@alt, :alt)]',
-      [
-        ":class" => "image-with-regular-alt",
-        ":alt" => "Regular alt",
-      ]);
+    $elements = $this->xpath('//img[contains(@class, class) and contains(@alt, :alt)]', [":class" => "image-with-regular-alt", ":alt" => "Regular alt"]);
     $this->assertCount(1, $elements, 'Regular alt displays correctly');
 
     // Test using alt attribute inside attributes.
@@ -238,12 +217,7 @@ class ImageThemeFunctionTest extends KernelTestBase {
     ];
 
     $this->setRawContent($renderer->renderRoot($image_with_alt_attribute_alt_attribute));
-    $elements = $this->xpath(
-      '//img[contains(@class, class) and contains(@alt, :alt)]',
-      [
-        ":class" => "image-with-attribute-alt",
-        ":alt" => "Attribute alt",
-      ]);
+    $elements = $this->xpath('//img[contains(@class, class) and contains(@alt, :alt)]', [":class" => "image-with-attribute-alt", ":alt" => "Attribute alt"]);
     $this->assertCount(1, $elements, 'Attribute alt displays correctly');
 
     // Test using alt attribute as property and inside attributes.
@@ -262,12 +236,7 @@ class ImageThemeFunctionTest extends KernelTestBase {
     ];
 
     $this->setRawContent($renderer->renderRoot($image_with_alt_attribute_both));
-    $elements = $this->xpath(
-      '//img[contains(@class, class) and contains(@alt, :alt)]',
-      [
-        ":class" => "image-with-attribute-alt",
-        ":alt" => "Attribute alt",
-      ]);
+    $elements = $this->xpath('//img[contains(@class, class) and contains(@alt, :alt)]', [":class" => "image-with-attribute-alt", ":alt" => "Attribute alt"]);
     $this->assertCount(1, $elements, 'Attribute alt overrides alt property if both set.');
   }
 

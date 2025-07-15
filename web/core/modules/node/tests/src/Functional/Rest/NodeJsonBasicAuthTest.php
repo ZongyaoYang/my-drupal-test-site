@@ -41,7 +41,7 @@ class NodeJsonBasicAuthTest extends NodeResourceTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUpAuthorization($method): void {
+  protected function setUpAuthorization($method) {
     parent::setUpAuthorization($method);
     $this->grantPermissionsToTestedRole(['view camelids revisions']);
   }

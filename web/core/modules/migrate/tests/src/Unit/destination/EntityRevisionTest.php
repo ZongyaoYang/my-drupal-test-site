@@ -7,7 +7,6 @@ namespace Drupal\Tests\migrate\Unit\destination;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\RevisionableInterface;
 use Drupal\Core\Entity\RevisionableStorageInterface;
@@ -29,46 +28,29 @@ use Prophecy\Prophecy\ObjectProphecy;
 class EntityRevisionTest extends UnitTestCase {
 
   /**
-   * The migration.
-   *
    * @var \Drupal\migrate\Plugin\MigrationInterface
    */
   protected MigrationInterface $migration;
 
   /**
-   * The destination storage.
-   *
    * @var \Prophecy\Prophecy\ObjectProphecy
    */
   protected ObjectProphecy $storage;
 
   /**
-   * The entity field manager.
-   *
    * @var \Drupal\Core\Entity\EntityFieldManagerInterface
    */
   protected EntityFieldManagerInterface $entityFieldManager;
 
   /**
-   * The field type manager.
-   *
    * @var \Drupal\Core\Field\FieldTypePluginManagerInterface
    */
   protected FieldTypePluginManagerInterface $fieldTypeManager;
 
   /**
-   * The account switcher.
-   *
    * @var \Drupal\Core\Session\AccountSwitcherInterface
    */
   protected AccountSwitcherInterface $accountSwitcher;
-
-  /**
-   * The entity type bundle information.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeBundleInfoInterface
-   */
-  protected EntityTypeBundleInfoInterface $entityTypeBundle;
 
   /**
    * {@inheritdoc}
@@ -90,7 +72,6 @@ class EntityRevisionTest extends UnitTestCase {
     $this->entityFieldManager = $this->prophesize(EntityFieldManagerInterface::class)->reveal();
     $this->fieldTypeManager = $this->prophesize(FieldTypePluginManagerInterface::class)->reveal();
     $this->accountSwitcher = $this->prophesize(AccountSwitcherInterface::class)->reveal();
-    $this->entityTypeBundle = $this->prophesize(EntityTypeBundleInfoInterface::class)->reveal();
   }
 
   /**
@@ -126,7 +107,7 @@ class EntityRevisionTest extends UnitTestCase {
       ->willReturn($entity->reveal());
     // Make sure its set as an update and not the default revision.
     $entity->setNewRevision(FALSE)->shouldBeCalled();
-    $entity->isDefaultRevision()->shouldNotBeCalled();
+    $entity->isDefaultRevision(FALSE)->shouldBeCalled();
 
     $row = new Row(['nid' => 1, 'vid' => 2], ['nid' => 1, 'vid' => 2]);
     $row->setDestinationProperty('vid', 2);
@@ -198,7 +179,9 @@ class EntityRevisionTest extends UnitTestCase {
   /**
    * Helper method to create an entity revision destination with mock services.
    *
-   * @param array $configuration
+   * @see \Drupal\Tests\migrate\Unit\Destination\EntityRevision
+   *
+   * @param $configuration
    *   Configuration for the destination.
    * @param string $plugin_id
    *   The plugin id.
@@ -207,8 +190,6 @@ class EntityRevisionTest extends UnitTestCase {
    *
    * @return \Drupal\Tests\migrate\Unit\destination\EntityRevision
    *   Mocked destination.
-   *
-   * @see \Drupal\Tests\migrate\Unit\Destination\EntityRevision
    */
   protected function getEntityRevisionDestination(array $configuration = [], $plugin_id = 'entity_revision', array $plugin_definition = []) {
     return new EntityRevision($configuration, $plugin_id, $plugin_definition,
@@ -218,7 +199,6 @@ class EntityRevisionTest extends UnitTestCase {
       $this->entityFieldManager,
       $this->fieldTypeManager,
       $this->accountSwitcher,
-      $this->entityTypeBundle,
     );
   }
 

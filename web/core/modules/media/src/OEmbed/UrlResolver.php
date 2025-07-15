@@ -101,7 +101,7 @@ class UrlResolver implements UrlResolverInterface {
     }
 
     $document = Html::load((string) $response->getBody());
-    $xpath = new \DOMXPath($document);
+    $xpath = new \DOMXpath($document);
 
     return $this->findUrl($xpath, 'json') ?: $this->findUrl($xpath, 'xml');
   }

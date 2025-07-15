@@ -16,7 +16,7 @@ class InstallerTranslationNonStandardFilenamesTest extends InstallerTranslationM
   /**
    * {@inheritdoc}
    */
-  protected function prepareEnvironment(): void {
+  protected function prepareEnvironment() {
     BrowserTestBase::prepareEnvironment();
     // Place custom local translations in the translations directory.
     mkdir(DRUPAL_ROOT . '/' . $this->siteDirectory . '/files/translations', 0777, TRUE);
@@ -27,7 +27,7 @@ class InstallerTranslationNonStandardFilenamesTest extends InstallerTranslationM
   /**
    * {@inheritdoc}
    */
-  protected function prepareSettings(): void {
+  protected function prepareSettings() {
     parent::prepareSettings();
     $settings['config']['locale.settings']['translation']['default_filename'] = (object) [
       'value' => '%project.%language.po',

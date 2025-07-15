@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\help_topics_test\Controller;
 
 use Drupal\Core\Controller\ControllerBase;

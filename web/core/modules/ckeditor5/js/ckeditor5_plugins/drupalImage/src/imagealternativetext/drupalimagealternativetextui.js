@@ -1,8 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-/* cspell:ignore imagealternativetext imagetextalternative */
-/* cspell:ignore imagetextalternativeui contextualballoon componentfactory */
-/* cspell:ignore drupalimagealternativetextui imagealternativetextformview */
-/* cspell:ignore missingalternativetextview */
+/* cspell:ignore drupalimagealternativetextui contextualballoon componentfactory imagealternativetextformview missingalternativetextview imagetextalternativeui imagealternativetext */
 
 /**
  * @module drupalImage/imagealternativetext/drupalimagealternativetextui

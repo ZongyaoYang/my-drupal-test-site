@@ -12,7 +12,7 @@ use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\TypedData\DataReferenceDefinitionInterface;
 
 /**
- * Adds database tables and fields to the SQL entity query.
+ * Adds tables and fields to the SQL entity query.
  */
 class Tables implements TablesInterface {
 
@@ -28,9 +28,9 @@ class Tables implements TablesInterface {
    * properties. Its keys are unique references to the tables, values are
    * aliases.
    *
-   * @var array
-   *
    * @see \Drupal\Core\Entity\Query\Sql\Tables::ensureEntityTable().
+   *
+   * @var array
    */
   protected $entityTables = [];
 
@@ -80,8 +80,7 @@ class Tables implements TablesInterface {
   public function addField($field, $type, $langcode) {
     $entity_type_id = $this->sqlQuery->getMetaData('entity_type');
     $all_revisions = $this->sqlQuery->getMetaData('all_revisions');
-    // This variable ensures grouping works correctly. For example, given the
-    // following conditions:
+    // This variable ensures grouping works correctly. For example:
     // ->condition('tags', 2, '>')
     // ->condition('tags', 20, '<')
     // ->condition('node_reference.nid.entity.tags', 2)
@@ -107,17 +106,13 @@ class Tables implements TablesInterface {
         $column = $field_storage->getMainPropertyName();
       }
       else {
-        $field_storage = NULL;
+        $field_storage = FALSE;
         $column = NULL;
       }
 
       // If there is revision support, all the revisions are being queried, and
       // the field is revisionable or the revision ID field itself, then use the
       // revision ID. Otherwise, the entity ID will do.
-
-      // Where there is revision support, all the revisions are being queried:
-      // so if the field is revisionable then use the revision ID, otherwise use
-      // the entity ID.
       $query_revisions = $all_revisions && $field_storage && ($field_storage->isRevisionable() || $field_storage->getName() === $entity_type->getKey('revision'));
       if ($query_revisions) {
         // This contains the relevant SQL field to be used when joining entity
@@ -176,7 +171,7 @@ class Tables implements TablesInterface {
           }
           // If there are more specifiers, the next one must be a
           // relationship. Either the field name followed by a relationship
-          // specifier, for example $node->field_image->entity, or a field
+          // specifier, for example $node->field_image->entity. Or a field
           // column followed by a relationship specifier, for example
           // $node->field_image->fid->entity. In both cases, prepare the
           // property definitions for the relationship. In the first case,
@@ -194,9 +189,9 @@ class Tables implements TablesInterface {
       }
       // The field is stored in a shared table.
       else {
-        // ensureEntityTable() determines whether an entity property will be
-        // queried from the data table or the base table depending on where it
-        // first finds the property. The data table is preferred, which is why
+        // ensureEntityTable() decides whether an entity property will be
+        // queried from the data table or the base table based on where it
+        // finds the property first. The data table is preferred, which is why
         // it gets added before the base table.
         $entity_tables = [];
         $revision_table = NULL;
@@ -237,9 +232,9 @@ class Tables implements TablesInterface {
               return 0;
             }
           }
-          // If this is a numeric specifier then, add a condition on the
-          // specific delta. Since this is a single value base field, the only
-          // value that makes sense is 0.
+          // If this is a numeric specifier we're adding a condition on the
+          // specific delta. Since we know that this is a single value base
+          // field no other value than 0 makes sense.
           if (is_numeric($next)) {
             if ($next > 0) {
               $this->sqlQuery->alwaysFalse();
@@ -248,7 +243,7 @@ class Tables implements TablesInterface {
             $next = $specifiers[$key + 1];
           }
           // Is this a field column?
-          $columns = $field_storage?->getColumns() ?? [];
+          $columns = $field_storage->getColumns();
           if (isset($columns[$next]) || in_array($next, $table_mapping->getReservedColumns())) {
             // Use it.
             $sql_column = $table_mapping->getFieldColumnName($field_storage, $next);
@@ -268,8 +263,8 @@ class Tables implements TablesInterface {
         $table = $this->ensureEntityTable($index_prefix, $sql_column, $type, $langcode, $base_table, $entity_id_field, $entity_tables);
       }
 
-      // If there is both a field storage and a field column then check for case
-      // sensitivity.
+      // If there is a field storage (some specifiers are not) and a field
+      // column, check for case sensitivity.
       if ($field_storage && $column) {
         $property_definitions = $field_storage->getPropertyDefinitions();
         if (isset($property_definitions[$column])) {
@@ -277,7 +272,7 @@ class Tables implements TablesInterface {
         }
       }
 
-      // If there are more specifiers to come, it is a relationship.
+      // If there are more specifiers to come, it's a relationship.
       if ($field_storage && $key < $count) {
         // Computed fields have prepared their property definition already, do
         // it for properties as well.
@@ -294,8 +289,8 @@ class Tables implements TablesInterface {
         }
         // Check for a valid relationship.
         if (isset($propertyDefinitions[$relationship_specifier]) && $propertyDefinitions[$relationship_specifier] instanceof DataReferenceDefinitionInterface) {
-          // If it is valid then use the entity type if it is already specified,
-          // otherwise use the definition.
+          // If it is, use the entity type if specified already, otherwise use
+          // the definition.
           $target_definition = $propertyDefinitions[$relationship_specifier]->getTargetDefinition();
           if (!$entity_type_id && $target_definition instanceof EntityDataDefinitionInterface) {
             $entity_type_id = $target_definition->getEntityTypeId();
@@ -337,7 +332,7 @@ class Tables implements TablesInterface {
    * @param string $type
    *   The join type, can either be INNER or LEFT.
    * @param string $langcode
-   *   The langcode that is used on the join.
+   *   The langcode we use on the join.
    * @param string $base_table
    *   The table to join to. It can be either the table name, its alias or the
    *   'base_table' placeholder.
@@ -345,9 +340,10 @@ class Tables implements TablesInterface {
    *   The name of the ID field/property for the current entity. For instance:
    *   tid, nid, etc.
    * @param array $entity_tables
-   *   Array of entity tables (data and base tables) where the entity property
-   *   will be queried from. The first table containing the property will be
-   *   used, so the order is important and the data table is always preferred.
+   *   Array of entity tables (data and base tables) where decide the entity
+   *   property will be queried from. The first table containing the property
+   *   will be used, so the order is important and the data table is always
+   *   preferred.
    *
    * @return string
    *   The alias of the joined table.
@@ -360,9 +356,9 @@ class Tables implements TablesInterface {
       if (isset($mapping[$property])) {
         // Ensure a table joined multiple times through different index prefixes
         // has unique entityTables entries by concatenating the index prefix
-        // and the base table alias. This way, if the same entity table is
-        // joined several times for different entity reference fields, each join
-        // gets a unique alias.
+        // and the base table alias. In this way i.e. if we join to the same
+        // entity table several times for different entity reference fields,
+        // each join gets a separate alias.
         $key = $index_prefix . ($base_table === 'base_table' ? $table : $base_table);
         if (!isset($this->entityTables[$key])) {
           $this->entityTables[$key] = $this->addJoin($type, $table, "[%alias].[$id_field] = [$base_table].[$id_field]", $langcode);
@@ -426,7 +422,7 @@ class Tables implements TablesInterface {
    * @param string $join_condition
    *   The condition on which to join to.
    * @param string $langcode
-   *   The langcode used on the join.
+   *   The langcode we use on the join.
    * @param string|null $delta
    *   (optional) A delta which should be used as additional condition.
    *
@@ -438,8 +434,8 @@ class Tables implements TablesInterface {
     if ($langcode) {
       $entity_type_id = $this->sqlQuery->getMetaData('entity_type');
       $entity_type = $this->entityTypeManager->getActiveDefinition($entity_type_id);
-      // For a data table, get the entity language key from the entity type.
-      // A dedicated field table has a hard-coded 'langcode' column.
+      // Only the data table follows the entity language key, dedicated field
+      // tables have a hard-coded 'langcode' column.
       $langcode_key = $entity_type->getDataTable() == $table ? $entity_type->getKey('langcode') : 'langcode';
       $placeholder = ':langcode' . $this->sqlQuery->nextPlaceholder();
       $join_condition .= ' AND [%alias].[' . $langcode_key . '] = ' . $placeholder;
@@ -462,9 +458,9 @@ class Tables implements TablesInterface {
    *   The entity type ID.
    *
    * @return array|false
-   *   An associative array of table field mappings for the given table, keyed
-   *   by column name and where values are incrementing integers. If the table
-   *   mapping is not available, then FALSE is returned.
+   *   An associative array of table field mapping for the given table, keyed by
+   *   columns name and values are just incrementing integers. If the table
+   *   mapping is not available, FALSE is returned.
    */
   protected function getTableMapping($table, $entity_type_id) {
     $storage = $this->entityTypeManager->getStorage($entity_type_id);
@@ -484,6 +480,7 @@ class Tables implements TablesInterface {
    * @code
    * condition('uid.entity.name', 'foo', 'CONTAINS')
    * @endcode
+   *
    * this adds the users table.
    *
    * @param \Drupal\Core\Entity\EntityType $entity_type

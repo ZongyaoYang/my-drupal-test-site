@@ -21,7 +21,10 @@ use Symfony\Component\Validator\Exception\UnexpectedValueException;
  */
 class LengthValidator extends ConstraintValidator
 {
-    public function validate(mixed $value, Constraint $constraint): void
+    /**
+     * @return void
+     */
+    public function validate(mixed $value, Constraint $constraint)
     {
         if (!$constraint instanceof Length) {
             throw new UnexpectedTypeException($constraint, Length::class);
@@ -76,7 +79,7 @@ class LengthValidator extends ConstraintValidator
                 ->setParameter('{{ limit }}', $constraint->max)
                 ->setParameter('{{ value_length }}', $length)
                 ->setInvalidValue($value)
-                ->setPlural($constraint->max)
+                ->setPlural((int) $constraint->max)
                 ->setCode($exactlyOptionEnabled ? Length::NOT_EQUAL_LENGTH_ERROR : Length::TOO_LONG_ERROR)
                 ->addViolation();
 
@@ -91,7 +94,7 @@ class LengthValidator extends ConstraintValidator
                 ->setParameter('{{ limit }}', $constraint->min)
                 ->setParameter('{{ value_length }}', $length)
                 ->setInvalidValue($value)
-                ->setPlural($constraint->min)
+                ->setPlural((int) $constraint->min)
                 ->setCode($exactlyOptionEnabled ? Length::NOT_EQUAL_LENGTH_ERROR : Length::TOO_SHORT_ERROR)
                 ->addViolation();
         }

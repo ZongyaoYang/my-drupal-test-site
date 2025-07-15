@@ -15,9 +15,6 @@ use Drupal\Core\Cache\MemoryBackend;
  */
 class BackendChainTest extends GenericCacheBackendUnitTestBase {
 
-  /**
-   * {@inheritdoc}
-   */
   protected function createCacheBackend($bin) {
     $chain = new BackendChain();
 

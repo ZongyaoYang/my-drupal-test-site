@@ -321,8 +321,10 @@ class ClassMetadata extends GenericMetadata implements ClassMetadataInterface
 
     /**
      * Merges the constraints of the given metadata into this object.
+     *
+     * @return void
      */
-    public function mergeConstraints(self $source): void
+    public function mergeConstraints(self $source)
     {
         if ($source->isGroupSequenceProvider()) {
             $this->setGroupProvider($source->getGroupProvider());
@@ -396,11 +398,11 @@ class ClassMetadata extends GenericMetadata implements ClassMetadataInterface
         }
 
         if (\in_array(Constraint::DEFAULT_GROUP, $groupSequence->groups, true)) {
-            throw new GroupDefinitionException(\sprintf('The group "%s" is not allowed in group sequences.', Constraint::DEFAULT_GROUP));
+            throw new GroupDefinitionException(sprintf('The group "%s" is not allowed in group sequences.', Constraint::DEFAULT_GROUP));
         }
 
         if (!\in_array($this->getDefaultGroup(), $groupSequence->groups, true)) {
-            throw new GroupDefinitionException(\sprintf('The group "%s" is missing in the group sequence.', $this->getDefaultGroup()));
+            throw new GroupDefinitionException(sprintf('The group "%s" is missing in the group sequence.', $this->getDefaultGroup()));
         }
 
         $this->groupSequence = $groupSequence;
@@ -429,16 +431,18 @@ class ClassMetadata extends GenericMetadata implements ClassMetadataInterface
     /**
      * Sets whether a group sequence provider should be used.
      *
+     * @return void
+     *
      * @throws GroupDefinitionException
      */
-    public function setGroupSequenceProvider(bool $active): void
+    public function setGroupSequenceProvider(bool $active)
     {
         if ($this->hasGroupSequence()) {
             throw new GroupDefinitionException('Defining a group sequence provider is not allowed with a static group sequence.');
         }
 
         if (null === $this->groupProvider && !$this->getReflectionClass()->implementsInterface(GroupSequenceProviderInterface::class)) {
-            throw new GroupDefinitionException(\sprintf('Class "%s" must implement GroupSequenceProviderInterface.', $this->name));
+            throw new GroupDefinitionException(sprintf('Class "%s" must implement GroupSequenceProviderInterface.', $this->name));
         }
 
         $this->groupSequenceProvider = $active;
@@ -474,7 +478,7 @@ class ClassMetadata extends GenericMetadata implements ClassMetadataInterface
     private function checkConstraint(Constraint $constraint): void
     {
         if (!\in_array(Constraint::CLASS_CONSTRAINT, (array) $constraint->getTargets(), true)) {
-            throw new ConstraintDefinitionException(\sprintf('The constraint "%s" cannot be put on classes.', get_debug_type($constraint)));
+            throw new ConstraintDefinitionException(sprintf('The constraint "%s" cannot be put on classes.', get_debug_type($constraint)));
         }
 
         if ($constraint instanceof Composite) {

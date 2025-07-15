@@ -173,7 +173,6 @@ class UserPermissionsForm extends FormBase {
 
     $form['permissions'] = [
       '#type' => 'table',
-      '#empty' => $this->t('No permissions found.'),
       '#header' => [$this->t('Permission')],
       '#id' => 'permissions',
       '#attributes' => ['class' => ['permissions', 'js-permissions']],
@@ -188,7 +187,7 @@ class UserPermissionsForm extends FormBase {
 
     foreach ($this->permissionsByProvider() as $provider => $permissions) {
       // Module name.
-      $form['permissions']['module_' . $provider] = [
+      $form['permissions'][$provider] = [
         [
           '#wrapper_attributes' => [
             'colspan' => count($role_names) + 1,

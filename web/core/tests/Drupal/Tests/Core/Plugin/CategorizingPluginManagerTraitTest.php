@@ -154,7 +154,7 @@ class CategorizingPluginManager extends DefaultPluginManager implements Categori
   /**
    * {@inheritdoc}
    */
-  public function processDefinition(&$definition, $plugin_id): void {
+  public function processDefinition(&$definition, $plugin_id) {
     parent::processDefinition($definition, $plugin_id);
     $this->processDefinitionCategory($definition);
   }

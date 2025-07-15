@@ -20,7 +20,7 @@ class RectangleTest extends TestCase {
    */
   public function testWrongWidth(): void {
     $this->expectException(\InvalidArgumentException::class);
-    new Rectangle(-40, 20);
+    $rect = new Rectangle(-40, 20);
   }
 
   /**
@@ -30,7 +30,7 @@ class RectangleTest extends TestCase {
    */
   public function testWrongHeight(): void {
     $this->expectException(\InvalidArgumentException::class);
-    new Rectangle(40, 0);
+    $rect = new Rectangle(40, 0);
   }
 
   /**

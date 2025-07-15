@@ -24,7 +24,7 @@ trait EntityDefinitionTestTrait {
    *   (optional) Applies changes only for the specified entity type ID.
    *   Defaults to NULL.
    */
-  protected function applyEntityUpdates($entity_type_id = NULL): void {
+  protected function applyEntityUpdates($entity_type_id = NULL) {
     $complete_change_list = \Drupal::entityDefinitionUpdateManager()->getChangeList();
     if ($complete_change_list) {
       // In case there are changes, explicitly invalidate caches.
@@ -68,7 +68,7 @@ trait EntityDefinitionTestTrait {
    * @param string $entity_type_id
    *   The entity type ID.
    */
-  protected function doEntityUpdate($op, $entity_type_id): void {
+  protected function doEntityUpdate($op, $entity_type_id) {
     $entity_type = \Drupal::entityTypeManager()->getDefinition($entity_type_id);
     $field_storage_definitions = \Drupal::service('entity_field.manager')->getFieldStorageDefinitions($entity_type_id);
     switch ($op) {
@@ -96,7 +96,7 @@ trait EntityDefinitionTestTrait {
    * @param array|null $original_storage_definition
    *   The original field storage definition.
    */
-  protected function doFieldUpdate($op, $storage_definition = NULL, $original_storage_definition = NULL): void {
+  protected function doFieldUpdate($op, $storage_definition = NULL, $original_storage_definition = NULL) {
     switch ($op) {
       case EntityDefinitionUpdateManagerInterface::DEFINITION_CREATED:
         \Drupal::service('field_storage_definition.listener')->onFieldStorageDefinitionCreate($storage_definition);
@@ -115,7 +115,7 @@ trait EntityDefinitionTestTrait {
   /**
    * Enables a new entity type definition.
    */
-  protected function enableNewEntityType(): void {
+  protected function enableNewEntityType() {
     $this->state->set('entity_test_new', TRUE);
     $this->applyEntityUpdates('entity_test_new');
   }
@@ -123,7 +123,7 @@ trait EntityDefinitionTestTrait {
   /**
    * Resets the entity type definition.
    */
-  protected function resetEntityType(): void {
+  protected function resetEntityType() {
     $updated_entity_type = $this->getUpdatedEntityTypeDefinition(FALSE, FALSE);
     $updated_field_storage_definitions = $this->getUpdatedFieldStorageDefinitions(FALSE, FALSE);
     $this->entityDefinitionUpdateManager->updateFieldableEntityType($updated_entity_type, $updated_field_storage_definitions);
@@ -136,7 +136,7 @@ trait EntityDefinitionTestTrait {
    *   (optional) Whether the change should be performed by the entity
    *   definition update manager.
    */
-  protected function updateEntityTypeToRevisionable($perform_update = FALSE): void {
+  protected function updateEntityTypeToRevisionable($perform_update = FALSE) {
     $translatable = $this->entityDefinitionUpdateManager->getEntityType('entity_test_update')->isTranslatable();
 
     $updated_entity_type = $this->getUpdatedEntityTypeDefinition(TRUE, $translatable);
@@ -154,7 +154,7 @@ trait EntityDefinitionTestTrait {
    *   (optional) Whether the change should be performed by the entity
    *   definition update manager.
    */
-  protected function updateEntityTypeToNotRevisionable($perform_update = FALSE): void {
+  protected function updateEntityTypeToNotRevisionable($perform_update = FALSE) {
     $translatable = $this->entityDefinitionUpdateManager->getEntityType('entity_test_update')->isTranslatable();
 
     $updated_entity_type = $this->getUpdatedEntityTypeDefinition(FALSE, $translatable);
@@ -172,7 +172,7 @@ trait EntityDefinitionTestTrait {
    *   (optional) Whether the change should be performed by the entity
    *   definition update manager.
    */
-  protected function updateEntityTypeToTranslatable($perform_update = FALSE): void {
+  protected function updateEntityTypeToTranslatable($perform_update = FALSE) {
     $revisionable = $this->entityDefinitionUpdateManager->getEntityType('entity_test_update')->isRevisionable();
 
     $updated_entity_type = $this->getUpdatedEntityTypeDefinition($revisionable, TRUE);
@@ -190,7 +190,7 @@ trait EntityDefinitionTestTrait {
    *   (optional) Whether the change should be performed by the entity
    *   definition update manager.
    */
-  protected function updateEntityTypeToNotTranslatable($perform_update = FALSE): void {
+  protected function updateEntityTypeToNotTranslatable($perform_update = FALSE) {
     $revisionable = $this->entityDefinitionUpdateManager->getEntityType('entity_test_update')->isRevisionable();
 
     $updated_entity_type = $this->getUpdatedEntityTypeDefinition($revisionable, FALSE);
@@ -208,7 +208,7 @@ trait EntityDefinitionTestTrait {
    *   (optional) Whether the change should be performed by the entity
    *   definition update manager.
    */
-  protected function updateEntityTypeToRevisionableAndTranslatable($perform_update = FALSE): void {
+  protected function updateEntityTypeToRevisionableAndTranslatable($perform_update = FALSE) {
     $updated_entity_type = $this->getUpdatedEntityTypeDefinition(TRUE, TRUE);
     $updated_field_storage_definitions = $this->getUpdatedFieldStorageDefinitions(TRUE, TRUE);
 
@@ -235,7 +235,7 @@ trait EntityDefinitionTestTrait {
    *   (optional) If the base field should be translatable or not. Defaults to
    *   FALSE.
    */
-  protected function addBaseField($type = 'string', $entity_type_id = 'entity_test_update', $is_revisionable = FALSE, $set_label = TRUE, $is_translatable = FALSE): void {
+  protected function addBaseField($type = 'string', $entity_type_id = 'entity_test_update', $is_revisionable = FALSE, $set_label = TRUE, $is_translatable = FALSE) {
     $definitions['new_base_field'] = BaseFieldDefinition::create($type)
       ->setName('new_base_field')
       ->setRevisionable($is_revisionable)
@@ -251,7 +251,7 @@ trait EntityDefinitionTestTrait {
   /**
    * Adds a long-named base field to the 'entity_test_update' entity type.
    */
-  protected function addLongNameBaseField(): void {
+  protected function addLongNameBaseField() {
     $key = 'entity_test_update.additional_base_field_definitions';
     $definitions = $this->state->get($key, []);
     $definitions['new_long_named_entity_reference_base_field'] = BaseFieldDefinition::create('entity_reference')
@@ -268,7 +268,7 @@ trait EntityDefinitionTestTrait {
    * @param string $type
    *   (optional) The field type for the new field. Defaults to 'string'.
    */
-  protected function addRevisionableBaseField($type = 'string'): void {
+  protected function addRevisionableBaseField($type = 'string') {
     $definitions['new_base_field'] = BaseFieldDefinition::create($type)
       ->setName('new_base_field')
       ->setLabel(t('A new revisionable base field'))
@@ -279,14 +279,14 @@ trait EntityDefinitionTestTrait {
   /**
    * Modifies the new base field from 'string' to 'text'.
    */
-  protected function modifyBaseField(): void {
+  protected function modifyBaseField() {
     $this->addBaseField('text');
   }
 
   /**
    * Promotes a field to an entity key.
    */
-  protected function makeBaseFieldEntityKey(): void {
+  protected function makeBaseFieldEntityKey() {
     $entity_type = clone \Drupal::entityTypeManager()->getDefinition('entity_test_update');
     $entity_keys = $entity_type->getKeys();
     $entity_keys['new_base_field'] = 'new_base_field';
@@ -300,21 +300,21 @@ trait EntityDefinitionTestTrait {
    * @param string $entity_type_id
    *   (optional) The entity type ID the base field should be attached to.
    */
-  protected function removeBaseField($entity_type_id = 'entity_test_update'): void {
+  protected function removeBaseField($entity_type_id = 'entity_test_update') {
     $this->state->delete($entity_type_id . '.additional_base_field_definitions');
   }
 
   /**
    * Adds a single-field index to the base field.
    */
-  protected function addBaseFieldIndex(): void {
+  protected function addBaseFieldIndex() {
     $this->state->set('entity_test_update.additional_field_index.entity_test_update.new_base_field', TRUE);
   }
 
   /**
    * Removes the index added in addBaseFieldIndex().
    */
-  protected function removeBaseFieldIndex(): void {
+  protected function removeBaseFieldIndex() {
     $this->state->delete('entity_test_update.additional_field_index.entity_test_update.new_base_field');
   }
 
@@ -328,7 +328,7 @@ trait EntityDefinitionTestTrait {
    * @param bool $translatable
    *   (optional) Whether the field should be translatable. Defaults to FALSE.
    */
-  protected function addBundleField($type = 'string', $revisionable = FALSE, $translatable = FALSE): void {
+  protected function addBundleField($type = 'string', $revisionable = FALSE, $translatable = FALSE) {
     $definitions['new_bundle_field'] = FieldStorageDefinition::create($type)
       ->setName('new_bundle_field')
       ->setLabel(t('A new bundle field'))
@@ -342,14 +342,14 @@ trait EntityDefinitionTestTrait {
   /**
    * Modifies the new bundle field from 'string' to 'text'.
    */
-  protected function modifyBundleField(): void {
+  protected function modifyBundleField() {
     $this->addBundleField('text');
   }
 
   /**
    * Removes the new bundle field from the 'entity_test_update' entity type.
    */
-  protected function removeBundleField(): void {
+  protected function removeBundleField() {
     $this->state->delete('entity_test_update.additional_field_storage_definitions');
     $this->state->delete('entity_test_update.additional_bundle_field_definitions.test_bundle');
   }
@@ -359,7 +359,7 @@ trait EntityDefinitionTestTrait {
    *
    * @see \Drupal\entity_test\EntityTestStorageSchema::getEntitySchema()
    */
-  protected function addEntityIndex(): void {
+  protected function addEntityIndex() {
     $indexes = [
       'entity_test_update__new_index' => ['name', 'test_single_property'],
     ];
@@ -369,14 +369,14 @@ trait EntityDefinitionTestTrait {
   /**
    * Removes the index added in addEntityIndex().
    */
-  protected function removeEntityIndex(): void {
+  protected function removeEntityIndex() {
     $this->state->delete('entity_test_update.additional_entity_indexes');
   }
 
   /**
    * Renames the base table to 'entity_test_update_new'.
    */
-  protected function renameBaseTable(): void {
+  protected function renameBaseTable() {
     $entity_type = clone \Drupal::entityTypeManager()->getDefinition('entity_test_update');
 
     $entity_type->set('base_table', 'entity_test_update_new');
@@ -387,7 +387,7 @@ trait EntityDefinitionTestTrait {
   /**
    * Renames the data table to 'entity_test_update_data_new'.
    */
-  protected function renameDataTable(): void {
+  protected function renameDataTable() {
     $entity_type = clone \Drupal::entityTypeManager()->getDefinition('entity_test_update');
 
     $entity_type->set('data_table', 'entity_test_update_data_new');
@@ -398,7 +398,7 @@ trait EntityDefinitionTestTrait {
   /**
    * Renames the revision table to 'entity_test_update_revision_new'.
    */
-  protected function renameRevisionBaseTable(): void {
+  protected function renameRevisionBaseTable() {
     $entity_type = clone \Drupal::entityTypeManager()->getDefinition('entity_test_update');
 
     $entity_type->set('revision_table', 'entity_test_update_revision_new');
@@ -409,7 +409,7 @@ trait EntityDefinitionTestTrait {
   /**
    * Renames the revision data table to 'entity_test_update_revision_data_new'.
    */
-  protected function renameRevisionDataTable(): void {
+  protected function renameRevisionDataTable() {
     $entity_type = clone \Drupal::entityTypeManager()->getDefinition('entity_test_update');
 
     $entity_type->set('revision_data_table', 'entity_test_update_revision_data_new');
@@ -420,7 +420,7 @@ trait EntityDefinitionTestTrait {
   /**
    * Removes the entity type.
    */
-  protected function deleteEntityType(): void {
+  protected function deleteEntityType() {
     $this->state->set('entity_test_update.entity_type', 'null');
   }
 

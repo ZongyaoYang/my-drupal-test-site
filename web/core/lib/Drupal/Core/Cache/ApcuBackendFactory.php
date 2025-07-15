@@ -5,9 +5,6 @@ namespace Drupal\Core\Cache;
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Site\Settings;
 
-/**
- * Defines the APCU backend factory.
- */
 class ApcuBackendFactory implements CacheFactoryInterface {
 
   /**
@@ -40,19 +37,23 @@ class ApcuBackendFactory implements CacheFactoryInterface {
    *   The site path.
    * @param \Drupal\Core\Cache\CacheTagsChecksumInterface $checksum_provider
    *   The cache tags checksum provider.
-   * @param \Drupal\Component\Datetime\TimeInterface $time
+   * @param \Drupal\Component\Datetime\TimeInterface|null $time
    *   The time service.
    */
-  public function __construct($root, $site_path, CacheTagsChecksumInterface $checksum_provider, protected TimeInterface $time) {
+  public function __construct($root, $site_path, CacheTagsChecksumInterface $checksum_provider, protected ?TimeInterface $time = NULL) {
     $this->sitePrefix = Settings::getApcuPrefix('apcu_backend', $root, $site_path);
     $this->checksumProvider = $checksum_provider;
     $this->backendClass = 'Drupal\Core\Cache\ApcuBackend';
+    if (!$time) {
+      @trigger_error('Calling ' . __METHOD__ . '() without the $time argument is deprecated in drupal:10.3.0 and it will be required in drupal:11.0.0. See https://www.drupal.org/node/3387233', E_USER_DEPRECATED);
+      $this->time = \Drupal::service(TimeInterface::class);
+    }
   }
 
   /**
    * Gets ApcuBackend for the specified cache bin.
    *
-   * @param string $bin
+   * @param $bin
    *   The cache bin for which the object is created.
    *
    * @return \Drupal\Core\Cache\ApcuBackend

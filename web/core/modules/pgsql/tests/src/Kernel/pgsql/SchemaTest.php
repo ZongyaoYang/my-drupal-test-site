@@ -6,8 +6,8 @@ namespace Drupal\Tests\pgsql\Kernel\pgsql;
 
 use Drupal\KernelTests\Core\Database\DriverSpecificSchemaTestBase;
 
-// cSpell:ignore attname attnum attrelid objid refobjid refobjsubid regclass
-// cspell:ignore relkind relname
+// cSpell:ignore relkind objid refobjid regclass attname attrelid attnum
+// cSpell:ignore refobjsubid
 
 /**
  * Tests schema API for the PostgreSQL driver.
@@ -236,7 +236,7 @@ class SchemaTest extends DriverSpecificSchemaTestBase {
   }
 
   /**
-   * @covers \Drupal\pgsql\Driver\Database\pgsql\Schema::extensionExists
+   * @covers \Drupal\Core\Database\Driver\pgsql\Schema::extensionExists
    */
   public function testPgsqlExtensionExists(): void {
     // Test the method for a non existing extension.

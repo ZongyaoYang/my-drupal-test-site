@@ -37,7 +37,6 @@ class BundleConstraint extends SymfonyConstraint {
    * Gets the bundle option as array.
    *
    * @return array
-   *   An array of bundle options.
    */
   public function getBundleOption() {
     // Support passing the bundle as string, but force it to be an array.

@@ -2,14 +2,14 @@
 
 namespace Drupal\path_alias;
 
-// cspell:ignore whitelist
+use Drupal\Core\Cache\CacheCollectorInterface;
 
 /**
- * Cache a list of valid alias prefixes.
+ * Cache the alias whitelist.
  *
- * @deprecated in drupal:11.1.0 and is removed from drupal:12.0.0.
- * Use \Drupal\path_alias\AliasPrefixListInterface instead.
- *
- * @see https://www.drupal.org/node/3467559
+ * The whitelist contains the first element of the router paths of all
+ * aliases. For example, if /node/12345 has an alias then "node" is added to
+ * the whitelist. This optimization allows skipping the lookup for every
+ * /user/{user} path if "user" is not in the whitelist.
  */
-interface AliasWhitelistInterface extends AliasPrefixListInterface {}
+interface AliasWhitelistInterface extends CacheCollectorInterface {}

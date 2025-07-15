@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\field_layout_test\Form;
 
 use Drupal\Core\Entity\Entity\EntityFormDisplay;

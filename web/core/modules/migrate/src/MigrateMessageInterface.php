@@ -2,9 +2,6 @@
 
 namespace Drupal\migrate;
 
-/**
- * Interface for migration messages.
- */
 interface MigrateMessageInterface {
 
   /**

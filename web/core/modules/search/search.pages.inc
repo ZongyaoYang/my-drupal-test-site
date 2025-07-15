@@ -2,6 +2,7 @@
 
 /**
  * @file
+ * User page callbacks for the Search module.
  */
 
 use Drupal\Component\Utility\UrlHelper;
@@ -23,7 +24,7 @@ use Drupal\Core\Language\LanguageInterface;
  *   - title_attributes: HTML attributes for the title.
  *   - content_attributes: HTML attributes for the content.
  */
-function template_preprocess_search_result(&$variables): void {
+function template_preprocess_search_result(&$variables) {
   $language_interface = \Drupal::languageManager()->getCurrentLanguage();
 
   $result = $variables['result'];

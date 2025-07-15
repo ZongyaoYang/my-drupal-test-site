@@ -548,7 +548,7 @@ class TableDragTest extends WebDriverTestBase {
   /**
    * Finds a row in the test table by the row ID.
    *
-   * @param string|int $id
+   * @param string $id
    *   The ID of the row.
    * @param string $table_id
    *   The ID of the parent table. Defaults to 'tabledrag-test-table'.
@@ -556,7 +556,7 @@ class TableDragTest extends WebDriverTestBase {
    * @return \Behat\Mink\Element\NodeElement
    *   The row element.
    */
-  protected function findRowById($id, $table_id = 'tabledrag-test-table'): NodeElement {
+  protected function findRowById($id, $table_id = 'tabledrag-test-table') {
     $xpath = "//table[@id='$table_id']/tbody/tr[.//input[@name='table[$id][id]']]";
     $row = $this->getSession()->getPage()->find('xpath', $xpath);
     $this->assertNotEmpty($row);
@@ -572,7 +572,7 @@ class TableDragTest extends WebDriverTestBase {
    * @return \Behat\Mink\Element\NodeElement
    *   The toggle element.
    */
-  protected function findWeightsToggle($expected_text): NodeElement {
+  protected function findWeightsToggle($expected_text) {
     $toggle = $this->getSession()->getPage()->findButton($expected_text);
     $this->assertNotEmpty($toggle);
     return $toggle;
@@ -589,7 +589,7 @@ class TableDragTest extends WebDriverTestBase {
    * @param int $repeat
    *   (optional) How many times to press the arrow button. Defaults to 1.
    */
-  protected function moveRowWithKeyboard(NodeElement $row, $arrow, $repeat = 1): void {
+  protected function moveRowWithKeyboard(NodeElement $row, $arrow, $repeat = 1) {
     $keys = [
       'left' => 37,
       'right' => 39,
@@ -627,7 +627,7 @@ class TableDragTest extends WebDriverTestBase {
    * @throws \Exception
    *   Thrown when the class is not added successfully to the handle.
    */
-  protected function markRowHandleForDragging(NodeElement $handle): void {
+  protected function markRowHandleForDragging(NodeElement $handle) {
     $class = self::DRAGGING_CSS_CLASS;
     $script = <<<JS
 document.evaluate("{$handle->getXpath()}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
@@ -653,7 +653,7 @@ JS;
    * @throws \Exception
    *   Thrown when the dragging operations are not completed on time.
    */
-  protected function waitUntilDraggingCompleted(NodeElement $handle): void {
+  protected function waitUntilDraggingCompleted(NodeElement $handle) {
     $class_removed = $this->getSession()->getPage()->waitFor(1, function () use ($handle) {
       return !$handle->hasClass($this::DRAGGING_CSS_CLASS);
     });

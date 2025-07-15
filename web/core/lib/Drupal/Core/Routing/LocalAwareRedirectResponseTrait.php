@@ -21,7 +21,7 @@ trait LocalAwareRedirectResponseTrait {
    *
    * @param string $url
    *   The internal path or external URL being linked to, such as "node/34" or
-   *   "https://example.com/foo".
+   *   "http://example.com/foo".
    *
    * @return bool
    *   TRUE or FALSE, where TRUE indicates a local path.

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\help_test;
 
 use Drupal\Core\Routing\UrlGeneratorInterface;
@@ -15,7 +13,7 @@ class SupernovaGenerator implements UrlGeneratorInterface {
   /**
    * {@inheritdoc}
    */
-  public function setContext(RequestContext $context): void {
+  public function setContext(RequestContext $context) {
     throw new \Exception();
   }
 

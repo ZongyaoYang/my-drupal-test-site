@@ -18,10 +18,13 @@ namespace Symfony\Component\DependencyInjection;
  */
 class Reference
 {
-    public function __construct(
-        private string $id,
-        private int $invalidBehavior = ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE,
-    ) {
+    private string $id;
+    private int $invalidBehavior;
+
+    public function __construct(string $id, int $invalidBehavior = ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE)
+    {
+        $this->id = $id;
+        $this->invalidBehavior = $invalidBehavior;
     }
 
     public function __toString(): string

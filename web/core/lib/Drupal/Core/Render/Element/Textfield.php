@@ -42,20 +42,21 @@ class Textfield extends FormElementBase {
    * {@inheritdoc}
    */
   public function getInfo() {
+    $class = static::class;
     return [
       '#input' => TRUE,
       '#size' => 60,
       '#maxlength' => 128,
       '#autocomplete_route_name' => FALSE,
       '#process' => [
-        [static::class, 'processAutocomplete'],
-        [static::class, 'processAjaxForm'],
-        [static::class, 'processPattern'],
-        [static::class, 'processGroup'],
+        [$class, 'processAutocomplete'],
+        [$class, 'processAjaxForm'],
+        [$class, 'processPattern'],
+        [$class, 'processGroup'],
       ],
       '#pre_render' => [
-        [static::class, 'preRenderTextfield'],
-        [static::class, 'preRenderGroup'],
+        [$class, 'preRenderTextfield'],
+        [$class, 'preRenderGroup'],
       ],
       '#theme' => 'input__textfield',
       '#theme_wrappers' => ['form_element'],

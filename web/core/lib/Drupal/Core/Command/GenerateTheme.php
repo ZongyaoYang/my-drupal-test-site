@@ -40,8 +40,7 @@ class GenerateTheme extends Command {
    * GenerateTheme constructor.
    *
    * @param string|null $name
-   *   The name of the command; passing null means it must be set in
-   *   configure().
+   *   The name of the command; passing null means it must be set in configure().
    * @param string|null $root
    *   The path for the Drupal root.
    */
@@ -208,7 +207,6 @@ class GenerateTheme extends Command {
    * Generates a path to a temporary location.
    *
    * @return string
-   *   A temporary path.
    */
   private function getUniqueTmpDirPath(): string {
     return sys_get_temp_dir() . '/drupal-starterkit-theme-' . uniqid(md5(microtime()), TRUE);
@@ -221,7 +219,6 @@ class GenerateTheme extends Command {
    *   The machine name of the theme.
    *
    * @return \Drupal\Core\Extension\Extension|null
-   *   The extension info array. NULL if the theme_name is not discovered.
    */
   private function getThemeInfo(string $theme_name): ? Extension {
     $extension_discovery = new ExtensionDiscovery($this->root, FALSE, []);

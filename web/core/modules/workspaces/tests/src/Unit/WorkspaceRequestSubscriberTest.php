@@ -20,8 +20,6 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 class WorkspaceRequestSubscriberTest extends UnitTestCase {
 
   /**
-   * The workspace manager.
-   *
    * @var \Drupal\workspaces\WorkspaceManagerInterface
    */
   protected $workspaceManager;

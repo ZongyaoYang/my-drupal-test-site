@@ -60,6 +60,7 @@ class AjaxBlockTest extends WebDriverTestBase {
    */
   public function testAddAjaxBlock(): void {
     $assert_session = $this->assertSession();
+    $page = $this->getSession()->getPage();
 
     // Start by creating a node.
     $this->createNode([
@@ -94,7 +95,7 @@ class AjaxBlockTest extends WebDriverTestBase {
     /** @var \Behat\Mink\Element\NodeElement[] $radios */
     $radios = $this->assertSession()->fieldExists($name);
     // Click them both a couple of times.
-    for ($i = 1; $i < 3; ++$i) {
+    foreach ([1, 2] as $rounds) {
       foreach ($radios as $radio) {
         $radio->click();
         $assert_session->assertWaitOnAjaxRequest();

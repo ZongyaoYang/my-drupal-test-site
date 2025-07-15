@@ -8,7 +8,7 @@ use Drupal\menu_link_content\Entity\MenuLinkContent;
 use Drupal\Tests\rest\Functional\EntityResource\EntityResourceTestBase;
 
 /**
- * Resource test base for MenuLinkContent entity.
+ * ResourceTestBase for MenuLinkContent entity.
  */
 abstract class MenuLinkContentResourceTestBase extends EntityResourceTestBase {
 

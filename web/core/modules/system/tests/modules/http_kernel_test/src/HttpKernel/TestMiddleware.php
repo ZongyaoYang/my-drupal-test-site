@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\http_kernel_test\HttpKernel;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -18,7 +16,7 @@ class TestMiddleware implements HttpKernelInterface {
    *
    * @var \Symfony\Component\HttpKernel\HttpKernelInterface
    */
-  protected $httpKernel;
+  protected $kernel;
 
   /**
    * An optional argument.
@@ -30,13 +28,13 @@ class TestMiddleware implements HttpKernelInterface {
   /**
    * Constructs a new TestMiddleware object.
    *
-   * @param \Symfony\Component\HttpKernel\HttpKernelInterface $http_kernel
+   * @param \Symfony\Component\HttpKernel\HttpKernelInterface $kernel
    *   The decorated kernel.
    * @param mixed $optional_argument
    *   (optional) An optional argument.
    */
-  public function __construct(HttpKernelInterface $http_kernel, $optional_argument = NULL) {
-    $this->httpKernel = $http_kernel;
+  public function __construct(HttpKernelInterface $kernel, $optional_argument = NULL) {
+    $this->kernel = $kernel;
     $this->optionalArgument = $optional_argument;
   }
 
@@ -52,7 +50,7 @@ class TestMiddleware implements HttpKernelInterface {
       $request->attributes->set('_optional_argument', $this->optionalArgument);
     }
 
-    return $this->httpKernel->handle($request, $type, $catch);
+    return $this->kernel->handle($request, $type, $catch);
   }
 
 }

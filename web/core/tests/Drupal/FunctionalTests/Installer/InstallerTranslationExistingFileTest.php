@@ -31,7 +31,7 @@ class InstallerTranslationExistingFileTest extends InstallerTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUpLanguage(): void {
+  protected function setUpLanguage() {
     // Place custom local translations in the translations directory.
     mkdir(DRUPAL_ROOT . '/' . $this->siteDirectory . '/files/translations', 0777, TRUE);
     $po_contents = <<<PO
@@ -48,7 +48,7 @@ PO;
   /**
    * {@inheritdoc}
    */
-  protected function setUpProfile(): void {
+  protected function setUpProfile() {
     // Do nothing, because this test only tests the language installation
     // step's results.
   }
@@ -56,7 +56,7 @@ PO;
   /**
    * {@inheritdoc}
    */
-  protected function setUpSettings(): void {
+  protected function setUpSettings() {
     // Do nothing, because this test only tests the language installation
     // step's results.
   }
@@ -64,7 +64,7 @@ PO;
   /**
    * {@inheritdoc}
    */
-  protected function setUpRequirementsProblem(): void {
+  protected function setUpRequirementsProblem() {
     // Do nothing, because this test only tests the language installation
     // step's results.
   }
@@ -72,7 +72,7 @@ PO;
   /**
    * {@inheritdoc}
    */
-  protected function setUpSite(): void {
+  protected function setUpSite() {
     // Do nothing, because this test only tests the language installation
     // step's results.
   }

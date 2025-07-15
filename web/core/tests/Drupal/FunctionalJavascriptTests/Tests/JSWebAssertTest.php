@@ -21,7 +21,7 @@ class JSWebAssertTest extends WebDriverTestBase {
    *
    * @var array
    */
-  protected static $modules = ['jswebassert_test'];
+  protected static $modules = ['js_webassert_test'];
 
   /**
    * {@inheritdoc}
@@ -32,7 +32,7 @@ class JSWebAssertTest extends WebDriverTestBase {
    * Tests that JSWebAssert assertions work correctly.
    */
   public function testJsWebAssert(): void {
-    $this->drupalGet('jswebassert_test_form');
+    $this->drupalGet('js_webassert_test_form');
 
     $session = $this->getSession();
     $assert_session = $this->assertSession();
@@ -43,13 +43,17 @@ class JSWebAssertTest extends WebDriverTestBase {
     $assert_session->assertNoElementAfterWait('css', '[data-drupal-selector="edit-test-assert-no-element-after-wait-pass"]', 1000);
 
     $assert_session->elementExists('css', '[data-drupal-selector="edit-test-assert-no-element-after-wait-fail"]');
-    Timer::start('js_test');
     $page->findButton('Test assertNoElementAfterWait: fail')->press();
-    $press_time = Timer::read('js_test');
     try {
+      Timer::start('JSWebAssertTest');
       $assert_session->assertNoElementAfterWait('css', '[data-drupal-selector="edit-test-assert-no-element-after-wait-fail"]', 500, 'Element exists on page after too short wait.');
-      $wait_time = Timer::read('js_test');
-      $this->fail("Element not exists on page after too short wait. Press time: $press_time ms. Press + Wait time: $wait_time ms. Timestamp: " . microtime(TRUE));
+      // This test is fragile if webdriver responses are very slow for some
+      // reason. If they are, do not fail the test.
+      // @todo https://www.drupal.org/project/drupal/issues/3316317 remove this
+      //   workaround.
+      if (Timer::read('JSWebAssertTest') < 1000) {
+        $this->fail("Element not exists on page after too short wait.");
+      }
     }
     catch (ElementHtmlException $e) {
       $this->assertSame('Element exists on page after too short wait.', $e->getMessage());
@@ -87,10 +91,10 @@ class JSWebAssertTest extends WebDriverTestBase {
     $this->assertNotEmpty($result);
     $this->assertInstanceOf(NodeElement::class, $result);
 
-    $result = $page->findById('jswebassert_test_field_id');
+    $result = $page->findById('js_webassert_test_field_id');
     $this->assertEmpty($result);
     $test_id->click();
-    $result = $assert_session->waitForId('jswebassert_test_field_id');
+    $result = $assert_session->waitForId('js_webassert_test_field_id');
     $this->assertNotEmpty($result);
     $this->assertInstanceOf(NodeElement::class, $result);
 
@@ -103,7 +107,7 @@ class JSWebAssertTest extends WebDriverTestBase {
     $result = $page->findField('test_assert_wait_on_ajax_input');
     $this->assertNotEmpty($result);
     $this->assertInstanceOf(NodeElement::class, $result);
-    $this->assertEquals('jswebassert_test', $result->getValue());
+    $this->assertEquals('js_webassert_test', $result->getValue());
 
     $result = $page->findButton('Added WaitForElementVisible');
     $this->assertEmpty($result);
@@ -113,9 +117,9 @@ class JSWebAssertTest extends WebDriverTestBase {
     $this->assertInstanceOf(NodeElement::class, $result);
     $this->assertEquals(TRUE, $result->isVisible());
 
-    $this->drupalGet('jswebassert_test_page');
-    // Ensure that the javascript has replaced the element 3 times.
-    $this->assertTrue($assert_session->waitForText('New Text!! 3'));
+    $this->drupalGet('js_webassert_test_page');
+    // Ensure that the javascript has replaced the element 1100 times.
+    $assert_session->waitForText('New Text!! 1100');
     $result = $page->find('named', ['id', 'test_text']);
     $this->assertSame('test_text', $result->getAttribute('id'));
   }

@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\media_library\FunctionalJavascript;
 
-use Behat\Mink\Element\NodeElement;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
-use Drupal\hold_test\HoldTestHelper;
 use Drupal\media\Entity\Media;
 
 /**
@@ -156,7 +154,7 @@ abstract class MediaLibraryTestBase extends WebDriverTestBase {
    * @todo replace with whatever gets added in
    *   https://www.drupal.org/node/3061852
    */
-  protected function assertElementExistsAfterWait($selector, $locator, $timeout = 10000): NodeElement {
+  protected function assertElementExistsAfterWait($selector, $locator, $timeout = 10000) {
     $element = $this->assertSession()->waitForElement($selector, $locator, $timeout);
     $this->assertNotEmpty($element);
     return $element;
@@ -168,7 +166,7 @@ abstract class MediaLibraryTestBase extends WebDriverTestBase {
    * @return \Behat\Mink\Element\NodeElement
    *   The menu of available media types.
    */
-  protected function getTypesMenu(): NodeElement {
+  protected function getTypesMenu() {
     return $this->assertSession()
       ->elementExists('css', '.js-media-library-menu');
   }
@@ -277,7 +275,7 @@ abstract class MediaLibraryTestBase extends WebDriverTestBase {
    * @return \Behat\Mink\Element\NodeElement
    *   The NodeElement found via $after_open_selector.
    */
-  protected function openMediaLibraryForField($field_name, $after_open_selector = '.js-media-library-menu'): NodeElement {
+  protected function openMediaLibraryForField($field_name, $after_open_selector = '.js-media-library-menu') {
     $this->assertElementExistsAfterWait('css', "#$field_name-media-library-wrapper.js-media-library-widget")
       ->pressButton('Add media');
     $this->waitForText('Add or select media');
@@ -304,7 +302,7 @@ abstract class MediaLibraryTestBase extends WebDriverTestBase {
    * @return \Behat\Mink\Element\NodeElement
    *   The "additional selected media" area.
    */
-  protected function getSelectionArea($open = TRUE): NodeElement {
+  protected function getSelectionArea($open = TRUE) {
     $summary = $this->assertElementExistsAfterWait('css', 'summary:contains("Additional selected media")');
     if ($open) {
       $summary->click();
@@ -435,11 +433,11 @@ abstract class MediaLibraryTestBase extends WebDriverTestBase {
    * Switches to the table display of the widget view.
    */
   protected function switchToMediaLibraryTable() {
-    HoldTestHelper::responseHold(TRUE);
+    hold_test_response(TRUE);
     $this->getSession()->getPage()->clickLink('Table');
     // Assert the display change is correctly announced for screen readers.
     $this->assertAnnounceContains('Loading table view.');
-    HoldTestHelper::responseHold(FALSE);
+    hold_test_response(FALSE);
     $this->assertAnnounceContains('Changed to table view.');
     $this->assertMediaLibraryTable();
   }

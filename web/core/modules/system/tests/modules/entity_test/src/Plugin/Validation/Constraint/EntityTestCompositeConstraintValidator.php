@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\entity_test\Plugin\Validation\Constraint;
 
 use Symfony\Component\Validator\Constraint;
@@ -15,7 +13,7 @@ class EntityTestCompositeConstraintValidator extends ConstraintValidator {
   /**
    * {@inheritdoc}
    */
-  public function validate($entity, Constraint $constraint): void {
+  public function validate($entity, Constraint $constraint) {
 
     if ($entity->name->value === 'test' && $entity->type->value === 'test2') {
       $this->context->buildViolation($constraint->message)

@@ -20,8 +20,6 @@ class MediaReferenceFieldHelpTest extends MediaJavascriptTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
-    'block',
-    'field_ui',
     'media',
     'media_library',
   ];
@@ -32,39 +30,38 @@ class MediaReferenceFieldHelpTest extends MediaJavascriptTestBase {
    * @see media_form_field_ui_field_storage_add_form_alter()
    */
   public function testFieldCreationHelpText(): void {
-    $this->drupalPlaceBlock('local_actions_block');
     $assert_session = $this->assertSession();
+    $page = $this->getSession()->getPage();
 
     $type = $this->drupalCreateContentType([
       'type' => 'foo',
     ]);
-    $this->drupalGet("/admin/structure/types/manage/{$type->id()}/fields");
-    $this->clickLink('Create a new field');
-    $this->assertSession()->assertWaitOnAjaxRequest();
+    $this->drupalGet("/admin/structure/types/manage/{$type->id()}/fields/add-field");
 
     $field_groups = [
-      'File upload',
-      'Media',
+      'file_upload',
+      'field_ui:entity_reference:media',
     ];
 
     $help_text = 'Use Media reference fields for most files, images, audio, videos, and remote media. Use File or Image reference fields when creating your own media types, or for legacy files and images created before installing the Media module.';
 
     // Choose a boolean field, none of the description containers should be
     // visible.
-    $this->clickLink('Boolean');
-    $assert_session->assertWaitOnAjaxRequest();
+    $assert_session->elementExists('css', "[name='new_storage_type'][value='boolean']");
+    $page->find('css', "[name='new_storage_type'][value='boolean']")->getParent()->click();
+    $page->pressButton('Continue');
     $assert_session->pageTextNotContains($help_text);
-    $assert_session->buttonExists('Change field type')->press();
-    $assert_session->assertWaitOnAjaxRequest();
+    $page->pressButton('Back');
 
     // Select each of the Reference, File upload field groups and verify their
     // descriptions are now visible and match the expected text.
     foreach ($field_groups as $field_group) {
-      $this->clickLink($field_group);
-      $assert_session->assertWaitOnAjaxRequest();
+      $assert_session->elementExists('css', "[name='new_storage_type'][value='$field_group']");
+      $page->find('css', "[name='new_storage_type'][value='$field_group']")->getParent()->click();
+
+      $page->pressButton('Continue');
       $assert_session->pageTextContains($help_text);
-      $assert_session->buttonExists('Change field type')->press();
-      $assert_session->assertWaitOnAjaxRequest();
+      $page->pressButton('Back');
     }
   }
 

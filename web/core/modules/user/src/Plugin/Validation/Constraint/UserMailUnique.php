@@ -15,11 +15,6 @@ use Drupal\Core\Validation\Plugin\Validation\Constraint\UniqueFieldConstraint;
 )]
 class UserMailUnique extends UniqueFieldConstraint {
 
-  /**
-   * The default violation message.
-   *
-   * @var string
-   */
   public $message = 'The email address %value is already taken.';
 
 }

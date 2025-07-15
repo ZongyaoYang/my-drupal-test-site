@@ -36,8 +36,8 @@ class ProjectInfo {
    *   Boolean that controls what status (enabled or uninstalled) to process out
    *   of the $list and add to the $projects array.
    * @param array $additional_elements
-   *   (optional) Array of additional elements to be collected from the
-   *   .info.yml file. Defaults to [].
+   *   (optional) Array of additional elements to be collected from the .info.yml
+   *   file. Defaults to array().
    */
   public function processInfoList(array &$projects, array $list, $project_type, $status, array $additional_elements = []) {
     foreach ($list as $file) {
@@ -165,12 +165,12 @@ class ProjectInfo {
    * @param array $info
    *   Array of .info.yml file data as returned by
    *   \Drupal\Core\Extension\InfoParser.
-   * @param array $additional_elements
-   *   (optional) Array of additional elements to be collected from the
-   *   .info.yml file. Defaults to [].
+   * @param $additional_elements
+   *   (optional) Array of additional elements to be collected from the .info.yml
+   *   file. Defaults to array().
    *
    * @return array
-   *   Array of .info.yml file data we need for Update Status.
+   *   Array of .info.yml file data we need for the update manager.
    *
    * @see \Drupal\Core\Utility\ProjectInfo::processInfoList()
    */

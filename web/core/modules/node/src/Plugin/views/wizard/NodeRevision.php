@@ -29,10 +29,11 @@ class NodeRevision extends WizardPluginBase {
   protected $createdColumn = 'changed';
 
   /**
-   * {@inheritdoc}
+   * Overrides Drupal\views\Plugin\views\wizard\WizardPluginBase::rowStyleOptions().
+   *
+   * Node revisions do not support full posts or teasers, so remove them.
    */
   protected function rowStyleOptions() {
-    // Node revisions do not support full posts or teasers, so remove them.
     $options = parent::rowStyleOptions();
     unset($options['teasers']);
     unset($options['full_posts']);

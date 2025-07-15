@@ -8,7 +8,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 
 /**
- * The confirmation form for deleting a browser language negotiation mapping.
+ * Defines a confirmation form for deleting a browser language negotiation mapping.
  *
  * @internal
  */

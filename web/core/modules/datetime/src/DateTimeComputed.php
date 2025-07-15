@@ -69,7 +69,7 @@ class DateTimeComputed extends TypedData {
         }
       }
     }
-    catch (\Exception) {
+    catch (\Exception $e) {
       // @todo Handle this.
     }
     return $this->date;

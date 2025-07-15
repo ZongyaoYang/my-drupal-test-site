@@ -136,7 +136,7 @@ interface SectionStorageInterface extends SectionListInterface, PluginInspection
   public function isApplicable(RefinableCacheableDependencyInterface $cacheability);
 
   /**
-   * {@inheritdoc}
+   * Overrides \Drupal\Component\Plugin\PluginInspectionInterface::getPluginDefinition().
    *
    * @return \Drupal\layout_builder\SectionStorage\SectionStorageDefinition
    *   The section storage definition.

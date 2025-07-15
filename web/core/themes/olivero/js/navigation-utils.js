@@ -58,10 +58,6 @@
    *   Current state of the sticky header button.
    */
   function setStickyHeaderStorage(expandedState) {
-    if (!expandedState) {
-      localStorage.removeItem('Drupal.olivero.stickyHeaderState');
-      return;
-    }
     const now = new Date();
 
     const item = {
@@ -75,22 +71,6 @@
   }
 
   /**
-   * Update the expiration date if the sticky header expanded state is set.
-   *
-   * @param {boolean} expandedState
-   *   Current state of the sticky header button.
-   */
-  function updateStickyHeaderStorage(expandedState) {
-    const stickyHeaderState = localStorage.getItem(
-      'Drupal.olivero.stickyHeaderState',
-    );
-
-    if (stickyHeaderState !== null) {
-      setStickyHeaderStorage(expandedState);
-    }
-  }
-
-  /**
    * Toggle the state of the sticky header between always pinned and
    * only pinned when scrolled to the top of the viewport.
    *
@@ -101,6 +81,7 @@
     if (isDesktopNav()) {
       siteHeaderFixable.classList.toggle('is-expanded', pinnedState);
       stickyHeaderToggleButton.setAttribute('aria-checked', pinnedState);
+      setStickyHeaderStorage(pinnedState);
     }
   }
 
@@ -129,99 +110,106 @@
     return item.value;
   }
 
-  const fixableElements = document.querySelectorAll(
-    '[data-drupal-selector="site-header-fixable"], [data-drupal-selector="social-bar-inner"]',
-  );
-
-  function toggleDesktopNavVisibility(entries) {
-    if (!isDesktopNav()) return;
-
-    entries.forEach((entry) => {
-      // Firefox doesn't seem to support entry.isIntersecting properly,
-      // so we check the intersectionRatio.
-      fixableElements.forEach((el) =>
-        el.classList.toggle('is-fixed', entry.intersectionRatio < 1),
-      );
-    });
-  }
-
-  /**
-   * Gets the root margin by checking for various toolbar classes.
-   *
-   * @return {string}
-   *   Root margin for the Intersection Observer options object.
-   */
-  function getRootMargin() {
-    let rootMarginTop = 72;
-    const { body } = document;
-
-    if (body.classList.contains('toolbar-fixed')) {
-      rootMarginTop -= 39;
-    }
-
-    if (
-      body.classList.contains('toolbar-horizontal') &&
-      body.classList.contains('toolbar-tray-open')
-    ) {
-      rootMarginTop -= 40;
-    }
-
-    return `${rootMarginTop}px 0px 0px 0px`;
-  }
-
-  /**
-   * Monitor the navigation position.
-   */
-  function monitorNavPosition() {
-    const primaryNav = document.querySelector(
-      '[data-drupal-selector="site-header"]',
-    );
-    const options = {
-      rootMargin: getRootMargin(),
-      threshold: [0.999, 1],
-    };
-
-    const observer = new IntersectionObserver(
-      toggleDesktopNavVisibility,
-      options,
+  // Only enable scroll interactivity if the browser supports Intersection
+  // Observer.
+  // @see https://github.com/w3c/IntersectionObserver/blob/master/polyfill/intersection-observer.js#L19-L21
+  if (
+    'IntersectionObserver' in window &&
+    'IntersectionObserverEntry' in window &&
+    'intersectionRatio' in window.IntersectionObserverEntry.prototype
+  ) {
+    const fixableElements = document.querySelectorAll(
+      '[data-drupal-selector="site-header-fixable"], [data-drupal-selector="social-bar-inner"]',
     );
 
-    if (primaryNav) {
-      observer.observe(primaryNav);
+    function toggleDesktopNavVisibility(entries) {
+      if (!isDesktopNav()) return;
+
+      entries.forEach((entry) => {
+        // Firefox doesn't seem to support entry.isIntersecting properly,
+        // so we check the intersectionRatio.
+        fixableElements.forEach((el) =>
+          el.classList.toggle('is-fixed', entry.intersectionRatio < 1),
+        );
+      });
     }
-  }
 
-  if (stickyHeaderToggleButton) {
-    stickyHeaderToggleButton.addEventListener('click', () => {
-      const pinnedState = !stickyHeaderIsEnabled();
-      toggleStickyHeaderState(pinnedState);
-      setStickyHeaderStorage(pinnedState);
-    });
-  }
+    /**
+     * Gets the root margin by checking for various toolbar classes.
+     *
+     * @return {string}
+     *   Root margin for the Intersection Observer options object.
+     */
+    function getRootMargin() {
+      let rootMarginTop = 72;
+      const { body } = document;
 
-  // If header is pinned open and a header element gains focus, scroll to the
-  // top of the page to ensure that the header elements can be seen.
-  const siteHeaderInner = document.querySelector(
-    '[data-drupal-selector="site-header-inner"]',
-  );
-  if (siteHeaderInner) {
-    siteHeaderInner.addEventListener('focusin', () => {
-      if (isDesktopNav() && !stickyHeaderIsEnabled()) {
-        const header = document.querySelector(
-          '[data-drupal-selector="site-header"]',
-        );
-        const headerNav = header.querySelector(
-          '[data-drupal-selector="header-nav"]',
-        );
-        const headerMargin = header.clientHeight - headerNav.clientHeight;
-        if (window.scrollY > headerMargin) {
-          window.scrollTo(0, headerMargin);
-        }
+      if (body.classList.contains('toolbar-fixed')) {
+        rootMarginTop -= 39;
       }
-    });
-  }
 
-  monitorNavPosition();
-  updateStickyHeaderStorage(getStickyHeaderStorage());
-  toggleStickyHeaderState(getStickyHeaderStorage());
+      if (
+        body.classList.contains('toolbar-horizontal') &&
+        body.classList.contains('toolbar-tray-open')
+      ) {
+        rootMarginTop -= 40;
+      }
+
+      return `${rootMarginTop}px 0px 0px 0px`;
+    }
+
+    /**
+     * Monitor the navigation position.
+     */
+    function monitorNavPosition() {
+      const primaryNav = document.querySelector(
+        '[data-drupal-selector="site-header"]',
+      );
+      const options = {
+        rootMargin: getRootMargin(),
+        threshold: [0.999, 1],
+      };
+
+      const observer = new IntersectionObserver(
+        toggleDesktopNavVisibility,
+        options,
+      );
+
+      if (primaryNav) {
+        observer.observe(primaryNav);
+      }
+    }
+
+    if (stickyHeaderToggleButton) {
+      stickyHeaderToggleButton.addEventListener('click', () => {
+        toggleStickyHeaderState(!stickyHeaderIsEnabled());
+      });
+    }
+
+    // If header is pinned open and a header element gains focus, scroll to the
+    // top of the page to ensure that the header elements can be seen.
+    const siteHeaderInner = document.querySelector(
+      '[data-drupal-selector="site-header-inner"]',
+    );
+    if (siteHeaderInner) {
+      siteHeaderInner.addEventListener('focusin', () => {
+        if (isDesktopNav() && !stickyHeaderIsEnabled()) {
+          const header = document.querySelector(
+            '[data-drupal-selector="site-header"]',
+          );
+          const headerNav = header.querySelector(
+            '[data-drupal-selector="header-nav"]',
+          );
+          const headerMargin = header.clientHeight - headerNav.clientHeight;
+          if (window.scrollY > headerMargin) {
+            window.scrollTo(0, headerMargin);
+          }
+        }
+      });
+    }
+
+    monitorNavPosition();
+    setStickyHeaderStorage(getStickyHeaderStorage());
+    toggleStickyHeaderState(getStickyHeaderStorage());
+  }
 })(Drupal);

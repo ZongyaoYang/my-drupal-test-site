@@ -2,9 +2,6 @@
 
 namespace Drupal\rest;
 
-/**
- * Provides a trait for accessing response data that should be serialized.
- */
 trait ResourceResponseTrait {
 
   /**

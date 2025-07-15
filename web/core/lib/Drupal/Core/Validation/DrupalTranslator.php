@@ -28,7 +28,6 @@ class DrupalTranslator implements TranslatorInterface {
     if ($id instanceof TranslatableMarkup) {
       return $id;
     }
-    // phpcs:ignore Drupal.Semantics.FunctionT.NotLiteralString
     return new TranslatableMarkup($id, $this->processParameters($parameters), $this->getOptions($domain, $locale));
   }
 
@@ -67,7 +66,7 @@ class DrupalTranslator implements TranslatorInterface {
    * {@inheritdoc}
    */
   public function getLocale() {
-    return $this->locale ?: \Drupal::languageManager()->getCurrentLanguage()->getId();
+    return $this->locale ? $this->locale : \Drupal::languageManager()->getCurrentLanguage()->getId();
   }
 
   /**

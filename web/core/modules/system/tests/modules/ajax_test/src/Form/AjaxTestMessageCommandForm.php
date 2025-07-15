@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\ajax_test\Form;
 
 use Drupal\Core\Ajax\AjaxResponse;
@@ -103,10 +101,7 @@ class AjaxTestMessageCommandForm implements FormInterface {
    */
   public function makeMessageWarning() {
     $response = new AjaxResponse();
-    return $response->addCommand(new MessageCommand('I am a warning message in the default location.', NULL, [
-      'type' => 'warning',
-      'announce' => '',
-    ]));
+    return $response->addCommand(new MessageCommand('I am a warning message in the default location.', NULL, ['type' => 'warning', 'announce' => '']));
   }
 
 }

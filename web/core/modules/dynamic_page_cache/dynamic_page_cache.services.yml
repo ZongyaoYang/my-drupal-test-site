@@ -1,6 +1,3 @@
-parameters:
-  dynamic_page_cache.skip_procedural_hook_scan: true
-
 services:
   _defaults:
     autoconfigure: true

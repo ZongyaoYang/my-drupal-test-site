@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\filter_test\Plugin\Filter;
 
 use Drupal\Core\StringTranslation\TranslatableMarkup;
@@ -30,14 +28,12 @@ class FilterTestPlaceholders extends FilterBase implements TrustedCallbackInterf
     $result = new FilterProcessResult($text);
     $placeholder_with_argument = $result->createPlaceholder('\Drupal\filter_test\Plugin\Filter\FilterTestPlaceholders::renderDynamicThing', ['llama']);
     $placeholder_without_arguments = $result->createPlaceholder('\Drupal\filter_test\Plugin\Filter\FilterTestPlaceholders::renderStaticThing', []);
-    $result->setProcessedText($text . '<p>' . $placeholder_with_argument . '</p><p>' . $placeholder_without_arguments . '</p>');
+    $result->setProcessedText($text . '<p>' . $placeholder_with_argument . '</p>' . '<p>' . $placeholder_without_arguments . '</p>');
     return $result;
   }
 
   /**
-   * Render API callback: Builds a render array containing the dynamic thing.
-   *
-   * This function is assigned as a #lazy_builder callback.
+   * #lazy_builder callback; builds a render array containing the dynamic thing.
    *
    * @param string $thing
    *   A "thing" string.
@@ -52,9 +48,7 @@ class FilterTestPlaceholders extends FilterBase implements TrustedCallbackInterf
   }
 
   /**
-   * Render API callback: Builds a render array.
-   *
-   * This function is assigned as a #lazy_builder callback.
+   * #lazy_builder callback; builds a render array.
    *
    * @return array
    *   A renderable array.

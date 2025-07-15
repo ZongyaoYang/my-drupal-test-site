@@ -30,7 +30,7 @@ trait NodeMigrateTypeTestTrait {
    *   An associative array with the total number of complete and classic
    *   node migrate_map tables.
    */
-  protected function nodeMigrateMapTableCount($version): array {
+  protected function nodeMigrateMapTableCount($version) {
     $results = [];
     $bases = ['node', 'node_complete'];
     $tables = \Drupal::database()->schema()

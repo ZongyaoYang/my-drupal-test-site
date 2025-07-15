@@ -27,9 +27,6 @@ class SimpleConfigValidationTest extends KernelTestBase {
     $this->installConfig('system');
   }
 
-  /**
-   * Tests the validation of the default configuration hash.
-   */
   public function testDefaultConfigHashValidation(): void {
     $config = $this->config('system.site');
     $this->assertFalse($config->isNew());

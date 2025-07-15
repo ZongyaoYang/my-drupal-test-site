@@ -13,8 +13,6 @@ use Drupal\Tests\UnitTestCase;
 class FieldUninstallValidatorTest extends UnitTestCase {
 
   /**
-   * The mock field uninstall validator.
-   *
    * @var \Drupal\field\FieldUninstallValidator|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $fieldUninstallValidator;

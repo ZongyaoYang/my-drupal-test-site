@@ -13,8 +13,8 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 
 /**
- * @coversDefaultClass \Drupal\rest\Plugin\rest\resource\EntityResourceValidationTrait
  * @group rest
+ * @coversDefaultClass \Drupal\rest\Plugin\rest\resource\EntityResourceValidationTrait
  */
 class EntityResourceValidationTraitTest extends UnitTestCase {
 

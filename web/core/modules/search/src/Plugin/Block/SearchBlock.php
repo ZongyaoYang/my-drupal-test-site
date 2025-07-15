@@ -88,7 +88,7 @@ class SearchBlock extends BlockBase implements ContainerFactoryPluginInterface {
    */
   public function defaultConfiguration() {
     return [
-      'page_id' => NULL,
+      'page_id' => '',
     ];
   }
 
@@ -121,11 +121,7 @@ class SearchBlock extends BlockBase implements ContainerFactoryPluginInterface {
    * {@inheritdoc}
    */
   public function blockSubmit($form, FormStateInterface $form_state) {
-    // Handle the #empty_value: using the default requires specifying `null` in
-    // the config.
-    // @see search.schema.yml
-    // @see \Drupal\search\Form\SearchBlockForm::buildForm()
-    $this->configuration['page_id'] = $form_state->getValue('page_id') ?: NULL;
+    $this->configuration['page_id'] = $form_state->getValue('page_id');
   }
 
 }

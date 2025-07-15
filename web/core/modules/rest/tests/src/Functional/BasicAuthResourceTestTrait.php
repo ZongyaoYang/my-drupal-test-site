@@ -22,10 +22,10 @@ trait BasicAuthResourceTestTrait {
   /**
    * {@inheritdoc}
    */
-  protected function getAuthenticationRequestOptions($method): array {
+  protected function getAuthenticationRequestOptions($method) {
     return [
       'headers' => [
-        'Authorization' => 'Basic ' . base64_encode($this->account->getAccountName() . ':' . $this->account->passRaw),
+        'Authorization' => 'Basic ' . base64_encode($this->account->name->value . ':' . $this->account->passRaw),
       ],
     ];
   }

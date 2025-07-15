@@ -7,9 +7,6 @@ namespace Drupal\Tests\entity_test\Functional\Rest;
 use Drupal\entity_test\Entity\EntityTestBundle;
 use Drupal\Tests\rest\Functional\EntityResource\ConfigEntityResourceTestBase;
 
-/**
- * Resource test base for the EntityTestBundle entity.
- */
 abstract class EntityTestBundleResourceTestBase extends ConfigEntityResourceTestBase {
 
   /**

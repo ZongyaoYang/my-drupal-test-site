@@ -12,10 +12,6 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\workflows\WorkflowInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-/**
- * @internal
- *   This API is experimental.
- */
 #[ConfigAction(
   id: 'add_moderation',
   entity_types: ['workflow'],

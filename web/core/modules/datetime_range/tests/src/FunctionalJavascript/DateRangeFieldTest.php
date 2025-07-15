@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\datetime_range\FunctionalJavascript;
 
-use Drupal\datetime_range\DateTimeRangeDisplayOptions;
+use Drupal\datetime_range\DateTimeRangeConstantsInterface;
 use Drupal\datetime_range\Plugin\Field\FieldType\DateRangeItem;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
@@ -84,13 +84,13 @@ class DateRangeFieldTest extends WebDriverTestBase {
 
     // Assert that date separator field is visible if 'from_to' is set to
     // BOTH.
-    $this->assertSession()->fieldValueEquals($from_to_locator, DateTimeRangeDisplayOptions::Both->value);
+    $this->assertSession()->fieldValueEquals($from_to_locator, DateTimeRangeConstantsInterface::BOTH);
     $this->assertTrue($separator->isVisible());
     // Assert that the date separator is not visible if 'from_to' is set to
     // START_DATE or END_DATE.
-    $page->selectFieldOption($from_to_locator, DateTimeRangeDisplayOptions::StartDate->value);
+    $page->selectFieldOption($from_to_locator, DateTimeRangeConstantsInterface::START_DATE);
     $this->assertFalse($separator->isVisible());
-    $page->selectFieldOption($from_to_locator, DateTimeRangeDisplayOptions::EndDate->value);
+    $page->selectFieldOption($from_to_locator, DateTimeRangeConstantsInterface::END_DATE);
     $this->assertFalse($separator->isVisible());
   }
 

@@ -11,7 +11,6 @@ use Drupal\Tests\rest\Functional\CookieResourceTestTrait;
 use Drupal\Tests\rest\Functional\ResourceTestBase;
 use Drupal\user\UserInterface;
 use GuzzleHttp\RequestOptions;
-use Psr\Http\Message\ResponseInterface;
 
 /**
  * Tests registration of user using REST.
@@ -157,7 +156,7 @@ class UserRegistrationRestTest extends ResourceTestBase {
    * @return array
    *   Return the request body.
    */
-  protected function createRequestBody($name, $include_password = TRUE, $include_email = TRUE): array {
+  protected function createRequestBody($name, $include_password = TRUE, $include_email = TRUE) {
     $request_body = [
       'langcode' => [['value' => 'en']],
       'name' => [['value' => $name]],
@@ -226,7 +225,7 @@ class UserRegistrationRestTest extends ResourceTestBase {
    * @return \Psr\Http\Message\ResponseInterface
    *   Return the Response.
    */
-  protected function registerRequest($name, $include_password = TRUE, $include_email = TRUE): ResponseInterface {
+  protected function registerRequest($name, $include_password = TRUE, $include_email = TRUE) {
     $user_register_url = Url::fromRoute('user.register')
       ->setRouteParameter('_format', static::$format);
     $request_body = $this->createRequestBody($name, $include_password, $include_email);
@@ -239,7 +238,7 @@ class UserRegistrationRestTest extends ResourceTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUpAuthorization($method): void {
+  protected function setUpAuthorization($method) {
     switch ($method) {
       case 'POST':
         $this->grantPermissionsToAuthenticatedRole(['restful post user_registration']);

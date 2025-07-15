@@ -62,7 +62,7 @@ class BrowserTestBaseUserAgentTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function prepareRequest(): void {
+  protected function prepareRequest() {
     $session = $this->getSession();
     if ($this->agent) {
       $session->setCookie('SIMPLETEST_USER_AGENT', $this->agent);

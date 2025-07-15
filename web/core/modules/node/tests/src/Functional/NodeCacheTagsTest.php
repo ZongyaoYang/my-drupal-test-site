@@ -48,7 +48,7 @@ class NodeCacheTagsTest extends EntityWithUriCacheTagsTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function getAdditionalCacheContextsForEntity(EntityInterface $entity): array {
+  protected function getAdditionalCacheContextsForEntity(EntityInterface $entity) {
     return ['timezone'];
   }
 
@@ -57,14 +57,14 @@ class NodeCacheTagsTest extends EntityWithUriCacheTagsTestBase {
    *
    * Each node must have an author.
    */
-  protected function getAdditionalCacheTagsForEntity(EntityInterface $node): array {
+  protected function getAdditionalCacheTagsForEntity(EntityInterface $node) {
     return ['user:' . $node->getOwnerId(), 'user_view'];
   }
 
   /**
    * {@inheritdoc}
    */
-  protected function getAdditionalCacheContextsForEntityListing(): array {
+  protected function getAdditionalCacheContextsForEntityListing() {
     return ['user.node_grants:view'];
   }
 

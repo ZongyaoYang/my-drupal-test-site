@@ -46,7 +46,7 @@ class OptionsDynamicValuesApiTest extends OptionsFieldUnitTestBase {
       'type' => 'list_string',
       'cardinality' => 1,
       'settings' => [
-        'allowed_values_function' => '\Drupal\options_test\OptionsAllowedValues::dynamicValues',
+        'allowed_values_function' => 'options_test_dynamic_values_callback',
       ],
     ]);
     $this->fieldStorage->save();
@@ -65,7 +65,7 @@ class OptionsDynamicValuesApiTest extends OptionsFieldUnitTestBase {
       ->save();
 
     // Create an entity and prepare test data that will be used by
-    // \Drupal\options_test\OptionsAllowedValues::dynamicValues().
+    // options_test_dynamic_values_callback().
     $values = [
       'user_id' => 2,
       'name' => $this->randomMachineName(),
@@ -77,7 +77,7 @@ class OptionsDynamicValuesApiTest extends OptionsFieldUnitTestBase {
   /**
    * Tests options_allowed_values().
    *
-   * @see \Drupal\options_test\OptionsAllowedValues::dynamicValues()
+   * @see options_test_dynamic_values_callback()
    */
   public function testOptionsAllowedValues(): void {
     // Test allowed values without passed $items.

@@ -26,7 +26,6 @@ class OptGroupTest extends UnitTestCase {
    * Provides test data for the flattenOptions() method.
    *
    * @return array
-   *   An array of option structures to be flattened.
    */
   public static function providerTestFlattenOptions() {
     $object1 = new \stdClass();

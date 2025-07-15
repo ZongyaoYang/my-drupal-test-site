@@ -2,7 +2,6 @@
 
 namespace Drupal\user;
 
-use Drupal\Core\Config\Entity\ConfigEntityStorage;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
 
@@ -33,7 +32,7 @@ class RoleForm extends EntityForm {
       '#required' => TRUE,
       '#disabled' => !$entity->isNew(),
       '#size' => 30,
-      '#maxlength' => ConfigEntityStorage::MAX_ID_LENGTH,
+      '#maxlength' => 64,
       '#machine_name' => [
         'exists' => ['\Drupal\user\Entity\Role', 'load'],
       ],

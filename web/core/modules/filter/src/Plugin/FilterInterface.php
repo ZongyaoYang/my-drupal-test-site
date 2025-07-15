@@ -114,7 +114,6 @@ interface FilterInterface extends ConfigurableInterface, DependentPluginInterfac
    * Returns the administrative label for this filter plugin.
    *
    * @return string
-   *   The administrative label of the filter plugin.
    */
   public function getLabel();
 
@@ -122,7 +121,6 @@ interface FilterInterface extends ConfigurableInterface, DependentPluginInterfac
    * Returns the administrative description for this filter plugin.
    *
    * @return string
-   *   The administrative description of the filter plugin.
    */
   public function getDescription();
 

@@ -172,7 +172,7 @@ final class ProjectCoreCompatibility {
     try {
       return Semver::satisfies($this->existingCoreVersion, $core_compatibility_constraint);
     }
-    catch (\Exception) {
+    catch (\Exception $e) {
       return FALSE;
     }
   }

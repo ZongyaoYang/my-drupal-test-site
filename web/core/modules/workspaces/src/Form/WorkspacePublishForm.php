@@ -13,8 +13,6 @@ use Drupal\workspaces\WorkspaceInterface;
 use Drupal\workspaces\WorkspaceOperationFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-// cspell:ignore differring
-
 /**
  * Provides the workspace publishing form.
  */

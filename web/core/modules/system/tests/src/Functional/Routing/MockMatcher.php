@@ -14,8 +14,6 @@ class MockMatcher implements RequestMatcherInterface {
 
   /**
    * The matcher being tested.
-   *
-   * @var \Closure
    */
   protected $matcher;
 

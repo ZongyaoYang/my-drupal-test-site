@@ -24,15 +24,15 @@ trait BlockCreationTrait {
    *   example:
    *   @code
    *     $this->drupalPlaceBlock('system_powered_by_block', [
-   *       'label' => 'Hello, world!',
+   *       'label' => t('Hello, world!'),
    *     ]);
    *   @endcode
    *   The following defaults are provided:
    *   - label: Random string.
    *   - id: Random string.
-   *   - region: 'content'.
+   *   - region: 'sidebar_first'.
    *   - theme: The default theme.
-   *   - visibility: Empty array (block will be visible on all pages).
+   *   - visibility: Empty array.
    *
    * @return \Drupal\block\Entity\Block
    *   The block entity.

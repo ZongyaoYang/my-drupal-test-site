@@ -185,11 +185,6 @@ class FieldConfigListBuilder extends ConfigEntityListBuilder {
         'url' => $entity->toUrl("{$entity->getTargetEntityTypeId()}-field-edit-form"),
         'attributes' => [
           'title' => $this->t('Edit field settings.'),
-          'class' => ['use-ajax'],
-          'data-dialog-type' => 'modal',
-          'data-dialog-options' => Json::encode([
-            'width' => 1100,
-          ]),
         ],
       ];
     }

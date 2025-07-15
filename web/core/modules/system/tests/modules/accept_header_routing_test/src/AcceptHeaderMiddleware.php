@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\accept_header_routing_test;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -16,16 +14,16 @@ class AcceptHeaderMiddleware implements HttpKernelInterface {
   /**
    * The app kernel.
    */
-  protected HttpKernelInterface $httpKernel;
+  protected HttpKernelInterface $app;
 
   /**
    * Constructs a new AcceptHeaderMiddleware instance.
    *
-   * @param \Symfony\Component\HttpKernel\HttpKernelInterface $http_kernel
+   * @param \Symfony\Component\HttpKernel\HttpKernelInterface $app
    *   The app.
    */
-  public function __construct(HttpKernelInterface $http_kernel) {
-    $this->httpKernel = $http_kernel;
+  public function __construct(HttpKernelInterface $app) {
+    $this->app = $app;
   }
 
   /**
@@ -43,7 +41,7 @@ class AcceptHeaderMiddleware implements HttpKernelInterface {
       $request->setRequestFormat($mapping[$accept[0]]);
     }
 
-    return $this->httpKernel->handle($request, $type, $catch);
+    return $this->app->handle($request, $type, $catch);
   }
 
 }

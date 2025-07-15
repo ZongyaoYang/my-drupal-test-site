@@ -22,11 +22,9 @@
   font-variation-settings: "wght" 600;
   line-height: var(--admin-toolbar-line-height-info-sm);
 }
-@media (min-width: 64rem) {
-  [data-drupal-tooltip]:hover + .toolbar-tooltip,
-  [data-drupal-tooltip]:focus + .toolbar-tooltip {
-    display: block;
-  }
+[data-drupal-tooltip]:hover + .toolbar-tooltip,
+[data-drupal-tooltip]:focus + .toolbar-tooltip {
+  display: block;
 }
 [data-admin-toolbar="expanded"] [data-drupal-tooltip]:hover + .toolbar-block__title-tooltip {
   display: none;

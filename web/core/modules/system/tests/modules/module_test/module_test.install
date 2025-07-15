@@ -5,14 +5,12 @@
  * Install, update and uninstall functions for the module_test module.
  */
 
-declare(strict_types=1);
-
 use Drupal\Core\Database\Database;
 
 /**
  * Implements hook_schema().
  */
-function module_test_schema(): array {
+function module_test_schema() {
   $schema['module_test'] = [
     'description' => 'Dummy table to test the behavior of hook_schema() during module installation.',
     'fields' => [
@@ -31,7 +29,7 @@ function module_test_schema(): array {
 /**
  * Implements hook_install().
  */
-function module_test_install(): void {
+function module_test_install() {
   $schema = module_test_schema()['module_test'];
   Database::getConnection()->insert('module_test')
     ->fields([

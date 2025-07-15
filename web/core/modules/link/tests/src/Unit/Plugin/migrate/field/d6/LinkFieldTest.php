@@ -16,15 +16,11 @@ use Prophecy\Argument;
 class LinkFieldTest extends UnitTestCase {
 
   /**
-   * The migrate field plugin.
-   *
    * @var \Drupal\migrate_drupal\Plugin\MigrateFieldInterface
    */
   protected $plugin;
 
   /**
-   * The migration.
-   *
    * @var \Drupal\migrate\Plugin\MigrationInterface
    */
   protected $migration;

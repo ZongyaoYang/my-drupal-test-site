@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\sdc_other_node_visitor\Twig\Profiler;
 
 use Twig\Attribute\YieldReady;

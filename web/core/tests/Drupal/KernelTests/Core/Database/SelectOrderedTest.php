@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\KernelTests\Core\Database;
 
-use Drupal\Core\Database\Statement\FetchAs;
-
 /**
  * Tests the Select query builder.
  *
@@ -54,7 +52,7 @@ class SelectOrderedTest extends DatabaseTestBase {
       ['George', 27, 'Singer'],
       ['Paul', 26, 'Songwriter'],
     ];
-    $results = $result->fetchAll(FetchAs::List);
+    $results = $result->fetchAll(\PDO::FETCH_NUM);
     foreach ($expected as $k => $record) {
       $num_records++;
       foreach ($record as $kk => $col) {

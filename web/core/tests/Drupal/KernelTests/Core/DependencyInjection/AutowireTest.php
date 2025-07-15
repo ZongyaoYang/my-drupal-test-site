@@ -57,15 +57,11 @@ class AutowireTest extends KernelTestBase {
     $filenames = array_map(fn($module) => "core/modules/{$module[0]}/{$module[0]}.services.yml", $this->coreModuleListDataProvider());
     $filenames[] = 'core/core.services.yml';
     foreach (array_filter($filenames, 'file_exists') as $filename) {
-      foreach ((Yaml::decode(file_get_contents($filename))['services'] ?? []) as $id => $service) {
+      foreach (Yaml::decode(file_get_contents($filename))['services'] as $id => $service) {
         if (is_string($service)) {
           $aliases[$id] = substr($service, 1);
         }
         elseif (isset($service['class']) && class_exists($service['class'])) {
-          // Ignore services named by their own class.
-          if ($id === $service['class']) {
-            continue;
-          }
           // Ignore certain tagged services.
           if (isset($service['tags'])) {
             foreach ($service['tags'] as $tag) {
@@ -74,6 +70,7 @@ class AutowireTest extends KernelTestBase {
                 'cache.context',
                 'context_provider',
                 'event_subscriber',
+                'module_install.uninstall_validator',
               ])) {
                 continue 2;
               }
@@ -101,11 +98,6 @@ class AutowireTest extends KernelTestBase {
     foreach ($services as $id => $class) {
       // Skip services that share a class.
       if (count(array_keys($services, $class)) > 1) {
-        continue;
-      }
-
-      // Skip IDs that are interfaces already.
-      if (interface_exists($id)) {
         continue;
       }
 
@@ -137,12 +129,13 @@ class AutowireTest extends KernelTestBase {
    * Tests that core controllers are autowired where possible.
    */
   public function testCoreControllerAutowiring(): void {
+    $services = [];
     $aliases = [];
 
     $filenames = array_map(fn($module) => "core/modules/{$module[0]}/{$module[0]}.services.yml", $this->coreModuleListDataProvider());
     $filenames[] = 'core/core.services.yml';
     foreach (array_filter($filenames, 'file_exists') as $filename) {
-      foreach ((Yaml::decode(file_get_contents($filename))['services'] ?? []) as $id => $service) {
+      foreach (Yaml::decode(file_get_contents($filename))['services'] as $id => $service) {
         if (is_string($service)) {
           $aliases[$id] = substr($service, 1);
         }
@@ -172,7 +165,7 @@ class AutowireTest extends KernelTestBase {
         continue;
       }
       $constructor = new \ReflectionMethod($controller, '__construct');
-      foreach ($constructor->getParameters() as $parameter) {
+      foreach ($constructor->getParameters() as $pos => $parameter) {
         $interface = (string) $parameter->getType();
         if (!isset($aliases[$interface])) {
           continue 2;

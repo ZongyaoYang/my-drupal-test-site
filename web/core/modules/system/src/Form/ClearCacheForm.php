@@ -23,7 +23,14 @@ class ClearCacheForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $form['clear'] = [
+
+    $form['clear_cache'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Clear cache'),
+      '#open' => TRUE,
+    ];
+
+    $form['clear_cache']['clear'] = [
       '#type' => 'submit',
       '#value' => $this->t('Clear all caches'),
     ];

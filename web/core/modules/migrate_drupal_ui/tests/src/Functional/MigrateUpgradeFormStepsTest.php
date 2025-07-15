@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drupal\Tests\migrate_drupal_ui\Functional;
 
 use Drupal\migrate_drupal\MigrationConfigurationTrait;
+use Drupal\Tests\migrate_drupal\Traits\CreateTestContentEntitiesTrait;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\WebAssert;
 
@@ -16,6 +17,7 @@ use Drupal\Tests\WebAssert;
 class MigrateUpgradeFormStepsTest extends BrowserTestBase {
 
   use MigrationConfigurationTrait;
+  use CreateTestContentEntitiesTrait;
 
   /**
    * {@inheritdoc}

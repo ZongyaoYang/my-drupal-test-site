@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\file\Kernel;
 
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\file\Entity\File;
 use Drupal\file\FileInterface;
 
@@ -47,7 +46,7 @@ class SpaceUsedTest extends FileManagedUnitTestBase {
    * @return \Drupal\Core\Entity\EntityInterface
    *   The file entity.
    */
-  protected function createFileWithSize($uri, $size, $uid, $status = FileInterface::STATUS_PERMANENT): EntityInterface {
+  protected function createFileWithSize($uri, $size, $uid, $status = FileInterface::STATUS_PERMANENT) {
     file_put_contents($uri, $this->randomMachineName($size));
     $file = File::create([
       'uri' => $uri,

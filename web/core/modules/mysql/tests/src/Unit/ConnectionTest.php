@@ -6,7 +6,7 @@ namespace Drupal\Tests\mysql\Unit;
 
 use Drupal\mysql\Driver\Database\mysql\Connection;
 use Drupal\Tests\UnitTestCase;
-use PHPUnit\Framework\MockObject\MockObject;
+use Prophecy\Argument;
 
 /**
  * Tests MySQL database connections.
@@ -17,21 +17,61 @@ use PHPUnit\Framework\MockObject\MockObject;
 class ConnectionTest extends UnitTestCase {
 
   /**
-   * A mocked MySql connection.
+   * A PDO statement prophecy.
    *
-   * @var \Drupal\mysql\Driver\Database\mysql\Connection&\PHPUnit\Framework\MockObject\MockObject
+   * @var \PDOStatement|\Prophecy\Prophecy\ObjectProphecy
    */
-  private Connection&MockObject $connection;
+  private $pdoStatement;
+
+  /**
+   * A PDO object prophecy.
+   *
+   * @var \PDO|\Prophecy\Prophecy\ObjectProphecy
+   */
+  private $pdoConnection;
 
   /**
    * {@inheritdoc}
    */
   protected function setUp(): void {
     parent::setUp();
-    $this->connection = $this->getMockBuilder(Connection::class)
-      ->setConstructorArgs([$this->createMock(\PDO::class), []])
-      ->onlyMethods(['getServerVersion'])
-      ->getMock();
+
+    $this->pdoStatement = $this->prophesize(\PDOStatement::class);
+    $this->pdoConnection = $this->prophesize(\PDO::class);
+  }
+
+  /**
+   * Creates a Connection object for testing.
+   *
+   * @return \Drupal\mysql\Driver\Database\mysql\Connection
+   */
+  private function createConnection(): Connection {
+    $this->pdoStatement
+      ->setFetchMode(Argument::any())
+      ->shouldBeCalled()
+      ->willReturn(TRUE);
+
+    $this->pdoStatement
+      ->execute(Argument::any())
+      ->shouldBeCalled()
+      ->willReturn(TRUE);
+
+    $this->pdoConnection
+      ->prepare('SELECT VERSION()', Argument::any())
+      ->shouldBeCalled()
+      ->willReturn($this->pdoStatement->reveal());
+
+    /** @var \PDO $pdo_connection */
+    $pdo_connection = $this->pdoConnection->reveal();
+
+    return new class($pdo_connection) extends Connection {
+
+      public function __construct(\PDO $connection) {
+        $this->connection = $connection;
+        $this->setPrefix('');
+      }
+
+    };
   }
 
   /**
@@ -40,12 +80,15 @@ class ConnectionTest extends UnitTestCase {
    * @dataProvider providerVersionAndIsMariaDb
    */
   public function testVersionAndIsMariaDb(bool $expected_is_mariadb, string $server_version, string $expected_version): void {
-    $this->connection
-      ->method('getServerVersion')
+    $this->pdoStatement
+      ->fetchColumn(Argument::any())
+      ->shouldBeCalled()
       ->willReturn($server_version);
 
-    $is_mariadb = $this->connection->isMariaDb();
-    $version = $this->connection->version();
+    $connection = $this->createConnection();
+
+    $is_mariadb = $connection->isMariaDb();
+    $version = $connection->version();
 
     $this->assertSame($expected_is_mariadb, $is_mariadb);
     $this->assertSame($expected_version, $version);
@@ -55,7 +98,6 @@ class ConnectionTest extends UnitTestCase {
    * Provides test data.
    *
    * @return array
-   *   An array of test data.
    */
   public static function providerVersionAndIsMariaDb(): array {
     return [

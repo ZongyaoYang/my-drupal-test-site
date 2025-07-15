@@ -81,7 +81,6 @@ class FileUploadResult {
    * Gets the original filename.
    *
    * @return string
-   *   The original filename.
    */
   public function getOriginalFilename(): string {
     return $this->originalFilename;
@@ -117,7 +116,6 @@ class FileUploadResult {
    * Returns if there was a security rename.
    *
    * @return bool
-   *   TRUE when the file was renamed for a security reason, FALSE otherwise.
    */
   public function isSecurityRename(): bool {
     return $this->securityRename;
@@ -127,7 +125,6 @@ class FileUploadResult {
    * Returns if there was a file rename.
    *
    * @return bool
-   *   TRUE when the file was renamed, FALSE otherwise.
    */
   public function isRenamed(): bool {
     return $this->originalFilename !== $this->sanitizedFilename;
@@ -137,7 +134,6 @@ class FileUploadResult {
    * Gets the sanitized filename.
    *
    * @return string
-   *   The sanitized filename.
    */
   public function getSanitizedFilename(): string {
     return $this->sanitizedFilename;
@@ -147,7 +143,6 @@ class FileUploadResult {
    * Gets the File entity.
    *
    * @return \Drupal\file\FileInterface
-   *   The file entity.
    */
   public function getFile(): FileInterface {
     return $this->file;

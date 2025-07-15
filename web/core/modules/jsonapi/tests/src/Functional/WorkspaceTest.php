@@ -7,7 +7,6 @@ namespace Drupal\Tests\jsonapi\Functional;
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Url;
-use Drupal\jsonapi\JsonApiSpec;
 use Drupal\user\Entity\User;
 use Drupal\workspaces\Entity\Workspace;
 
@@ -15,7 +14,6 @@ use Drupal\workspaces\Entity\Workspace;
  * JSON:API integration test for the "Workspace" content entity type.
  *
  * @group jsonapi
- * @group workspaces
  */
 class WorkspaceTest extends ResourceTestBase {
 
@@ -124,10 +122,10 @@ class WorkspaceTest extends ResourceTestBase {
       'jsonapi' => [
         'meta' => [
           'links' => [
-            'self' => ['href' => JsonApiSpec::SUPPORTED_SPECIFICATION_PERMALINK],
+            'self' => ['href' => 'http://jsonapi.org/format/1.0/'],
           ],
         ],
-        'version' => JsonApiSpec::SUPPORTED_SPECIFICATION_VERSION,
+        'version' => '1.0',
       ],
       'links' => [
         'self' => ['href' => $base_url->toString()],
@@ -143,7 +141,7 @@ class WorkspaceTest extends ResourceTestBase {
           'changed' => (new \DateTime())->setTimestamp($this->entity->getChangedTime())->setTimezone(new \DateTimeZone('UTC'))->format(\DateTime::RFC3339),
           'label' => 'Campaign',
           'drupal_internal__id' => 'campaign',
-          'drupal_internal__revision_id' => 1,
+          'drupal_internal__revision_id' => 2,
         ],
         'relationships' => [
           'parent' => [

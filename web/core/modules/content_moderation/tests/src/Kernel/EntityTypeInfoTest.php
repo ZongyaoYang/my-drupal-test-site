@@ -142,7 +142,7 @@ class EntityTypeInfoTest extends KernelTestBase {
   /**
    * Add moderation to an entity type and bundle.
    */
-  protected function enableModeration($entity_type_id, $bundle): void {
+  protected function enableModeration($entity_type_id, $bundle) {
     $workflow = $this->createEditorialWorkflow();
     $workflow->getTypePlugin()->addEntityTypeAndBundle($entity_type_id, $bundle);
     $workflow->save();

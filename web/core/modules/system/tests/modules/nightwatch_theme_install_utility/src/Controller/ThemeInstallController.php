@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\nightwatch_theme_install_utility\Controller;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -59,7 +57,6 @@ class ThemeInstallController extends ControllerBase {
 
   /**
    * Install a theme as the admin theme.
-   *
    * @param string $theme
    *   The theme to install as the admin theme.
    *

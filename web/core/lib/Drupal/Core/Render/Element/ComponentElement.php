@@ -3,16 +3,15 @@
 namespace Drupal\Core\Render\Element;
 
 use Drupal\Core\Render\Attribute\RenderElement;
-use Drupal\Core\Render\Component\Exception\InvalidComponentDataException;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Security\DoTrustedCallbackTrait;
+use Drupal\Core\Render\Component\Exception\InvalidComponentDataException;
 
 /**
  * Provides a Single-Directory Component render element.
  *
  * Properties:
  * - #component: The machine name of the component.
- * - #variant: (optional) The variant to be used for the component.
  * - #props: an associative array where the keys are the names of the
  *   component props, and the values are the prop values.
  * - #slots: an associative array where the keys are the slot names, and the
@@ -51,10 +50,6 @@ class ComponentElement extends RenderElementBase {
    */
   public function preRenderComponent(array $element): array {
     $props = $element['#props'];
-    if (isset($element["#variant"]) && !isset($props['variant'])) {
-      $props['variant'] = $element["#variant"];
-    }
-
     $props_alter_callbacks = $element['#propsAlter'];
     // This callback can be used to prepare the context. For instance to replace
     // tokens in the props.
@@ -67,14 +62,6 @@ class ComponentElement extends RenderElementBase {
       ),
       $props
     );
-
-    // Handle children as slots.
-    $children = Element::children($element, TRUE);
-    foreach ($children as $key) {
-      $element['#slots'][$key] = $element[$key];
-      unset($element[$key]);
-    }
-
     $inline_template = $this->generateComponentTemplate(
       $element['#component'],
       $element['#slots'],
@@ -156,7 +143,6 @@ class ComponentElement extends RenderElementBase {
         [$this, 'preRenderComponent'],
       ],
       '#component' => '',
-      '#variant' => '',
       '#props' => [],
       '#slots' => [],
       '#propsAlter' => [],

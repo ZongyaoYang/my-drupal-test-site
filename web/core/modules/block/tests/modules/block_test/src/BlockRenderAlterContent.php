@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\block_test;
 
 use Drupal\Core\Render\Element\RenderCallbackInterface;
@@ -12,9 +10,7 @@ use Drupal\Core\Render\Element\RenderCallbackInterface;
 class BlockRenderAlterContent implements RenderCallbackInterface {
 
   /**
-   * Render API callback: Alters the content of a block.
-   *
-   * This function is assigned as a #pre_render callback.
+   * #pre_render callback for a block to alter its content.
    */
   public static function preRender(array $build) {
     $build['#prefix'] = 'Hiya!<br>';

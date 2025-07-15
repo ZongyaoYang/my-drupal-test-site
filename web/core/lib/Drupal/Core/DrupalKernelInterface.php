@@ -2,6 +2,7 @@
 
 namespace Drupal\Core;
 
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
  * This interface extends Symfony's KernelInterface and adds methods for
  * responding to modules being enabled or disabled during its lifetime.
  */
-interface DrupalKernelInterface extends HttpKernelInterface {
+interface DrupalKernelInterface extends HttpKernelInterface, ContainerAwareInterface {
 
   /**
    * Event fired when the service container finished initializing in subrequest.
@@ -98,7 +99,6 @@ interface DrupalKernelInterface extends HttpKernelInterface {
    * Gets the app root.
    *
    * @return string
-   *   The path of the application root.
    */
   public function getAppRoot();
 
@@ -119,7 +119,6 @@ interface DrupalKernelInterface extends HttpKernelInterface {
    * Force a container rebuild.
    *
    * @return \Symfony\Component\DependencyInjection\ContainerInterface
-   *   The rebuilt Symfony container.
    */
   public function rebuildContainer();
 
@@ -127,7 +126,6 @@ interface DrupalKernelInterface extends HttpKernelInterface {
    * Force a container reset.
    *
    * @return \Symfony\Component\DependencyInjection\ContainerInterface
-   *   The Symfony container.
    */
   public function resetContainer(): ContainerInterface;
 
@@ -148,5 +146,15 @@ interface DrupalKernelInterface extends HttpKernelInterface {
    * Helper method that loads legacy Drupal include files.
    */
   public function loadLegacyIncludes();
+
+  /**
+   * Get a mapping from service hashes to service IDs.
+   *
+   * @deprecated in drupal:9.5.1 and is removed from drupal:11.0.0. Use the
+   *   'Drupal\Component\DependencyInjection\ReverseContainer' service instead.
+   *
+   * @see https://www.drupal.org/node/3327942
+   */
+  public function getServiceIdMapping();
 
 }

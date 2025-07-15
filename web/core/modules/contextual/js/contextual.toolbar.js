@@ -3,7 +3,7 @@
  * Attaches behaviors for the Contextual module's edit toolbar tab.
  */
 
-(function ($, Drupal) {
+(function ($, Drupal, Backbone) {
   const strings = {
     tabbingReleased: Drupal.t(
       'Tabbing is no longer constrained by the Contextual module.',
@@ -21,19 +21,33 @@
    *   A contextual links DOM element as rendered by the server.
    */
   function initContextualToolbar(context) {
-    if (!Drupal.contextual || !Drupal.contextual.instances) {
+    if (!Drupal.contextual || !Drupal.contextual.collection) {
       return;
     }
 
-    const { contextualToolbar } = Drupal;
+    const contextualToolbar = Drupal.contextualToolbar;
+    contextualToolbar.model = new contextualToolbar.StateModel(
+      {
+        // Checks whether localStorage indicates we should start in edit mode
+        // rather than view mode.
+        // @see Drupal.contextualToolbar.VisualView.persist
+        isViewing:
+          document.querySelector('body .contextual-region') === null ||
+          localStorage.getItem('Drupal.contextualToolbar.isViewing') !==
+            'false',
+      },
+      {
+        contextualCollection: Drupal.contextual.collection,
+      },
+    );
 
     const viewOptions = {
       el: $('.toolbar .toolbar-bar .contextual-toolbar-tab'),
+      model: contextualToolbar.model,
       strings,
     };
-    contextualToolbar.model = new Drupal.contextual.ContextualToolbarModelView(
-      viewOptions,
-    );
+    new contextualToolbar.VisualView(viewOptions);
+    new contextualToolbar.AuralView(viewOptions);
   }
 
   /**
@@ -61,10 +75,13 @@
    */
   Drupal.contextualToolbar = {
     /**
-     * The {@link Drupal.contextual.ContextualToolbarModelView} instance.
+     * The {@link Drupal.contextualToolbar.StateModel} instance.
      *
-     * @type {?Drupal.contextual.ContextualToolbarModelView}
+     * @type {?Drupal.contextualToolbar.StateModel}
+     *
+     * @deprecated in drupal:9.4.0 and is removed from drupal:12.0.0. There is
+     * no replacement.
      */
     model: null,
   };
-})(jQuery, Drupal);
+})(jQuery, Drupal, Backbone);

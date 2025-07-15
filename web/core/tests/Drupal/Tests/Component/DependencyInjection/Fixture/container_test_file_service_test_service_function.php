@@ -5,8 +5,6 @@
  * Contains a test function for container 'file' include testing.
  */
 
-declare(strict_types=1);
-
 /**
  * Test function for container testing.
  *

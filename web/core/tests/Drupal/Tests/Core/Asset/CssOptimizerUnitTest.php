@@ -16,6 +16,11 @@ use Drupal\Tests\UnitTestCase;
 class CssOptimizerUnitTest extends UnitTestCase {
 
   /**
+   * {@inheritdoc}
+   */
+  protected $backupGlobals = FALSE;
+
+  /**
    * A CSS asset optimizer.
    *
    * @var \Drupal\Core\Asset\CssOptimizer
@@ -142,8 +147,8 @@ class CssOptimizerUnitTest extends UnitTestCase {
           'weight' => 0.013,
           'media' => 'all',
           'preprocess' => TRUE,
-          'data' => $path . 'charset_same_line.css',
-          'basename' => 'charset_same_line.css',
+          'data' => $path . 'charset_sameline.css',
+          'basename' => 'charset_sameline.css',
         ],
         file_get_contents($absolute_path . 'charset.css.optimized.css'),
       ],

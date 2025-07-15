@@ -91,7 +91,6 @@ interface LockBackendInterface {
    *   (optional) Lock lifetime in seconds. Defaults to 30.0.
    *
    * @return bool
-   *   TRUE if the lock was successfully acquired, FALSE otherwise.
    */
   public function acquire($name, $timeout = 30.0);
 
@@ -102,7 +101,6 @@ interface LockBackendInterface {
    *   Lock to acquire.
    *
    * @return bool
-   *   TRUE if the lock can be acquired, FALSE otherwise.
    */
   public function lockMayBeAvailable($name);
 
@@ -148,7 +146,6 @@ interface LockBackendInterface {
    * Locks will be wiped out at the end of each page request on a token basis.
    *
    * @return string
-   *   The lock ID.
    */
   public function getLockId();
 

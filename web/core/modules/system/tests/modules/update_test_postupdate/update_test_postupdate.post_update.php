@@ -5,14 +5,10 @@
  * Post update functions for test module.
  */
 
-declare(strict_types=1);
-
-// cspell:ignore postupdate
-
 /**
  * First update.
  */
-function update_test_postupdate_post_update_first(): string {
+function update_test_postupdate_post_update_first() {
   $execution = \Drupal::state()->get('post_update_test_execution', []);
   $execution[] = __FUNCTION__;
   \Drupal::state()->set('post_update_test_execution', $execution);
@@ -23,7 +19,7 @@ function update_test_postupdate_post_update_first(): string {
 /**
  * Second update.
  */
-function update_test_postupdate_post_update_second(): string {
+function update_test_postupdate_post_update_second() {
   $execution = \Drupal::state()->get('post_update_test_execution', []);
   $execution[] = __FUNCTION__;
   \Drupal::state()->set('post_update_test_execution', $execution);
@@ -34,7 +30,7 @@ function update_test_postupdate_post_update_second(): string {
 /**
  * Test1 update.
  */
-function update_test_postupdate_post_update_test1(): string {
+function update_test_postupdate_post_update_test1() {
   $execution = \Drupal::state()->get('post_update_test_execution', []);
   $execution[] = __FUNCTION__;
   \Drupal::state()->set('post_update_test_execution', $execution);
@@ -45,7 +41,7 @@ function update_test_postupdate_post_update_test1(): string {
 /**
  * Test0 update.
  */
-function update_test_postupdate_post_update_test0(): string {
+function update_test_postupdate_post_update_test0() {
   $execution = \Drupal::state()->get('post_update_test_execution', []);
   $execution[] = __FUNCTION__;
   \Drupal::state()->set('post_update_test_execution', $execution);
@@ -56,7 +52,7 @@ function update_test_postupdate_post_update_test0(): string {
 /**
  * Testing batch processing in post updates update.
  */
-function update_test_postupdate_post_update_test_batch(&$sandbox = NULL): string {
+function update_test_postupdate_post_update_test_batch(&$sandbox = NULL) {
   if (!isset($sandbox['steps'])) {
     $sandbox['current_step'] = 0;
     $sandbox['steps'] = 3;
@@ -75,7 +71,7 @@ function update_test_postupdate_post_update_test_batch(&$sandbox = NULL): string
 /**
  * Implements hook_removed_post_updates().
  */
-function update_test_postupdate_removed_post_updates(): array {
+function update_test_postupdate_removed_post_updates() {
   return [
     'update_test_postupdate_post_update_foo' => '8.x-1.0',
     'update_test_postupdate_post_update_bar' => '8.x-2.0',

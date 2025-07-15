@@ -10,8 +10,7 @@ use Drupal\Core\Config\StorageInterface;
  * A module uninstall validator that needs different functionality prior to a
  * configuration import should implement this interface and be defined in
  * a Drupal @link container service @endlink that is tagged
- * module_install.uninstall_validator. If autoconfiguration is enabled, the
- * service will be automatically tagged.
+ * module_install.uninstall_validator.
  */
 interface ConfigImportModuleUninstallValidatorInterface extends ModuleUninstallValidatorInterface {
 

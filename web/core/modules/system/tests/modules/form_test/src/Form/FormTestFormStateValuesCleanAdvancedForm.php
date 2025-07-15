@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\form_test\Form;
 
 use Drupal\Core\Form\FormBase;
@@ -25,17 +23,16 @@ class FormTestFormStateValuesCleanAdvancedForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    // Build an example form containing a managed file and a submit form
-    // element.
+    // Build an example form containing a managed file and a submit form element.
     $form['image'] = [
       '#type' => 'managed_file',
-      '#title' => $this->t('Image'),
+      '#title' => t('Image'),
       '#upload_location' => 'public://',
       '#default_value' => 0,
     ];
     $form['submit'] = [
       '#type' => 'submit',
-      '#value' => $this->t('Submit'),
+      '#value' => t('Submit'),
     ];
     return $form;
   }
@@ -45,7 +42,7 @@ class FormTestFormStateValuesCleanAdvancedForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $form_state->cleanValues();
-    print $this->t('You WIN!');
+    print t('You WIN!');
     exit;
   }
 

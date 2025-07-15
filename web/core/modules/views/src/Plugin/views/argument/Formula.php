@@ -21,11 +21,6 @@ use Drupal\views\ViewExecutable;
 )]
 class Formula extends ArgumentPluginBase {
 
-  /**
-   * An appropriate SQL string for the DB type and field type.
-   *
-   * @var string|null
-   */
   public $formula = NULL;
 
   /**
@@ -39,9 +34,6 @@ class Formula extends ArgumentPluginBase {
     }
   }
 
-  /**
-   * Gets the prepared formula.
-   */
   public function getFormula() {
     return str_replace('***table***', $this->tableAlias, $this->formula);
   }

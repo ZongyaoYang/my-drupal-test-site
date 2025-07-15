@@ -16,9 +16,9 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\RequestOptions;
 
 /**
- * @coversDefaultClass \Drupal\media\OEmbed\ResourceFetcher
- *
  * @group media
+ *
+ * @coversDefaultClass \Drupal\media\OEmbed\ResourceFetcher
  */
 class ResourceFetcherTest extends UnitTestCase {
 

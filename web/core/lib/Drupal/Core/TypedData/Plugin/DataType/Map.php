@@ -144,7 +144,7 @@ class Map extends TypedData implements \IteratorAggregate, ComplexDataInterface 
    *
    * @param string $property_name
    *   The name of the property to be written.
-   * @param mixed $value
+   * @param $value
    *   The value to set.
    */
   protected function writePropertyValue($property_name, $value) {
@@ -184,7 +184,8 @@ class Map extends TypedData implements \IteratorAggregate, ComplexDataInterface 
   /**
    * {@inheritdoc}
    */
-  public function getIterator(): \ArrayIterator {
+  #[\ReturnTypeWillChange]
+  public function getIterator() {
     return new \ArrayIterator($this->getProperties());
   }
 
@@ -221,7 +222,7 @@ class Map extends TypedData implements \IteratorAggregate, ComplexDataInterface 
   /**
    * {@inheritdoc}
    *
-   * @param string $property_name
+   * @param $property_name
    *   The name of the property.
    * @param bool $notify
    *   (optional) Whether to forward the notification to the parent. Defaults to

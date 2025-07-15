@@ -32,8 +32,10 @@ class CheckCircularReferencesPass implements CompilerPassInterface
 
     /**
      * Checks the ContainerBuilder object for circular references.
+     *
+     * @return void
      */
-    public function process(ContainerBuilder $container): void
+    public function process(ContainerBuilder $container)
     {
         $graph = $container->getCompiler()->getServiceReferenceGraph();
 
@@ -62,7 +64,7 @@ class CheckCircularReferencesPass implements CompilerPassInterface
                 continue;
             }
 
-            $isLeaf = (bool) $node->getValue();
+            $isLeaf = !!$node->getValue();
             $isConcrete = !$edge->isLazy() && !$edge->isWeak();
 
             // Skip already checked lazy services if they are still lazy. Will not gain any new information.

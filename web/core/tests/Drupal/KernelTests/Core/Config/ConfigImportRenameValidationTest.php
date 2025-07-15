@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\KernelTests\Core\Config;
 
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Component\Uuid\Php;
 use Drupal\Core\Config\ConfigImporter;
 use Drupal\Core\Config\ConfigImporterException;
@@ -109,9 +110,9 @@ class ConfigImportRenameValidationTest extends KernelTestBase {
       $this->configImporter->import();
       $this->fail('Expected ConfigImporterException thrown when a renamed configuration entity does not match the existing entity type.');
     }
-    catch (ConfigImporterException) {
+    catch (ConfigImporterException $e) {
       $expected = [
-        "Entity type mismatch on rename. node_type not equal to config_test for existing configuration node.type.{$content_type->id()} and staged configuration config_test.dynamic.$test_entity_id.",
+        new FormattableMarkup('Entity type mismatch on rename. @old_type not equal to @new_type for existing configuration @old_name and staged configuration @new_name.', ['@old_type' => 'node_type', '@new_type' => 'config_test', '@old_name' => 'node.type.' . $content_type->id(), '@new_name' => 'config_test.dynamic.' . $test_entity_id]),
       ];
       $this->assertEquals($expected, $this->configImporter->getErrors());
     }
@@ -151,9 +152,9 @@ class ConfigImportRenameValidationTest extends KernelTestBase {
       $this->configImporter->import();
       $this->fail('Expected ConfigImporterException thrown when simple configuration is renamed.');
     }
-    catch (ConfigImporterException) {
+    catch (ConfigImporterException $e) {
       $expected = [
-        'Rename operation for simple configuration. Existing configuration config_test.old and staged configuration config_test.new.',
+        new FormattableMarkup('Rename operation for simple configuration. Existing configuration @old_name and staged configuration @new_name.', ['@old_name' => 'config_test.old', '@new_name' => 'config_test.new']),
       ];
       $this->assertEquals($expected, $this->configImporter->getErrors());
     }

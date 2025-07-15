@@ -334,7 +334,7 @@ class OptionsFieldUITest extends FieldTestBase {
    * @param string $type
    *   One of 'list_integer', 'list_float' or 'list_string'.
    */
-  protected function createOptionsField($type): void {
+  protected function createOptionsField($type) {
     // Create a field.
     FieldStorageConfig::create([
       'field_name' => $this->fieldName,

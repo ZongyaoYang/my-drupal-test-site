@@ -2,6 +2,7 @@
 
 /**
  * @file
+ * Administrative page callbacks for the Database Logging module.
  */
 
 use Drupal\Core\Logger\RfcLogLevel;
@@ -17,25 +18,24 @@ use Drupal\Core\Logger\RfcLogLevel;
  *   - where: The filter condition.
  *   - options: Array of options for the select list for the filter.
  */
-function dblog_filters(): array {
+function dblog_filters() {
   $filters = [];
 
   foreach (_dblog_get_message_types() as $type) {
-    // phpcs:ignore Drupal.Semantics.FunctionT.NotLiteralString
     $types[$type] = t($type);
   }
 
   if (!empty($types)) {
     $filters['type'] = [
       'title' => t('Type'),
-      'field' => 'w.type',
+      'where' => "w.type = ?",
       'options' => $types,
     ];
   }
 
   $filters['severity'] = [
     'title' => t('Severity'),
-    'field' => 'w.severity',
+    'where' => 'w.severity = ?',
     'options' => RfcLogLevel::getLevels(),
   ];
 

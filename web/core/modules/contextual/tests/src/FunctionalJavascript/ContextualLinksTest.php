@@ -90,7 +90,9 @@ class ContextualLinksTest extends WebDriverTestBase {
     // as it would with a real user interaction. Otherwise clickContextualLink()
     // does not open the dialog in a manner that is opener-aware, and it isn't
     // possible to reliably test focus management.
-    $this->getSession()->getDriver()->mouseOver('.//*[@id="block-branding"]');
+    $driver_session = $this->getSession()->getDriver()->getWebDriverSession();
+    $element = $driver_session->element('css selector', '#block-branding');
+    $driver_session->moveto(['element' => $element->getID()]);
     $this->clickContextualLink('#block-branding', 'Test Link with Ajax', FALSE);
     $this->assertNotEmpty($this->assertSession()->waitForElementVisible('css', '#drupal-modal'));
     $this->assertSession()->elementContains('css', '#drupal-modal', 'Everything is contextual!');

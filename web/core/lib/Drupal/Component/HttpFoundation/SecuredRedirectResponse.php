@@ -67,7 +67,6 @@ abstract class SecuredRedirectResponse extends RedirectResponse {
    *   The URL checked for safety.
    *
    * @return bool
-   *   Returns TRUE if the URL is safe, FALSE otherwise.
    */
   abstract protected function isSafe($url);
 

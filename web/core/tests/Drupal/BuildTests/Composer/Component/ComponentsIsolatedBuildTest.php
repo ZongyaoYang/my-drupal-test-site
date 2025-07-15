@@ -11,6 +11,7 @@ use Symfony\Component\Finder\Finder;
 /**
  * Try to install dependencies per component, using Composer.
  *
+ * @group #slow
  * @group Composer
  * @group Component
  *

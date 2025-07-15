@@ -80,7 +80,7 @@ class DatabaseLockBackend extends LockBackendAbstract {
           // We never need to try again.
           $retry = FALSE;
         }
-        catch (IntegrityConstraintViolationException) {
+        catch (IntegrityConstraintViolationException $e) {
           // Suppress the error. If this is our first pass through the loop,
           // then $retry is FALSE. In this case, the insert failed because some
           // other request acquired the lock but did not release it. We decide
@@ -183,9 +183,9 @@ class DatabaseLockBackend extends LockBackendAbstract {
     // If another process has already created the semaphore table, attempting to
     // recreate it will throw an exception. In this case just catch the
     // exception and do nothing.
-    catch (DatabaseException) {
+    catch (DatabaseException $e) {
     }
-    catch (\Exception) {
+    catch (\Exception $e) {
       return FALSE;
     }
     return TRUE;
@@ -198,7 +198,7 @@ class DatabaseLockBackend extends LockBackendAbstract {
    * yet the query failed, then the semaphore is stale and the exception needs
    * to propagate.
    *
-   * @param \Exception $e
+   * @param $e
    *   The exception.
    *
    * @throws \Exception

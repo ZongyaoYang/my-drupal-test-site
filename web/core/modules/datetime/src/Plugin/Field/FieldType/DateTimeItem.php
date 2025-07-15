@@ -137,7 +137,7 @@ class DateTimeItem extends FieldItemBase implements DateTimeItemInterface {
   public function onChange($property_name, $notify = TRUE) {
     // Enforce that the computed date is recalculated.
     if ($property_name == 'value') {
-      $this->set('date', NULL);
+      $this->date = NULL;
     }
     parent::onChange($property_name, $notify);
   }

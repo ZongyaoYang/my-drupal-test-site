@@ -41,7 +41,6 @@ interface AttachedAssetsInterface {
    * Returns the asset libraries attached to the current response.
    *
    * @return string[]
-   *   A list of libraries attached to this response.
    */
   public function getLibraries();
 
@@ -59,7 +58,6 @@ interface AttachedAssetsInterface {
    * Returns the settings attached to the current response.
    *
    * @return array
-   *   An array of the settings attached to the current response.
    */
   public function getSettings();
 
@@ -77,7 +75,6 @@ interface AttachedAssetsInterface {
    * Returns the set of already loaded asset libraries.
    *
    * @return string[]
-   *   A list of the loaded libraries.
    */
   public function getAlreadyLoadedLibraries();
 

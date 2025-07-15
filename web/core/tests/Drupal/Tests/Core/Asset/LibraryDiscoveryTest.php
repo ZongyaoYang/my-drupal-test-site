@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\Core\Asset;
 
+use Drupal\Core\Asset\LibraryDiscovery;
 use Drupal\Tests\UnitTestCase;
 
 /**
@@ -15,9 +16,16 @@ class LibraryDiscoveryTest extends UnitTestCase {
   /**
    * The tested library discovery service.
    *
-   * @var \Drupal\Core\Asset\LibraryDiscoveryCollector
+   * @var \Drupal\Core\Asset\LibraryDiscovery
    */
   protected $libraryDiscovery;
+
+  /**
+   * The mocked library discovery cache collector.
+   *
+   * @var \Drupal\Core\Cache\CacheCollectorInterface|\PHPUnit\Framework\MockObject\MockObject
+   */
+  protected $libraryDiscoveryCollector;
 
   /**
    * The cache tags invalidator.
@@ -60,18 +68,28 @@ class LibraryDiscoveryTest extends UnitTestCase {
     parent::setUp();
 
     $this->cacheTagsInvalidator = $this->createMock('Drupal\Core\Cache\CacheTagsInvalidatorInterface');
-    $this->libraryDiscovery = $this->getMockBuilder('Drupal\Core\Asset\LibraryDiscoveryCollector')
-      ->onlyMethods(['resolveCacheMiss', 'getLibrariesByExtension'])
+    $this->libraryDiscoveryCollector = $this->getMockBuilder('Drupal\Core\Asset\LibraryDiscoveryCollector')
       ->disableOriginalConstructor()
       ->getMock();
-    $this->libraryDiscovery->expects($this->any())
-      ->method('resolveCacheMiss')
+    $this->libraryDiscovery = new LibraryDiscovery($this->libraryDiscoveryCollector);
+    $this->libraryDiscoveryCollector->expects($this->once())
+      ->method('get')
       ->with('test')
       ->willReturn($this->libraryData);
-    $this->libraryDiscovery->expects($this->any())
-      ->method('getLibrariesByExtension')
-      ->with('test')
-      ->willReturn($this->libraryData);
+  }
+
+  /**
+   * @covers ::getLibrariesByExtension
+   */
+  public function testGetLibrariesByExtension(): void {
+    $this->libraryDiscovery->getLibrariesByExtension('test');
+    // Verify that subsequent calls don't trigger hook_library_info_alter()
+    // and hook_js_settings_alter() invocations, nor do they talk to the
+    // collector again. This ensures that the alterations made by
+    // hook_library_info_alter() and hook_js_settings_alter() implementations
+    // are statically cached, as desired.
+    $this->libraryDiscovery->getLibraryByName('test', 'test_1');
+    $this->libraryDiscovery->getLibrariesByExtension('test');
   }
 
   /**

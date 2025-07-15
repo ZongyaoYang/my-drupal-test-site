@@ -16,7 +16,7 @@ interface AlterableInterface {
    * letters, numbers, and underscore, and start with a letter. That is, they
    * should follow the same rules as PHP identifiers in general.
    *
-   * @param string $tag
+   * @param $tag
    *   The tag to add.
    *
    * @return $this
@@ -27,7 +27,7 @@ interface AlterableInterface {
   /**
    * Determines if a given query has a given tag.
    *
-   * @param string $tag
+   * @param $tag
    *   The tag to check.
    *
    * @return bool
@@ -40,36 +40,28 @@ interface AlterableInterface {
    *
    * Each tag to check should be supplied as a separate argument.
    *
-   * phpcs:ignore
-   * @param string ...$tags
-   *   A variable number of arguments, one for each tag to check.
+   * @todo Restore PHPDoc of variadic argument in Drupal 8.8, see
+   * https://www.drupal.org/project/drupal/issues/3029729
    *
    * @return bool
    *   TRUE if this query has been marked with all specified tags, FALSE
    *   otherwise.
-   *
-   * @todo Remove PHPCS ignore and uncomment new method parameters before
-   *   drupal:12.0.0. See https://www.drupal.org/project/drupal/issues/3501046.
    */
-  public function hasAllTags(/* string ...$tags*/);
+  public function hasAllTags();
 
   /**
    * Determines if a given query has any specified tag.
    *
    * Each tag to check should be supplied as a separate argument.
    *
-   * phpcs:ignore
-   * @param string ...$tags
-   *   A variable number of arguments, one for each tag to check.
+   * @todo Restore PHPDoc of variadic argument in Drupal 8.8, see
+   * https://www.drupal.org/project/drupal/issues/3029729
    *
    * @return bool
    *   TRUE if this query has been marked with at least one of the specified
    *   tags, FALSE otherwise.
-   *
-   * @todo Remove PHPCS ignore and uncomment new method parameters before
-   *   drupal:12.0.0. See https://www.drupal.org/project/drupal/issues/3501046.
    */
-  public function hasAnyTag(/* string ...$tags*/);
+  public function hasAnyTag();
 
   /**
    * Adds additional metadata to the query.
@@ -78,10 +70,10 @@ interface AlterableInterface {
    * hooks. Alter hooks may then use that information to decide if and how
    * to take action.
    *
-   * @param string $key
+   * @param $key
    *   The unique identifier for this piece of metadata. Must be a string that
    *   follows the same rules as any other PHP identifier.
-   * @param mixed $object
+   * @param $object
    *   The additional data to add to the query. May be any valid PHP variable.
    *
    * @return $this
@@ -92,7 +84,7 @@ interface AlterableInterface {
   /**
    * Retrieves a given piece of metadata.
    *
-   * @param string $key
+   * @param $key
    *   The unique identifier for the piece of metadata to retrieve.
    *
    * @return mixed

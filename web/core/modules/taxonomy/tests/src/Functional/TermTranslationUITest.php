@@ -56,7 +56,7 @@ class TermTranslationUITest extends ContentTranslationUITestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setupBundle(): void {
+  protected function setupBundle() {
     parent::setupBundle();
 
     // Create a vocabulary.
@@ -73,7 +73,7 @@ class TermTranslationUITest extends ContentTranslationUITestBase {
   /**
    * {@inheritdoc}
    */
-  protected function getTranslatorPermissions(): array {
+  protected function getTranslatorPermissions() {
     return array_merge(parent::getTranslatorPermissions(), ['administer taxonomy']);
   }
 
@@ -164,9 +164,10 @@ class TermTranslationUITest extends ContentTranslationUITestBase {
   /**
    * {@inheritdoc}
    */
-  protected function doTestTranslationEdit(): void {
+  protected function doTestTranslationEdit() {
     $storage = $this->container->get('entity_type.manager')
       ->getStorage($this->entityTypeId);
+    $storage->resetCache([$this->entityId]);
     $entity = $storage->load($this->entityId);
     $languages = $this->container->get('language_manager')->getLanguages();
 
@@ -184,9 +185,10 @@ class TermTranslationUITest extends ContentTranslationUITestBase {
   /**
    * {@inheritdoc}
    */
-  protected function doTestPublishedStatus(): void {
+  protected function doTestPublishedStatus() {
     $storage = $this->container->get('entity_type.manager')
       ->getStorage($this->entityTypeId);
+    $storage->resetCache([$this->entityId]);
     $entity = $storage->load($this->entityId);
     $languages = $this->container->get('language_manager')->getLanguages();
 
@@ -204,6 +206,7 @@ class TermTranslationUITest extends ContentTranslationUITestBase {
         $this->drupalGet($url, $options);
         $this->submitForm(['status[value]' => $value], 'Save');
       }
+      $storage->resetCache([$this->entityId]);
       $entity = $storage->load($this->entityId);
       foreach ($this->langcodes as $langcode) {
         // The term is created as unpublished thus we switch to the published

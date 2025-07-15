@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drupal\KernelTests\Core\ParamConverter;
 
 use Drupal\entity_test\Entity\EntityTest;
-use Drupal\entity_test\EntityTestHelper;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\Tests\user\Traits\UserCreationTrait;
 
@@ -37,9 +36,9 @@ class EntityConverterTest extends KernelTestBase {
     $this->installEntitySchema('entity_test');
 
     // Create some testing bundles for 'entity_test' entity type.
-    EntityTestHelper::createBundle('foo', 'Foo');
-    EntityTestHelper::createBundle('bar', 'Bar');
-    EntityTestHelper::createBundle('baz', 'Baz');
+    entity_test_create_bundle('foo', 'Foo');
+    entity_test_create_bundle('bar', 'Bar');
+    entity_test_create_bundle('baz', 'Baz');
   }
 
   /**

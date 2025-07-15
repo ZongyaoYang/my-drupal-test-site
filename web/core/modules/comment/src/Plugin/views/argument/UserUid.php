@@ -51,9 +51,6 @@ class UserUid extends ArgumentPluginBase {
     return new static($configuration, $plugin_id, $plugin_definition, $container->get('database'));
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function title() {
     if (!$this->argument) {
       $title = \Drupal::config('user.settings')->get('anonymous');
@@ -68,9 +65,6 @@ class UserUid extends ArgumentPluginBase {
     return $title;
   }
 
-  /**
-   * {@inheritdoc}
-   */
   protected function defaultActions($which = NULL) {
     // Disallow summary views on this argument.
     if (!$which) {
@@ -85,9 +79,6 @@ class UserUid extends ArgumentPluginBase {
     }
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function query($group_by = FALSE) {
     $this->ensureMyTable();
 

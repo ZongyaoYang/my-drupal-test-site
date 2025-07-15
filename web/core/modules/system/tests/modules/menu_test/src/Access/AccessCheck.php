@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\menu_test\Access;
 
 use Drupal\Core\Access\AccessResult;
@@ -56,7 +54,6 @@ class AccessCheck implements AccessInterface, ContainerInjectionInterface {
 
   /**
    * @return \Drupal\Core\Access\AccessResultForbidden
-   *   The forbidden access result.
    */
   public function menuLocalAction7() {
     return AccessResult::forbidden()->addCacheTags(['menu_local_action7'])->addCacheContexts(['url.query_args:menu_local_action7']);
@@ -64,7 +61,6 @@ class AccessCheck implements AccessInterface, ContainerInjectionInterface {
 
   /**
    * @return \Drupal\Core\Access\AccessResultAllowed
-   *   The allowed access result.
    */
   public function menuLocalAction8() {
     return AccessResult::allowed()->addCacheTags(['menu_local_action8'])->addCacheContexts(['url.query_args:menu_local_action8']);

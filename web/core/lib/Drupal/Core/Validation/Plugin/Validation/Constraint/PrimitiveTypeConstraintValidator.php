@@ -25,8 +25,11 @@ class PrimitiveTypeConstraintValidator extends ConstraintValidator {
 
   /**
    * {@inheritdoc}
+   *
+   * phpcs:ignore Drupal.Commenting.FunctionComment.VoidReturn
+   * @return void
    */
-  public function validate($value, Constraint $constraint): void {
+  public function validate($value, Constraint $constraint) {
 
     if (!isset($value)) {
       return;
@@ -69,7 +72,7 @@ class PrimitiveTypeConstraintValidator extends ConstraintValidator {
         $valid = FALSE;
       }
     }
-    catch (\Exception) {
+    catch (\Exception $e) {
       // Invalid durations or dates might throw exceptions.
       $valid = FALSE;
     }

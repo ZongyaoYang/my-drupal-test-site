@@ -15,6 +15,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
+use Psr\Http\Message\UriInterface;
 use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,17 +40,19 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
         $server = [];
         $uri = $psrRequest->getUri();
 
-        $server['SERVER_NAME'] = $uri->getHost();
-        $server['SERVER_PORT'] = $uri->getPort() ?: ('https' === $uri->getScheme() ? 443 : 80);
-        $server['REQUEST_URI'] = $uri->getPath();
-        $server['QUERY_STRING'] = $uri->getQuery();
+        if ($uri instanceof UriInterface) {
+            $server['SERVER_NAME'] = $uri->getHost();
+            $server['SERVER_PORT'] = $uri->getPort() ?: ('https' === $uri->getScheme() ? 443 : 80);
+            $server['REQUEST_URI'] = $uri->getPath();
+            $server['QUERY_STRING'] = $uri->getQuery();
 
-        if ('' !== $server['QUERY_STRING']) {
-            $server['REQUEST_URI'] .= '?'.$server['QUERY_STRING'];
-        }
+            if ('' !== $server['QUERY_STRING']) {
+                $server['REQUEST_URI'] .= '?'.$server['QUERY_STRING'];
+            }
 
-        if ('https' === $uri->getScheme()) {
-            $server['HTTPS'] = 'on';
+            if ('https' === $uri->getScheme()) {
+                $server['HTTPS'] = 'on';
+            }
         }
 
         $server['REQUEST_METHOD'] = $psrRequest->getMethod();
@@ -104,7 +107,7 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
      */
     protected function getTemporaryPath(): string
     {
-        return tempnam(sys_get_temp_dir(), 'symfony');
+        return tempnam(sys_get_temp_dir(), uniqid('symfony', true));
     }
 
     public function createResponse(ResponseInterface $psrResponse, bool $streamed = false): Response

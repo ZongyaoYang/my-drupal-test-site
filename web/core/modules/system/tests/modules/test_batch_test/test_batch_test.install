@@ -5,14 +5,12 @@
  * Install hooks for test module.
  */
 
-declare(strict_types=1);
-
 use Drupal\entity_test\Entity\EntityTest;
 
 /**
  * Implements hook_install().
  */
-function test_batch_test_install(): void {
+function test_batch_test_install() {
   $total = 2;
   $operations = [];
   for ($i = 1; $i <= $total; $i++) {
@@ -30,7 +28,7 @@ function test_batch_test_install(): void {
 /**
  * Callback for batch operations.
  */
-function _test_batch_test_callback($id): void {
+function _test_batch_test_callback($id) {
   $entity = EntityTest::create(['id' => $id]);
   $entity->save();
 }

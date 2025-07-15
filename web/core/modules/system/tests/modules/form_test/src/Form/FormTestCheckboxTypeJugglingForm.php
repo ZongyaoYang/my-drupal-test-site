@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\form_test\Form;
 
 use Drupal\Core\Form\FormBase;
@@ -26,7 +24,7 @@ class FormTestCheckboxTypeJugglingForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state, $default_value = NULL, $return_value = NULL) {
     $form['checkbox'] = [
-      '#title' => $this->t('Checkbox'),
+      '#title' => t('Checkbox'),
       '#type' => 'checkbox',
       '#return_value' => $return_value,
       '#default_value' => $default_value,

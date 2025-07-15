@@ -74,7 +74,7 @@ class LocalTaskDefaultTest extends UnitTestCase {
   /**
    * Setups the local task default.
    */
-  protected function setupLocalTaskDefault(): void {
+  protected function setupLocalTaskDefault() {
     $this->localTaskBase = new TestLocalTaskDefault($this->config, $this->pluginId, $this->pluginDefinition);
     $this->localTaskBase
       ->setRouteProvider($this->routeProvider);
@@ -270,7 +270,6 @@ class LocalTaskDefaultTest extends UnitTestCase {
    */
   public function testGetTitleWithContext(): void {
     $title = 'Example';
-    // phpcs:ignore Drupal.Semantics.FunctionT.NotLiteralString
     $this->pluginDefinition['title'] = (new TranslatableMarkup($title, [], ['context' => 'context'], $this->stringTranslation));
     $this->stringTranslation->expects($this->once())
       ->method('translateString')
@@ -339,9 +338,6 @@ class LocalTaskDefaultTest extends UnitTestCase {
 
 }
 
-/**
- * Stub class for testing LocalTaskDefault.
- */
 class TestLocalTaskDefault extends LocalTaskDefault {
 
   public function setRouteProvider(RouteProviderInterface $route_provider) {

@@ -36,17 +36,18 @@ class Number extends FormElementBase {
    * {@inheritdoc}
    */
   public function getInfo() {
+    $class = static::class;
     return [
       '#input' => TRUE,
       '#step' => 1,
       '#process' => [
-        [static::class, 'processAjaxForm'],
+        [$class, 'processAjaxForm'],
       ],
       '#element_validate' => [
-        [static::class, 'validateNumber'],
+        [$class, 'validateNumber'],
       ],
       '#pre_render' => [
-        [static::class, 'preRenderNumber'],
+        [$class, 'preRenderNumber'],
       ],
       '#theme' => 'input__number',
       '#theme_wrappers' => ['form_element'],
@@ -74,18 +75,12 @@ class Number extends FormElementBase {
 
     // Ensure that the input is greater than the #min property, if set.
     if (isset($element['#min']) && $value < $element['#min']) {
-      $form_state->setError($element, t('%name must be higher than or equal to %min.', [
-        '%name' => $name,
-        '%min' => $element['#min'],
-      ]));
+      $form_state->setError($element, t('%name must be higher than or equal to %min.', ['%name' => $name, '%min' => $element['#min']]));
     }
 
     // Ensure that the input is less than the #max property, if set.
     if (isset($element['#max']) && $value > $element['#max']) {
-      $form_state->setError($element, t('%name must be lower than or equal to %max.', [
-        '%name' => $name,
-        '%max' => $element['#max'],
-      ]));
+      $form_state->setError($element, t('%name must be lower than or equal to %max.', ['%name' => $name, '%max' => $element['#max']]));
     }
 
     if (isset($element['#step']) && strtolower($element['#step']) != 'any') {

@@ -1,6 +1,3 @@
-parameters:
-  settings_tray.skip_procedural_hook_scan: false
-
 services:
   _defaults:
     autoconfigure: true

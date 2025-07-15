@@ -72,19 +72,15 @@ trait UiHelperTrait {
    */
   protected function submitForm(array $edit, $submit, $form_html_id = NULL) {
     $assert_session = $this->assertSession();
-    $submit_button = $assert_session->buttonExists($submit);
-    // Check if button has a form attribute set.
-    if ($form_id = $submit_button->getAttribute('form')) {
-      $form = $assert_session->elementExists('xpath', "//form[@id='$form_id']");
-      $action = $form->getAttribute('action');
-    }
+
     // Get the form.
-    elseif (isset($form_html_id)) {
+    if (isset($form_html_id)) {
       $form = $assert_session->elementExists('xpath', "//form[@id='$form_html_id']");
       $submit_button = $assert_session->buttonExists($submit, $form);
       $action = $form->getAttribute('action');
     }
     else {
+      $submit_button = $assert_session->buttonExists($submit);
       $form = $assert_session->elementExists('xpath', './ancestor::form', $submit_button);
       $action = $form->getAttribute('action');
     }
@@ -264,11 +260,13 @@ trait UiHelperTrait {
     $this->prepareRequest();
     foreach ($headers as $header_name => $header_value) {
       if (is_int($header_name)) {
-        @trigger_error('Passing an integer as header name to ' . __METHOD__ . '() is deprecated in drupal:11.1.0 and will be removed from drupal:12.0.0. Update the calling code to pass the header name as a key. See https://www.drupal.org/node/3456178', E_USER_DEPRECATED);
+        // @todo Trigger deprecation in
+        //   https://www.drupal.org/project/drupal/issues/3421105.
         [$header_name, $header_value] = explode(':', $header_value);
       }
       if (is_null($header_value)) {
-        @trigger_error('Using null as a header value to ' . __METHOD__ . '() is deprecated in drupal:11.1.0 and will be removed from drupal:12.0.0. Use an empty string instead. See https://www.drupal.org/node/3456233', E_USER_DEPRECATED);
+        // @todo Trigger deprecation in
+        //   https://www.drupal.org/project/drupal/issues/3421105.
         $header_value = '';
       }
       $session->setRequestHeader($header_name, $header_value);
@@ -405,7 +403,7 @@ trait UiHelperTrait {
    * @return bool
    *   Return TRUE if the user is logged in, FALSE otherwise.
    */
-  protected function drupalUserIsLoggedIn(AccountInterface $account): bool {
+  protected function drupalUserIsLoggedIn(AccountInterface $account) {
     $logged_in = FALSE;
 
     if (isset($account->sessionId)) {
@@ -538,7 +536,7 @@ trait UiHelperTrait {
    * @return bool
    *   TRUE if test is using DrupalTestBrowser.
    */
-  protected function isTestUsingGuzzleClient(): bool {
+  protected function isTestUsingGuzzleClient() {
     $driver = $this->getSession()->getDriver();
     if ($driver instanceof BrowserKitDriver) {
       return $driver->getClient() instanceof DrupalTestBrowser;

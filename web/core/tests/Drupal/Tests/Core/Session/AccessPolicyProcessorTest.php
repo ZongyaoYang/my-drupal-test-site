@@ -367,7 +367,6 @@ class AccessPolicyProcessorTest extends UnitTestCase {
    * Sets up the access policy processor.
    *
    * @return \Drupal\Core\Session\AccessPolicyProcessorInterface
-   *   The access policy processor.
    */
   protected function setUpAccessPolicyProcessor(
     ?VariationCacheInterface $variation_cache = NULL,
@@ -421,9 +420,6 @@ class AccessPolicyProcessorTest extends UnitTestCase {
 
 }
 
-/**
- * A test access policy for admin and for 'foo' and 'bar' permissions.
- */
 class FooAccessPolicy extends AccessPolicyBase {
 
   public function applies(string $scope): bool {
@@ -441,9 +437,6 @@ class FooAccessPolicy extends AccessPolicyBase {
 
 }
 
-/**
- * A test access policy for 'foo' and 'bar' permissions.
- */
 class BarAccessPolicy extends AccessPolicyBase {
 
   public function applies(string $scope): bool {
@@ -461,9 +454,6 @@ class BarAccessPolicy extends AccessPolicyBase {
 
 }
 
-/**
- * A test access policy setting a 'baz' permission requirement.
- */
 class BazAccessPolicy extends AccessPolicyBase {
 
   public function applies(string $scope): bool {
@@ -481,9 +471,6 @@ class BazAccessPolicy extends AccessPolicyBase {
 
 }
 
-/**
- * A test access policy that adds a permission if another permission exists.
- */
 class BarAlterAccessPolicy extends AccessPolicyBase {
 
   public function applies(string $scope): bool {
@@ -513,9 +500,6 @@ class BarAlterAccessPolicy extends AccessPolicyBase {
 
 }
 
-/**
- * A test access policy that adds a permission.
- */
 class AlwaysAddsAccessPolicy extends AccessPolicyBase {
 
   public function applies(string $scope): bool {
@@ -533,9 +517,6 @@ class AlwaysAddsAccessPolicy extends AccessPolicyBase {
 
 }
 
-/**
- * A test access policy that alters an existing policy.
- */
 class AlwaysAltersAccessPolicy extends AccessPolicyBase {
 
   public function applies(string $scope): bool {
@@ -553,14 +534,8 @@ class AlwaysAltersAccessPolicy extends AccessPolicyBase {
 
 }
 
-/**
- * A test access policy class that does nothing.
- */
 class EmptyAccessPolicy extends AccessPolicyBase {}
 
-/**
- * A test access policy class that sets a context.
- */
 class UserContextAccessPolicy extends AccessPolicyBase {
 
   public function applies(string $scope): bool {
@@ -573,16 +548,8 @@ class UserContextAccessPolicy extends AccessPolicyBase {
 
 }
 
-/**
- * Provides a simple cache.
- */
 class CacheItem {
 
-  /**
-   * The cache data.
-   *
-   * @var \Drupal\Core\Session\CalculatedPermissions
-   */
   public $data;
 
   public function __construct($data) {

@@ -12,7 +12,6 @@ use Drupal\user\Entity\User;
  * Tests follow-up migrations.
  *
  * @group migrate_drupal
- * @group #slow
  */
 class FollowUpMigrationsTest extends MigrateDrupal7TestBase {
 
@@ -59,7 +58,7 @@ class FollowUpMigrationsTest extends MigrateDrupal7TestBase {
   /**
    * {@inheritdoc}
    */
-  protected function getFileMigrationInfo(): array {
+  protected function getFileMigrationInfo() {
     return [
       'path' => 'public://sites/default/files/cube.jpeg',
       'size' => 3620,

@@ -20,7 +20,7 @@ class CacheCollectorTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public function register(ContainerBuilder $container): void {
+  public function register(ContainerBuilder $container) {
     parent::register($container);
     // Change container to database cache backends.
     $container

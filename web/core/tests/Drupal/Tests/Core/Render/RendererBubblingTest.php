@@ -272,9 +272,8 @@ class RendererBubblingTest extends RendererTestBase {
     $data[] = [$test_element, ['bar', 'foo'], $expected_cache_item];
 
     // Ensure that bubbleable metadata has been collected from children and set
-    // correctly to the main level of the render array. That ensures that
-    // correct bubbleable metadata exists if render array gets rendered multiple
-    // times.
+    // correctly to the main level of the render array. That ensures that correct
+    // bubbleable metadata exists if render array gets rendered multiple times.
     $test_element = [
       '#cache' => [
         'keys' => ['parent'],
@@ -501,7 +500,6 @@ class RendererBubblingTest extends RendererTestBase {
    * Provides two test elements: one without, and one with the theme system.
    *
    * @return array
-   *   An array of test cases, each containing a render array with different configurations.
    */
   public static function providerTestBubblingWithPrerender() {
     $data = [];
@@ -549,15 +547,11 @@ class RendererBubblingTest extends RendererTestBase {
 
 }
 
-/**
- * Test class with implemented trusted callbacks.
- */
+
 class BubblingTest implements TrustedCallbackInterface {
 
   /**
-   * Render API callback:Used for testing testBubblingWithPrerender().
-   *
-   * This function is assigned as an #pre_render callback.
+   * #pre_render callback for testBubblingWithPrerender().
    */
   public static function bubblingPreRender($elements) {
     $elements += [
@@ -596,9 +590,7 @@ class BubblingTest implements TrustedCallbackInterface {
   }
 
   /**
-   * Render API callback: Used for testing testBubblingWithPrerender().
-   *
-   * This function is assigned as an #pre_render callback in
+   * #pre_render callback for testBubblingWithPrerender().
    */
   public static function bubblingNestedPreRenderUncached($elements) {
     \Drupal::state()->set('bubbling_nested_pre_render_uncached', TRUE);
@@ -607,9 +599,7 @@ class BubblingTest implements TrustedCallbackInterface {
   }
 
   /**
-   * Render API callback: Used for testing testBubblingWithPrerender().
-   *
-   * This function is assigned as an #pre_render callback in
+   * #pre_render callback for testBubblingWithPrerender().
    */
   public static function bubblingNestedPreRenderCached($elements) {
     \Drupal::state()->set('bubbling_nested_pre_render_cached', TRUE);
@@ -617,9 +607,7 @@ class BubblingTest implements TrustedCallbackInterface {
   }
 
   /**
-   * Render API callback: Used for testing testBubblingWithPrerender().
-   *
-   * This function is assigned as an #lazy_builder callback in
+   * #lazy_builder callback for testBubblingWithPrerender().
    */
   public static function bubblingPlaceholder($foo, $baz) {
     return [
@@ -628,9 +616,7 @@ class BubblingTest implements TrustedCallbackInterface {
   }
 
   /**
-   * Render API callback: Used for testing testOverWriteCacheKeys().
-   *
-   * This function is assigned as an #pre_render callback in
+   * #pre_render callback for testOverWriteCacheKeys().
    */
   public static function bubblingCacheOverwritePrerender($elements) {
     // Overwrite the #cache entry with new data.

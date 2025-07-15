@@ -2,9 +2,6 @@
 
 namespace Drupal\migrate;
 
-/**
- * Interface for migration plugin manager for building dependencies.
- */
 interface MigrateBuildDependencyInterface {
 
   /**

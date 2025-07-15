@@ -33,18 +33,19 @@ class Tel extends FormElementBase {
    * {@inheritdoc}
    */
   public function getInfo() {
+    $class = static::class;
     return [
       '#input' => TRUE,
       '#size' => 30,
       '#maxlength' => 128,
       '#autocomplete_route_name' => FALSE,
       '#process' => [
-        [static::class, 'processAutocomplete'],
-        [static::class, 'processAjaxForm'],
-        [static::class, 'processPattern'],
+        [$class, 'processAutocomplete'],
+        [$class, 'processAjaxForm'],
+        [$class, 'processPattern'],
       ],
       '#pre_render' => [
-        [static::class, 'preRenderTel'],
+        [$class, 'preRenderTel'],
       ],
       '#theme' => 'input__tel',
       '#theme_wrappers' => ['form_element'],

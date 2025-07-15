@@ -8,7 +8,7 @@ dependencies:
 id: call_to_action
 theme: stark
 region: content
-weight: 0
+weight: null
 provider: null
 plugin: 'block_content:d7c9d8ba-663f-41b4-8756-86bc55c44653'
 settings:
@@ -18,7 +18,7 @@ settings:
   provider: block_content
   status: true
   info: ''
-  view_mode: full
+  view_mode: default
 visibility:
   request_path:
     id: request_path

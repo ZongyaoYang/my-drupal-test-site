@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Drupal\Core\Session;
 
-use Drupal\Core\Cache\CacheOptionalInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
  * Grants permissions based on a user's roles.
  */
-final class UserRolesAccessPolicy extends AccessPolicyBase implements CacheOptionalInterface {
+final class UserRolesAccessPolicy extends AccessPolicyBase {
 
   public function __construct(protected EntityTypeManagerInterface $entityTypeManager) {}
 

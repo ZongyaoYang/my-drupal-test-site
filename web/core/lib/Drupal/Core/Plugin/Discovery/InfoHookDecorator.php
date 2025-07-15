@@ -20,7 +20,7 @@ class InfoHookDecorator implements DiscoveryInterface {
   protected $decorated;
 
   /**
-   * The name of the info hook that will be implemented.
+   * The name of the info hook that will be implemented by this discovery instance.
    *
    * @var string
    */

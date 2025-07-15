@@ -5,14 +5,12 @@
  * Defines the 8001 db update for the "entity_definition_updates" group.
  */
 
-declare(strict_types=1);
-
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 
 /**
  * Makes the 'user_id' field multiple and migrate its data.
  */
-function entity_test_update_8001(): void {
+function entity_test_update_8001() {
   // To update the field schema we need to have no field data in the storage,
   // thus we retrieve it, delete it from storage, and write it back to the
   // storage after updating the schema.

@@ -194,14 +194,6 @@ class WorkspaceListBuilder extends EntityListBuilder {
       'url' => $entity->toUrl(),
     ];
 
-    // Because the listing page is viewable by various levels of access,
-    // including read-only users, filter out disallowed URLs.
-    foreach ($operations as $key => $operation) {
-      if (!$operation['url']->access(NULL, TRUE)->isAllowed()) {
-        unset($operations[$key]);
-      }
-    }
-
     return $operations;
   }
 

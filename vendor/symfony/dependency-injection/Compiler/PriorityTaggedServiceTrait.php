@@ -50,7 +50,6 @@ trait PriorityTaggedServiceTrait
             $tagName = $tagName->getTag();
         }
 
-        $parameterBag = $container->getParameterBag();
         $i = 0;
         $services = [];
 
@@ -64,7 +63,6 @@ trait PriorityTaggedServiceTrait
             $definition = $container->getDefinition($serviceId);
             $class = $definition->getClass();
             $class = $container->getParameterBag()->resolveValue($class) ?: null;
-            $reflector = null !== $class ? $container->getReflectionClass($class) : null;
             $checkTaggedItem = !$definition->hasTag($definition->isAutoconfigured() ? 'container.ignore_attributes' : $tagName);
 
             foreach ($attributes as $attribute) {
@@ -72,8 +70,8 @@ trait PriorityTaggedServiceTrait
 
                 if (isset($attribute['priority'])) {
                     $priority = $attribute['priority'];
-                } elseif (null === $defaultPriority && $defaultPriorityMethod && $reflector) {
-                    $defaultPriority = PriorityTaggedServiceUtil::getDefault($serviceId, $reflector, $defaultPriorityMethod, $tagName, 'priority', $checkTaggedItem);
+                } elseif (null === $defaultPriority && $defaultPriorityMethod && $class) {
+                    $defaultPriority = PriorityTaggedServiceUtil::getDefault($container, $serviceId, $class, $defaultPriorityMethod, $tagName, 'priority', $checkTaggedItem);
                 }
                 $priority ??= $defaultPriority ??= 0;
 
@@ -83,30 +81,14 @@ trait PriorityTaggedServiceTrait
                 }
 
                 if (null !== $indexAttribute && isset($attribute[$indexAttribute])) {
-                    $index = $parameterBag->resolveValue($attribute[$indexAttribute]);
-                }
-                if (null === $index && null === $defaultIndex && $defaultPriorityMethod && $reflector) {
-                    $defaultIndex = PriorityTaggedServiceUtil::getDefault($serviceId, $reflector, $defaultIndexMethod ?? 'getDefaultName', $tagName, $indexAttribute, $checkTaggedItem);
+                    $index = $attribute[$indexAttribute];
+                } elseif (null === $defaultIndex && $defaultPriorityMethod && $class) {
+                    $defaultIndex = PriorityTaggedServiceUtil::getDefault($container, $serviceId, $class, $defaultIndexMethod ?? 'getDefaultName', $tagName, $indexAttribute, $checkTaggedItem);
                 }
                 $decorated = $definition->getTag('container.decorator')[0]['id'] ?? null;
                 $index = $index ?? $defaultIndex ?? $defaultIndex = $decorated ?? $serviceId;
 
                 $services[] = [$priority, ++$i, $index, $serviceId, $class];
-            }
-
-            if ($reflector) {
-                $attributes = $reflector->getAttributes(AsTaggedItem::class);
-                $attributeCount = \count($attributes);
-
-                foreach ($attributes as $attribute) {
-                    $instance = $attribute->newInstance();
-
-                    if (!$instance->index && 1 < $attributeCount) {
-                        throw new InvalidArgumentException(\sprintf('Attribute "%s" on class "%s" cannot have an empty index when repeated.', AsTaggedItem::class, $class));
-                    }
-
-                    $services[] = [$instance->priority ?? 0, ++$i, $instance->index ?? $serviceId, $serviceId, $class];
-                }
             }
         }
 
@@ -138,11 +120,9 @@ trait PriorityTaggedServiceTrait
  */
 class PriorityTaggedServiceUtil
 {
-    public static function getDefault(string $serviceId, \ReflectionClass $r, string $defaultMethod, string $tagName, ?string $indexAttribute, bool $checkTaggedItem): string|int|null
+    public static function getDefault(ContainerBuilder $container, string $serviceId, string $class, string $defaultMethod, string $tagName, ?string $indexAttribute, bool $checkTaggedItem): string|int|null
     {
-        $class = $r->getName();
-
-        if (!$checkTaggedItem && !$r->hasMethod($defaultMethod)) {
+        if (!($r = $container->getReflectionClass($class)) || (!$checkTaggedItem && !$r->hasMethod($defaultMethod))) {
             return null;
         }
 
@@ -159,10 +139,10 @@ class PriorityTaggedServiceUtil
         }
 
         if (null !== $indexAttribute) {
-            $service = $class !== $serviceId ? \sprintf('service "%s"', $serviceId) : 'on the corresponding service';
-            $message = [\sprintf('Either method "%s::%s()" should ', $class, $defaultMethod), \sprintf(' or tag "%s" on %s is missing attribute "%s".', $tagName, $service, $indexAttribute)];
+            $service = $class !== $serviceId ? sprintf('service "%s"', $serviceId) : 'on the corresponding service';
+            $message = [sprintf('Either method "%s::%s()" should ', $class, $defaultMethod), sprintf(' or tag "%s" on %s is missing attribute "%s".', $tagName, $service, $indexAttribute)];
         } else {
-            $message = [\sprintf('Method "%s::%s()" should ', $class, $defaultMethod), '.'];
+            $message = [sprintf('Method "%s::%s()" should ', $class, $defaultMethod), '.'];
         }
 
         if (!($rm = $r->getMethod($defaultMethod))->isStatic()) {
@@ -177,7 +157,7 @@ class PriorityTaggedServiceUtil
 
         if ('priority' === $indexAttribute) {
             if (!\is_int($default)) {
-                throw new InvalidArgumentException(implode(\sprintf('return int (got "%s")', get_debug_type($default)), $message));
+                throw new InvalidArgumentException(implode(sprintf('return int (got "%s")', get_debug_type($default)), $message));
             }
 
             return $default;
@@ -188,7 +168,7 @@ class PriorityTaggedServiceUtil
         }
 
         if (!\is_string($default)) {
-            throw new InvalidArgumentException(implode(\sprintf('return string|int (got "%s")', get_debug_type($default)), $message));
+            throw new InvalidArgumentException(implode(sprintf('return string|int (got "%s")', get_debug_type($default)), $message));
         }
 
         return $default;

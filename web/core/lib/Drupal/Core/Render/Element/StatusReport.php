@@ -2,7 +2,6 @@
 
 namespace Drupal\Core\Render\Element;
 
-use Drupal\Core\Extension\Requirement\RequirementSeverity;
 use Drupal\Core\Render\Attribute\RenderElement;
 
 /**
@@ -15,6 +14,7 @@ class StatusReport extends RenderElementBase {
    * {@inheritdoc}
    */
   public function getInfo() {
+    $class = static::class;
     return [
       '#theme' => 'status_report_grouped',
       '#priorities' => [
@@ -24,32 +24,30 @@ class StatusReport extends RenderElementBase {
         'ok',
       ],
       '#pre_render' => [
-        [static::class, 'preRenderGroupRequirements'],
+        [$class, 'preRenderGroupRequirements'],
       ],
     ];
   }
 
   /**
-   * Render API callback: Groups requirements.
-   *
-   * This function is assigned as a #pre_render callback.
+   * #pre_render callback to group requirements.
    */
   public static function preRenderGroupRequirements($element) {
+    $severities = static::getSeverities();
     $grouped_requirements = [];
-    RequirementSeverity::convertLegacyIntSeveritiesToEnums($element['#requirements'], __METHOD__);
-    /** @var array{title: \Drupal\Core\StringTranslation\TranslatableMarkup, value: mixed, description: \Drupal\Core\StringTranslation\TranslatableMarkup, severity: \Drupal\Core\Extension\Requirement\RequirementSeverity} $requirement */
     foreach ($element['#requirements'] as $key => $requirement) {
-      $severity = RequirementSeverity::Info;
+      $severity = $severities[REQUIREMENT_INFO];
       if (isset($requirement['severity'])) {
-        $severity = $requirement['severity'] === RequirementSeverity::OK ? RequirementSeverity::Info : $requirement['severity'];
+        $requirement_severity = (int) $requirement['severity'] === REQUIREMENT_OK ? REQUIREMENT_INFO : (int) $requirement['severity'];
+        $severity = $severities[$requirement_severity];
       }
       elseif (defined('MAINTENANCE_MODE') && MAINTENANCE_MODE == 'install') {
-        $severity = RequirementSeverity::OK;
+        $severity = $severities[REQUIREMENT_OK];
       }
 
-      $grouped_requirements[$severity->status()]['title'] = $severity->title();
-      $grouped_requirements[$severity->status()]['type'] = $severity->status();
-      $grouped_requirements[$severity->status()]['items'][$key] = $requirement;
+      $grouped_requirements[$severity['status']]['title'] = $severity['title'];
+      $grouped_requirements[$severity['status']]['type'] = $severity['status'];
+      $grouped_requirements[$severity['status']]['items'][$key] = $requirement;
     }
 
     // Order the grouped requirements by a set order.
@@ -67,30 +65,22 @@ class StatusReport extends RenderElementBase {
    * Gets the severities.
    *
    * @return array
-   *   An associative array of the requirements severities. The keys are the
-   *   requirement constants defined in install.inc.
-   *
-   * @deprecated in drupal:11.2.0 and is removed from drupal:12.0.0. There is no
-   *   replacement.
-   *
-   * @see https://www.drupal.org/node/3410939
    */
   public static function getSeverities() {
-    @trigger_error('Calling ' . __METHOD__ . '() is deprecated in drupal:11.2.0 and is removed from in drupal:12.0.0. There is no replacement. See https://www.drupal.org/node/3410939', \E_USER_DEPRECATED);
     return [
-      RequirementSeverity::Info->value => [
+      REQUIREMENT_INFO => [
         'title' => t('Checked', [], ['context' => 'Examined']),
         'status' => 'checked',
       ],
-      RequirementSeverity::OK->value => [
+      REQUIREMENT_OK => [
         'title' => t('OK'),
         'status' => 'ok',
       ],
-      RequirementSeverity::Warning->value => [
+      REQUIREMENT_WARNING => [
         'title' => t('Warnings found'),
         'status' => 'warning',
       ],
-      RequirementSeverity::Error->value => [
+      REQUIREMENT_ERROR => [
         'title' => t('Errors found'),
         'status' => 'error',
       ],

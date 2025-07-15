@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\config_entity_static_cache_test;
 
 use Drupal\Core\Cache\CacheableMetadata;

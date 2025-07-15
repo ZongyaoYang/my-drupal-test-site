@@ -24,7 +24,7 @@ class FilterCaptionTwigDebugTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public function register(ContainerBuilder $container): void {
+  public function register(ContainerBuilder $container) {
     parent::register($container);
     // Enable Twig debugging.
     $parameters = $container->getParameter('twig.config');

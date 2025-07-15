@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\entity_test_revlog;
 
 use Drupal\Core\Access\AccessResult;

@@ -6,8 +6,6 @@ namespace Drupal\Tests\mysql\Kernel\mysql;
 
 use Drupal\KernelTests\Core\Database\DriverSpecificConnectionUnitTestBase;
 
-// cspell:ignore processlist
-
 /**
  * MySQL-specific connection unit tests.
  *

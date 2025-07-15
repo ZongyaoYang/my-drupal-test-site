@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\migrate_field_plugin_manager_test\Plugin\migrate\field;
 
 use Drupal\migrate_drupal\Attribute\MigrateField;

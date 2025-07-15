@@ -3,7 +3,7 @@
  *  Support code for testing JavaScript error handling in functional tests.
  */
 (function () {
-  if (console?.warn) {
+  if (typeof console !== 'undefined' && console.warn) {
     const originalWarnFunction = console.warn;
     console.warn = (warning) => {
       const warnings = JSON.parse(

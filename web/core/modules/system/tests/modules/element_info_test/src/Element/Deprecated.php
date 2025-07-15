@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\element_info_test\Element;
 
 use Drupal\Core\Render\Attribute\RenderElement;

@@ -288,7 +288,7 @@ class EntityDecoupledTranslationRevisionsTest extends EntityKernelTestBase {
    * @return int
    *   The latest saved revision id.
    */
-  protected function doTestEditSequence($sequence): int {
+  protected function doTestEditSequence($sequence) {
     $revision_id = NULL;
     foreach ($sequence as $index => $step) {
       $this->stepIndex = $index;
@@ -417,7 +417,7 @@ class EntityDecoupledTranslationRevisionsTest extends EntityKernelTestBase {
     $violations = $entity->validate();
     $messages = [];
     foreach ($violations as $violation) {
-      /** @var \Symfony\Component\Validator\ConstraintViolationInterface */
+      /** \Symfony\Component\Validator\ConstraintViolationInterface */
       $messages[] = $violation->getMessage();
     }
     $this->assertEquals($valid, !$violations->count(), $this->formatMessage('Validation does not match the expected result: %s', implode(', ', $messages)));
@@ -544,7 +544,7 @@ class EntityDecoupledTranslationRevisionsTest extends EntityKernelTestBase {
    * @param \Drupal\Core\Entity\ContentEntityInterface $entity
    *   An entity object.
    */
-  protected function doTestInternalProperties(ContentEntityInterface $entity): void {
+  protected function doTestInternalProperties(ContentEntityInterface $entity) {
     $this->assertFalse($entity->isValidationRequired());
     $entity->setValidationRequired(TRUE);
     $this->assertTrue($entity->isValidationRequired());

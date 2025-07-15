@@ -71,8 +71,6 @@ interface ConfigEntityInterface extends EntityInterface, ThirdPartySettingsInter
    * should be deleted.
    *
    * @return bool
-   *   TRUE if the configuration entity is being changed during the uninstall
-   *   process, FALSE otherwise.
    */
   public function isUninstalling();
 

@@ -109,7 +109,7 @@ class DataFieldRow extends RowPluginBase {
   }
 
   /**
-   * Form element validation handler.
+   * Form element validation handler for \Drupal\rest\Plugin\views\row\DataFieldRow::buildOptionsForm().
    */
   public function validateAliasName($element, FormStateInterface $form_state) {
     if (preg_match('@[^A-Za-z0-9_-]+@', $element['#value'])) {

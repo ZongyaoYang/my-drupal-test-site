@@ -140,13 +140,6 @@ class StaticReflectionParser
     protected array $classAttributes = [];
 
     /**
-     * Method attributes
-     *
-     * @var string[][]
-     */
-    protected array $methodAttributes = [];
-
-    /**
      * Parses a class residing in a PSR-0 hierarchy.
      *
      * @param string               $className               The full, namespaced class name.
@@ -212,11 +205,10 @@ class StaticReflectionParser
                     break;
                 case T_CLASS:
                     // Convert the attributes to fully qualified names.
-                    $this->classAttributes = array_map([$this, 'fullySpecifyName'], $attributeNames);
+                    $this->classAttributes = array_map(fn($name) => $this->fullySpecifyName($name), $attributeNames);
                     if ($last_token !== T_PAAMAYIM_NEKUDOTAYIM && $last_token !== T_NEW) {
                         $this->docComment['class'] = $docComment;
                         $docComment                = '';
-                        $attributeNames            = [];
                     }
                     break;
                 case T_VAR:
@@ -227,7 +219,6 @@ class StaticReflectionParser
                     if ($token[0] === T_VARIABLE) {
                         $propertyName                                = substr($token[1], 1);
                         $this->docComment['property'][$propertyName] = $docComment;
-                        $attributeNames                              = [];
                         continue 2;
                     }
                     if ($token[0] !== T_FUNCTION) {
@@ -248,8 +239,6 @@ class StaticReflectionParser
                     $methodName                              = $token[1];
                     $this->docComment['method'][$methodName] = $docComment;
                     $docComment                              = '';
-                    $this->methodAttributes[$methodName]     = array_map([$this, 'fullySpecifyName'], $attributeNames);
-                    $attributeNames                          = [];
                     break;
                 case T_EXTENDS:
                     $this->parentClassName = $this->fullySpecifyName($tokenParser->parseClass());
@@ -325,12 +314,6 @@ class StaticReflectionParser
         return $name ? $this->docComment[$type][$name] : $this->docComment[$type];
     }
 
-    public function getMethodAttributes(): array {
-      $this->parse();
-
-      return $this->methodAttributes;
-    }
-
     /**
      * Gets the PSR-0 parser for the declaring class.
      *
@@ -363,13 +346,8 @@ class StaticReflectionParser
     public function hasClassAttribute(string $attribute): bool
     {
         $this->parse();
-        return static::hasAttribute($this->classAttributes, $attribute);
-    }
-
-    public static function hasAttribute(array $existingAttributes, string $attributeLookingFor): bool
-    {
-        foreach ($existingAttributes as $existingAttribute) {
-            if (is_a($existingAttribute, $attributeLookingFor, TRUE)) {
+        foreach ($this->classAttributes as $classAttribute) {
+            if (is_a($classAttribute, $attribute, TRUE)) {
                 return TRUE;
             }
         }

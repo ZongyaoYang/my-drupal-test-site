@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\hold_test\EventSubscriber;
 
 use Symfony\Component\HttpKernel\KernelEvents;

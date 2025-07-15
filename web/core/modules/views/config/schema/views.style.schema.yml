@@ -124,9 +124,6 @@ views.style.table:
     description:
       type: text
       label: 'Table description'
-    class:
-      type: string
-      label: 'Table class'
 
 views.style.default_summary:
   type: views_style

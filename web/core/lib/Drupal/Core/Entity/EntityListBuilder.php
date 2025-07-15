@@ -155,10 +155,7 @@ class EntityListBuilder extends EntityHandlerBase implements EntityListBuilderIn
         $label = $this->t('Edit @entity_label', ['@entity_label' => $entity->label()]);
       }
       else {
-        $label = $this->t('Edit @entity_bundle @entity_id', [
-          '@entity_bundle' => $entity->bundle(),
-          '@entity_id' => $entity->id(),
-        ]);
+        $label = $this->t('Edit @entity_bundle @entity_id', ['@entity_bundle' => $entity->bundle(), '@entity_id' => $entity->id()]);
       }
       $attributes = $edit_url->getOption('attributes') ?: [];
       $attributes += ['aria-label' => $label];
@@ -176,10 +173,7 @@ class EntityListBuilder extends EntityHandlerBase implements EntityListBuilderIn
         $label = $this->t('Delete @entity_label', ['@entity_label' => $entity->label()]);
       }
       else {
-        $label = $this->t('Delete @entity_bundle @entity_id', [
-          '@entity_bundle' => $entity->bundle(),
-          '@entity_id' => $entity->id(),
-        ]);
+        $label = $this->t('Delete @entity_bundle @entity_id', ['@entity_bundle' => $entity->bundle(), '@entity_id' => $entity->id()]);
       }
       $attributes = $delete_url->getOption('attributes') ?: [];
       $attributes += ['aria-label' => $label];

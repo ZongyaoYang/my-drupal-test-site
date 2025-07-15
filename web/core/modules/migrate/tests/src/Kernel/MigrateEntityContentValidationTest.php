@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\migrate\Kernel;
 
-use Drupal\Component\Utility\Html;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\filter\Entity\FilterFormat;
@@ -154,11 +153,7 @@ class MigrateEntityContentValidationTest extends KernelTestBase {
       ],
     ]);
 
-    $message = strtr($username_constraint->tooLongMessage, [
-      '%name' => '<em class="placeholder">' . Html::escape($long_username) . '</em>',
-      '%max' => '<em class="placeholder">' . 60 . '</em>',
-    ]);
-    $this->assertSame(sprintf('1: [user]: name=%s||name=%s||mail=Email field is required.', $username_constraint->illegalMessage, $message), $this->messages[0], 'First message should have 3 validation errors.');
+    $this->assertSame(sprintf('1: [user]: name=%s||name=%s||mail=Email field is required.', $username_constraint->illegalMessage, t($username_constraint->tooLongMessage, ['%name' => $long_username, '%max' => 60])), $this->messages[0], 'First message should have 3 validation errors.');
     $this->assertSame(sprintf('2: [user]: name=%s||mail=Email field is required.', $username_constraint->illegalMessage), $this->messages[1], 'Second message should have 2 validation errors.');
     $this->assertSame(sprintf('3: [user]: name=%s||mail=Email field is required.', $username_constraint->illegalMessage), $this->messages[2], 'Third message should have 2 validation errors.');
     $this->assertArrayNotHasKey(3, $this->messages, 'Fourth message should not exist.');
@@ -258,7 +253,7 @@ class MigrateEntityContentValidationTest extends KernelTestBase {
    * @param \Drupal\migrate\Event\MigrateIdMapMessageEvent $event
    *   The migration event.
    */
-  public function mapMessageRecorder(MigrateIdMapMessageEvent $event): void {
+  public function mapMessageRecorder(MigrateIdMapMessageEvent $event) {
     $this->messages[] = implode(',', $event->getSourceIdValues()) . ': ' . $event->getMessage();
   }
 
@@ -271,7 +266,7 @@ class MigrateEntityContentValidationTest extends KernelTestBase {
    * @throws \Exception
    * @throws \Drupal\migrate\MigrateException
    */
-  protected function runImport(array $definition): void {
+  protected function runImport(array $definition) {
     // Reset the list of messages from a previous migration.
     $this->messages = [];
 

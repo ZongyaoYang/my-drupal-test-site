@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\database_test\Form;
 
 use Drupal\Core\Database\Database;
@@ -30,8 +28,8 @@ class DatabaseTestForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $header = [
-      'username' => ['data' => $this->t('Username'), 'field' => 'u.name'],
-      'status' => ['data' => $this->t('Status'), 'field' => 'u.status'],
+      'username' => ['data' => t('Username'), 'field' => 'u.name'],
+      'status' => ['data' => t('Status'), 'field' => 'u.status'],
     ];
 
     $query = Database::getConnection()->select('users_field_data', 'u');
@@ -59,7 +57,7 @@ class DatabaseTestForm extends FormBase {
       $options[$account->id()] = [
         'title' => ['data' => ['#title' => $account->getAccountName()]],
         'username' => $account->getAccountName(),
-        'status' => $account->isActive() ? $this->t('active') : $this->t('blocked'),
+        'status' => $account->isActive() ? t('active') : t('blocked'),
       ];
     }
 
@@ -67,7 +65,7 @@ class DatabaseTestForm extends FormBase {
       '#type' => 'tableselect',
       '#header' => $header,
       '#options' => $options,
-      '#empty' => $this->t('No people available.'),
+      '#empty' => t('No people available.'),
     ];
 
     return $form;

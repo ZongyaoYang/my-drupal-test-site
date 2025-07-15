@@ -68,7 +68,6 @@ class SubformState extends FormStateDecoratorBase implements SubformStateInterfa
    *   The property name (#parents or #array_parents).
    *
    * @return mixed
-   *   The form parents relative to its parent form.
    *
    * @throws \InvalidArgumentException
    *   Thrown when the requested property does not exist.

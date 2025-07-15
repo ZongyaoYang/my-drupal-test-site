@@ -33,23 +33,35 @@ class EntityBundleExistsConstraint extends SymfonyConstraint {
    *
    * This can contain variable values (e.g., `%parent`) that will be replaced.
    *
-   * @var string
-   *
    * @see \Drupal\Core\Config\Schema\TypeResolver::replaceVariable()
+   *
+   * @var string
    */
   public string $entityTypeId;
 
   /**
    * {@inheritdoc}
+   *
+   * @return ?string
+   *   Name of the default option.
+   *
+   * @todo Add method return type declaration.
+   * @see https://www.drupal.org/project/drupal/issues/3425150
    */
-  public function getDefaultOption(): ?string {
+  public function getDefaultOption() {
     return 'entityTypeId';
   }
 
   /**
    * {@inheritdoc}
+   *
+   * @return array
+   *   The names of the required options.
+   *
+   * @todo Add method return type declaration.
+   * @see https://www.drupal.org/project/drupal/issues/3425150
    */
-  public function getRequiredOptions(): array {
+  public function getRequiredOptions() {
     return ['entityTypeId'];
   }
 

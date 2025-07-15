@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\node\Kernel\Migrate\d6;
 
-use Drupal\Core\Database\Statement\FetchAs;
 use Drupal\node\NodeInterface;
 use Drupal\Tests\file\Kernel\Migrate\d6\FileMigrationTestTrait;
 use Drupal\Tests\migrate_drupal\Traits\CreateTestContentEntitiesTrait;
@@ -66,14 +65,14 @@ class MigrateNodeCompleteTest extends MigrateNodeTestBase {
       ->orderBy('vid')
       ->orderBy('langcode')
       ->execute()
-      ->fetchAll(FetchAs::Associative));
+      ->fetchAll(\PDO::FETCH_ASSOC));
     $this->assertEquals($this->expectedNodeFieldDataTable(), $db->select('node_field_data', 'nr')
       ->fields('nr')
       ->orderBy('nid')
       ->orderBy('vid')
       ->orderBy('langcode')
       ->execute()
-      ->fetchAll(FetchAs::Associative));
+      ->fetchAll(\PDO::FETCH_ASSOC));
 
     // Now load and test each revision, including the field 'field_text_plain'
     // which has text reflecting the revision.
@@ -119,7 +118,7 @@ class MigrateNodeCompleteTest extends MigrateNodeTestBase {
    * @return array
    *   The expected table rows.
    */
-  protected function expectedNodeFieldDataTable(): array {
+  protected function expectedNodeFieldDataTable() {
     return [
       0 =>
         [
@@ -526,7 +525,7 @@ class MigrateNodeCompleteTest extends MigrateNodeTestBase {
    * @return array
    *   The table.
    */
-  protected function expectedNodeFieldRevisionTable(): array {
+  protected function expectedNodeFieldRevisionTable() {
     return [
       0 =>
         [
@@ -1047,9 +1046,9 @@ class MigrateNodeCompleteTest extends MigrateNodeTestBase {
    * @return array
    *   Selected properties and fields on the revision.
    */
-  protected function expectedRevisionEntityData(): array {
+  protected function expectedRevisionEntityData() {
     return [
-      [
+      $revision_data = [
         // Node 1, revision 1, und.
         0 =>
           [

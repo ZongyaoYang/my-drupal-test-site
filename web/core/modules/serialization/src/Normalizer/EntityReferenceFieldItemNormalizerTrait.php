@@ -23,7 +23,6 @@ trait EntityReferenceFieldItemNormalizerTrait {
    *   The entity reference item.
    *
    * @return bool
-   *   TRUE if the field item references a taxonomy term, FALSE otherwise.
    */
   protected function fieldItemReferencesTaxonomyTerm(EntityReferenceItem $field_item) {
     return $field_item->getFieldDefinition()->getSetting('target_type') === 'taxonomy_term';

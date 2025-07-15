@@ -52,18 +52,18 @@ class LanguageNegotiation extends Plugin {
   /**
    * The human-readable name of the language negotiation plugin.
    *
-   * @var \Drupal\Core\Annotation\Translation
-   *
    * @ingroup plugin_translatable
+   *
+   * @var \Drupal\Core\Annotation\Translation
    */
   public $name;
 
   /**
    * The description of the language negotiation plugin.
    *
-   * @var \Drupal\Core\Annotation\Translation
-   *
    * @ingroup plugin_translatable
+   *
+   * @var \Drupal\Core\Annotation\Translation
    */
   public $description;
 

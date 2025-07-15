@@ -1,11 +1,7 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\batch_test\Form;
 
-use Drupal\batch_test\BatchTestDefinitions;
-use Drupal\batch_test\BatchTestHelper;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 
@@ -57,15 +53,14 @@ class BatchTestChainedForm extends FormBase {
    * Form submission handler #1 for batch_test_chained_form.
    */
   public static function batchTestChainedFormSubmit1($form, FormStateInterface $form_state) {
-    $batch_test_definitions = new BatchTestDefinitions();
-    $batch_test_helper = new BatchTestHelper();
-    $batch_test_helper->stack(NULL, TRUE);
-    $batch_test_helper->stack('submit handler 1');
-    $batch_test_helper->stack('value = ' . $form_state->getValue('value'));
+    batch_test_stack(NULL, TRUE);
+
+    batch_test_stack('submit handler 1');
+    batch_test_stack('value = ' . $form_state->getValue('value'));
 
     $value = &$form_state->getValue('value');
     $value++;
-    batch_set($batch_test_definitions->batch1());
+    batch_set(_batch_test_batch_1());
 
     $form_state->setRedirect('batch_test.redirect');
   }
@@ -74,14 +69,12 @@ class BatchTestChainedForm extends FormBase {
    * Form submission handler #2 for batch_test_chained_form.
    */
   public static function batchTestChainedFormSubmit2($form, FormStateInterface $form_state) {
-    $batch_test_definitions = new BatchTestDefinitions();
-    $batch_test_helper = new BatchTestHelper();
-    $batch_test_helper->stack('submit handler 2');
-    $batch_test_helper->stack('value = ' . $form_state->getValue('value'));
+    batch_test_stack('submit handler 2');
+    batch_test_stack('value = ' . $form_state->getValue('value'));
 
     $value = &$form_state->getValue('value');
     $value++;
-    batch_set($batch_test_definitions->batch2());
+    batch_set(_batch_test_batch_2());
 
     $form_state->setRedirect('batch_test.redirect');
   }
@@ -90,9 +83,8 @@ class BatchTestChainedForm extends FormBase {
    * Form submission handler #3 for batch_test_chained_form.
    */
   public static function batchTestChainedFormSubmit3($form, FormStateInterface $form_state) {
-    $batch_test_helper = new BatchTestHelper();
-    $batch_test_helper->stack('submit handler 3');
-    $batch_test_helper->stack('value = ' . $form_state->getValue('value'));
+    batch_test_stack('submit handler 3');
+    batch_test_stack('value = ' . $form_state->getValue('value'));
 
     $value = &$form_state->getValue('value');
     $value++;
@@ -104,14 +96,12 @@ class BatchTestChainedForm extends FormBase {
    * Form submission handler #4 for batch_test_chained_form.
    */
   public static function batchTestChainedFormSubmit4($form, FormStateInterface $form_state) {
-    $batch_test_definitions = new BatchTestDefinitions();
-    $batch_test_helper = new BatchTestHelper();
-    $batch_test_helper->stack('submit handler 4');
-    $batch_test_helper->stack('value = ' . $form_state->getValue('value'));
+    batch_test_stack('submit handler 4');
+    batch_test_stack('value = ' . $form_state->getValue('value'));
 
     $value = &$form_state->getValue('value');
     $value++;
-    batch_set($batch_test_definitions->batch3());
+    batch_set(_batch_test_batch_3());
 
     $form_state->setRedirect('batch_test.redirect');
   }

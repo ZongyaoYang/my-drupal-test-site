@@ -1,11 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\form_test\Form;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\form_test\Callbacks;
 
 /**
  * Builds a form to test table selects with different column spans.
@@ -25,7 +22,7 @@ class FormTestTableSelectColspanForm extends FormTestTableSelectFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    [$header, $options] = Callbacks::tableselectGetData();
+    [$header, $options] = _form_test_tableselect_get_data();
 
     // Change the data so that the third column has colspan=2.
     $header['three'] = ['data' => 'Three', 'colspan' => 2];

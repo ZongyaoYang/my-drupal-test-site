@@ -44,7 +44,7 @@ class MigrateLanguageContentCommentSettingsNoEntityTranslationTest extends Migra
   /**
    * {@inheritdoc}
    */
-  public static function migrateDumpAlter(KernelTestBase $test): void {
+  public static function migrateDumpAlter(KernelTestBase $test) {
     // Disable comment entity translation.
     $db = Database::getConnection('default', 'migrate');
 

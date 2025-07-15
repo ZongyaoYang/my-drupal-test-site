@@ -30,7 +30,7 @@ class ViewsCache extends ViewsPluginAnnotationBase {
   public $title = '';
 
   /**
-   * An optional short title used in the views UI.
+   * (optional) The short title used in the views UI.
    *
    * @var \Drupal\Core\Annotation\Translation
    *

@@ -86,7 +86,7 @@ class StyleTest extends ViewsKernelTestBase {
   /**
    * Provides reusable code for ::testGrouping().
    */
-  protected function doTestGrouping($stripped = FALSE): void {
+  protected function doTestGrouping($stripped = FALSE) {
     $view = Views::getView('test_view');
     $view->setDisplay();
     // Setup grouping by the job and the age field.
@@ -111,7 +111,6 @@ class StyleTest extends ViewsKernelTestBase {
         'field' => 'name',
         'relationship' => 'none',
         'label' => 'Name',
-        'element_label_colon' => TRUE,
       ],
       'job' => [
         'id' => 'job',
@@ -119,7 +118,6 @@ class StyleTest extends ViewsKernelTestBase {
         'field' => 'job',
         'relationship' => 'none',
         'label' => 'Job',
-        'element_label_colon' => TRUE,
       ],
       'age' => [
         'id' => 'age',
@@ -127,12 +125,11 @@ class StyleTest extends ViewsKernelTestBase {
         'field' => 'age',
         'relationship' => 'none',
         'label' => 'Age',
-        'element_label_colon' => TRUE,
       ],
     ];
     $view->displayHandlers->get('default')->overrideOption('fields', $fields);
 
-    // Now run the query and group by the result.
+    // Now run the query and groupby the result.
     $this->executeView($view);
 
     $expected = [];

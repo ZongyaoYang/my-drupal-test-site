@@ -18,7 +18,6 @@ trait ContextAwarePluginAssignmentTrait {
    * Wraps the context handler.
    *
    * @return \Drupal\Core\Plugin\Context\ContextHandlerInterface
-   *   the context handler service.
    */
   protected function contextHandler() {
     return \Drupal::service('context.handler');

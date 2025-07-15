@@ -111,7 +111,7 @@ class MailManagerTest extends UnitTestCase {
   /**
    * Sets up the mail manager for testing.
    */
-  protected function setUpMailManager($interface = []): void {
+  protected function setUpMailManager($interface = []) {
     // Use the provided config for system.mail.interface settings.
     $this->configFactory = $this->getConfigFactoryStub([
       'system.mail' => [
@@ -206,7 +206,7 @@ class TestMailManager extends MailManager {
    * @param \Drupal\Component\Plugin\Discovery\DiscoveryInterface $discovery
    *   The discovery object.
    */
-  public function setDiscovery(DiscoveryInterface $discovery): void {
+  public function setDiscovery(DiscoveryInterface $discovery) {
     $this->discovery = $discovery;
   }
 

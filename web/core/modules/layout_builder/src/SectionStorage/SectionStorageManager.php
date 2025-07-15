@@ -75,7 +75,7 @@ class SectionStorageManager extends DefaultPluginManager implements SectionStora
     try {
       $this->contextHandler->applyContextMapping($plugin, $contexts);
     }
-    catch (ContextException) {
+    catch (ContextException $e) {
       return NULL;
     }
     return $plugin;

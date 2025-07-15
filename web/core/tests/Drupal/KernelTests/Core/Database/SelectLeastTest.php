@@ -21,9 +21,6 @@ class SelectLeastTest extends DatabaseTestBase {
     $this->assertEquals($expected, $least);
   }
 
-  /**
-   * Provides data for testing the LEAST operator.
-   */
   public static function selectLeastProvider() {
     return [
       [[1, 2, 3, 4, 5, 6], 1],

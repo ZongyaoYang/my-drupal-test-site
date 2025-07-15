@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\system_test\Form;
 
 use Drupal\Core\Form\FormBase;

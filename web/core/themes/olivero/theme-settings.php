@@ -10,12 +10,12 @@ use Drupal\Core\Form\FormStateInterface;
 /**
  * Implements hook_form_FORM_ID_alter() for system_theme_settings.
  */
-function olivero_form_system_theme_settings_alter(&$form, FormStateInterface $form_state): void {
+function olivero_form_system_theme_settings_alter(&$form, FormStateInterface $form_state) {
   $form['#attached']['library'][] = 'olivero/color-picker';
 
   $color_config = [
     'colors' => [
-      'base_primary_color' => t('Primary base color'),
+      'base_primary_color' => 'Primary base color',
     ],
     'schemes' => [
       'default' => [
@@ -105,7 +105,7 @@ function olivero_form_system_theme_settings_alter(&$form, FormStateInterface $fo
       '#type' => 'textfield',
       '#maxlength' => 7,
       '#size' => 10,
-      '#title' => $title,
+      '#title' => t($title),
       '#description' => t('Enter color in hexadecimal format (#abc123).') . '<br/>' . t('Derivatives will be formed from this color.'),
       '#config_target' => "olivero.settings:$key",
       '#attributes' => [

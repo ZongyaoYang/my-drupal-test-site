@@ -61,7 +61,7 @@ class ContextualLinkDefaultTest extends UnitTestCase {
     $this->stringTranslation = $this->createMock('Drupal\Core\StringTranslation\TranslationInterface');
   }
 
-  protected function setupContextualLinkDefault(): void {
+  protected function setupContextualLinkDefault() {
     $this->contextualLinkDefault = new ContextualLinkDefault($this->config, $this->pluginId, $this->pluginDefinition);
   }
 
@@ -70,7 +70,6 @@ class ContextualLinkDefaultTest extends UnitTestCase {
    */
   public function testGetTitle(): void {
     $title = 'Example';
-    // phpcs:ignore Drupal.Semantics.FunctionT.NotLiteralString
     $this->pluginDefinition['title'] = (new TranslatableMarkup($title, [], [], $this->stringTranslation));
     $this->stringTranslation->expects($this->once())
       ->method('translateString')
@@ -86,7 +85,6 @@ class ContextualLinkDefaultTest extends UnitTestCase {
    */
   public function testGetTitleWithContext(): void {
     $title = 'Example';
-    // phpcs:ignore Drupal.Semantics.FunctionT.NotLiteralString
     $this->pluginDefinition['title'] = (new TranslatableMarkup($title, [], ['context' => 'context'], $this->stringTranslation));
     $this->stringTranslation->expects($this->once())
       ->method('translateString')
@@ -102,7 +100,6 @@ class ContextualLinkDefaultTest extends UnitTestCase {
    */
   public function testGetTitleWithTitleArguments(): void {
     $title = 'Example @test';
-    // phpcs:ignore Drupal.Semantics.FunctionT.NotLiteralString
     $this->pluginDefinition['title'] = (new TranslatableMarkup($title, ['@test' => 'value'], [], $this->stringTranslation));
     $this->stringTranslation->expects($this->once())
       ->method('translateString')

@@ -5,8 +5,6 @@
  * Contains functions for testing calling deprecated functions in tests.
  */
 
-declare(strict_types=1);
-
 /**
  * A deprecated function.
  *
@@ -27,13 +25,13 @@ function deprecation_test_function() {
 /**
  * Implements hook_deprecated_hook().
  */
-function deprecation_test_deprecated_hook($arg): mixed {
+function deprecation_test_deprecated_hook($arg) {
   return $arg;
 }
 
 /**
  * Implements hook_deprecated_alter_alter().
  */
-function deprecation_test_deprecated_alter_alter(&$data, $context1, $context2): void {
+function deprecation_test_deprecated_alter_alter(&$data, $context1, $context2) {
   $data = [$context1, $context2];
 }

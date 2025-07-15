@@ -50,7 +50,7 @@ class QueueTest extends KernelTestBase {
    * @param \Drupal\Core\Queue\QueueInterface $queue2
    *   An instantiated queue object.
    */
-  protected function runQueueTest($queue1, $queue2): void {
+  protected function runQueueTest($queue1, $queue2) {
     // Create four items.
     $data = [];
     for ($i = 0; $i < 4; $i++) {

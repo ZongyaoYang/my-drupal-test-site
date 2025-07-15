@@ -7,7 +7,6 @@ namespace Drupal\Tests\content_moderation\Functional;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\content_moderation\Traits\ContentModerationTestTrait;
 use Drupal\Tests\content_translation\Traits\ContentTranslationTestTrait;
-use Drupal\user\Entity\Role;
 
 /**
  * Test content_moderation functionality with content_translation.
@@ -37,6 +36,14 @@ class ModerationContentTranslationTest extends BrowserTestBase {
 
   /**
    * {@inheritdoc}
+   *
+   * @todo Remove and fix test to not rely on super user.
+   * @see https://www.drupal.org/project/drupal/issues/3437620
+   */
+  protected bool $usesSuperUserAccessPolicy = TRUE;
+
+  /**
+   * {@inheritdoc}
    */
   protected $defaultTheme = 'stark';
 
@@ -45,12 +52,7 @@ class ModerationContentTranslationTest extends BrowserTestBase {
    */
   protected function setUp(): void {
     parent::setUp();
-    $this->adminUser = $this->drupalCreateUser([
-      'bypass node access',
-      'create content translations',
-      'translate any entity',
-    ]);
-    $this->drupalLogin($this->adminUser);
+    $this->drupalLogin($this->rootUser);
     // Create an Article content type.
     $this->drupalCreateContentType(['type' => 'article', 'name' => 'Article'])->save();
     static::createLanguageFromLangcode('fr');
@@ -89,7 +91,7 @@ class ModerationContentTranslationTest extends BrowserTestBase {
     $workflow = $this->createEditorialWorkflow();
     $workflow->getTypePlugin()->addEntityTypeAndBundle('node', 'article');
     $workflow->save();
-    $this->grantPermissions(Role::load(Role::AUTHENTICATED_ID), ['use editorial transition publish']);
+    $this->drupalLogin($this->rootUser);
 
     // Edit the English node.
     $this->drupalGet('node/' . $english_node->id() . '/edit');

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\layout_builder_element_test\EventSubscriber;
 
 use Drupal\Core\Messenger\MessengerInterface;

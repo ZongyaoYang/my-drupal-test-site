@@ -26,7 +26,7 @@ class InstallerExistingSettingsTest extends InstallerTestBase {
    * Fully configures a preexisting settings.php file before invoking the
    * interactive installer.
    */
-  protected function prepareEnvironment(): void {
+  protected function prepareEnvironment() {
     parent::prepareEnvironment();
     // Pre-configure hash salt.
     // Any string is valid, so simply use the class name of this test.
@@ -59,7 +59,7 @@ class InstallerExistingSettingsTest extends InstallerTestBase {
   /**
    * Visits the interactive installer.
    */
-  protected function visitInstaller(): void {
+  protected function visitInstaller() {
     // Should redirect to the installer.
     $this->drupalGet($GLOBALS['base_url']);
     // Ensure no database tables have been created yet.
@@ -70,7 +70,7 @@ class InstallerExistingSettingsTest extends InstallerTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUpSettings(): void {
+  protected function setUpSettings() {
     // This step should not appear, since settings.php is fully configured
     // already.
   }

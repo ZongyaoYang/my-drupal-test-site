@@ -22,7 +22,7 @@ class DbImportCommand extends DbCommandBase {
   /**
    * {@inheritdoc}
    */
-  protected function configure(): void {
+  protected function configure() {
     parent::configure();
     $this->setName('import')
       ->setDescription('Import database from a generation script.')
@@ -62,7 +62,7 @@ class DbImportCommand extends DbCommandBase {
     try {
       require $script;
     }
-    catch (SchemaObjectExistsException) {
+    catch (SchemaObjectExistsException $e) {
       throw new \RuntimeException('An existing Drupal installation exists at this location. Try removing all tables or changing the database prefix in your settings.php file.');
     }
     Database::setActiveConnection($old_key);

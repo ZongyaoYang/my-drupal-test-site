@@ -59,6 +59,8 @@ process:
           new: forum_new_block
         # locale:
         #  0: language_block
+        node:
+          syndicate: node_syndicate_block
         search:
           form: search_form_block
         statistics:
@@ -115,14 +117,7 @@ process:
           sidebar_first: 'sidebar_first'
     # If mapping fails, put the block in the content region.
     default_value: content
-  weight:
-    -
-      plugin: get
-      source: weight
-    -
-      # Block weights must be integers.
-      plugin: callback
-      callable: intval
+  weight: weight
   settings:
     plugin: block_settings
     source:

@@ -20,7 +20,10 @@ class RemoveBuildParametersPass implements CompilerPassInterface
      */
     private array $removedParameters = [];
 
-    public function process(ContainerBuilder $container): void
+    /**
+     * @return void
+     */
+    public function process(ContainerBuilder $container)
     {
         $parameterBag = $container->getParameterBag();
         $this->removedParameters = [];
@@ -30,7 +33,7 @@ class RemoveBuildParametersPass implements CompilerPassInterface
                 $this->removedParameters[$name] = $value;
 
                 $parameterBag->remove($name);
-                $container->log($this, \sprintf('Removing build parameter "%s".', $name));
+                $container->log($this, sprintf('Removing build parameter "%s".', $name));
             }
         }
     }

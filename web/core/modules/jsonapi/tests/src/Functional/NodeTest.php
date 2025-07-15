@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\jsonapi\Functional;
 
-use Drupal\jsonapi\JsonApiSpec;
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Cache\Cache;
@@ -82,7 +81,7 @@ class NodeTest extends ResourceTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUpAuthorization($method): void {
+  protected function setUpAuthorization($method) {
     switch ($method) {
       case 'GET':
         $this->grantPermissionsToTestedRole(['access content']);
@@ -109,7 +108,7 @@ class NodeTest extends ResourceTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUpRevisionAuthorization($method): void {
+  protected function setUpRevisionAuthorization($method) {
     parent::setUpRevisionAuthorization($method);
     $this->grantPermissionsToTestedRole(['view all revisions']);
   }
@@ -143,7 +142,7 @@ class NodeTest extends ResourceTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function getExpectedDocument(): array {
+  protected function getExpectedDocument() {
     $author = User::load($this->entity->getOwnerId());
     $base_url = Url::fromUri('base:/jsonapi/node/camelids/' . $this->entity->uuid())->setAbsolute();
     $self_url = clone $base_url;
@@ -154,10 +153,10 @@ class NodeTest extends ResourceTestBase {
       'jsonapi' => [
         'meta' => [
           'links' => [
-            'self' => ['href' => JsonApiSpec::SUPPORTED_SPECIFICATION_PERMALINK],
+            'self' => ['href' => 'http://jsonapi.org/format/1.0/'],
           ],
         ],
-        'version' => JsonApiSpec::SUPPORTED_SPECIFICATION_VERSION,
+        'version' => '1.0',
       ],
       'links' => [
         'self' => ['href' => $base_url->toString()],
@@ -248,7 +247,7 @@ class NodeTest extends ResourceTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function getPostDocument(): array {
+  protected function getPostDocument() {
     return [
       'data' => [
         'type' => 'node--camelids',
@@ -347,13 +346,17 @@ class NodeTest extends ResourceTestBase {
       ['4xx-response', 'http_response', 'node:1'],
       ['url.query_args', 'url.site', 'user.permissions'],
       'UNCACHEABLE (request policy)',
-      TRUE
+      'MISS'
     );
 
     // 200 after granting permission.
     $this->grantPermissionsToTestedRole(['view own unpublished content']);
     $response = $this->request('GET', $url, $request_options);
-    $this->assertResourceResponse(200, FALSE, $response, $this->getExpectedCacheTags(), $this->getExpectedCacheContexts(), 'UNCACHEABLE (request policy)', TRUE);
+    // The response varies by 'user', causing the 'user.permissions' cache
+    // context to be optimized away.
+    $expected_cache_contexts = Cache::mergeContexts($this->getExpectedCacheContexts(), ['user']);
+    $expected_cache_contexts = array_diff($expected_cache_contexts, ['user.permissions']);
+    $this->assertResourceResponse(200, FALSE, $response, $this->getExpectedCacheTags(), $expected_cache_contexts, 'UNCACHEABLE (request policy)', 'UNCACHEABLE (poor cacheability)');
   }
 
   /**
@@ -399,13 +402,7 @@ class NodeTest extends ResourceTestBase {
    * @internal
    */
   protected function assertNormalizedFieldsAreCached(array $field_names): void {
-    $variation_cache = \Drupal::service('variation_cache.jsonapi_normalizations');
-
-    // Because we warm caches in different requests, we do not properly populate
-    // the internal properties of our variation cache. Reset it.
-    $variation_cache->reset();
-
-    $cache = $variation_cache->get(['node--camelids', $this->entity->uuid(), $this->entity->language()->getId()], new CacheableMetadata());
+    $cache = \Drupal::service('variation_cache.jsonapi_normalizations')->get(['node--camelids', $this->entity->uuid(), $this->entity->language()->getId()], new CacheableMetadata());
     $cached_fields = $cache->data['fields'];
     $this->assertSameSize($field_names, $cached_fields);
     array_walk($field_names, function ($field_name) use ($cached_fields) {
@@ -419,30 +416,7 @@ class NodeTest extends ResourceTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function getExpectedCacheContexts(?array $sparse_fieldset = NULL) {
-    // \Drupal\Tests\jsonapi\Functional\ResourceTestBase::testRevisions()
-    // loads different revisions via query parameters, we do our best
-    // here to react to those directly, or indirectly.
-    $cache_contexts = parent::getExpectedCacheContexts($sparse_fieldset);
-
-    // This is bubbled up by
-    // \Drupal\node\NodeAccessControlHandler::checkAccess() directly.
-    if ($this->entity->isPublished()) {
-      return $cache_contexts;
-    }
-    if (!\Drupal::currentUser()->isAuthenticated()) {
-      return Cache::mergeContexts($cache_contexts, ['user.roles:authenticated']);
-    }
-    if (\Drupal::currentUser()->hasPermission('view own unpublished content')) {
-      return Cache::mergeContexts($cache_contexts, ['user']);
-    }
-    return $cache_contexts;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected static function getIncludePermissions(): array {
+  protected static function getIncludePermissions() {
     return [
       'uid.node_type' => ['administer users'],
       'uid.roles' => ['administer permissions'],
@@ -532,6 +506,28 @@ class NodeTest extends ResourceTestBase {
     $this->rebuildAll();
     $response = $this->request('GET', $collection_filter_url, $request_options);
     $this->assertContains('user.node_grants:view', explode(' ', $response->getHeader('X-Drupal-Cache-Contexts')[0]));
+  }
+
+  /**
+   * Tests deprecated entity reference items.
+   *
+   * @group legacy
+   */
+  public function testDeprecatedEntityReferenceFieldItem(): void {
+    \Drupal::service('module_installer')->install(['jsonapi_test_reference_types']);
+
+    $this->setUpAuthorization('GET');
+    // @todo Remove line below in favor of commented line in https://www.drupal.org/project/drupal/issues/2878463.
+    $url = Url::fromRoute(sprintf('jsonapi.%s.individual', static::$resourceTypeName), ['entity' => $this->entity->uuid()]);
+    // $url = $this->entity->toUrl('jsonapi');
+    $query = ['include' => 'deprecated_reference'];
+    $url->setOption('query', $query);
+    $request_options = [];
+    $request_options[RequestOptions::HEADERS]['Accept'] = 'application/vnd.api+json';
+    $request_options = NestedArray::mergeDeep($request_options, $this->getAuthenticationRequestOptions());
+
+    $this->expectDeprecation('Entity reference field items not implementing Drupal\Core\Field\Plugin\Field\FieldType\EntityReferenceItemInterface is deprecated in drupal:10.2.0 and will be required in drupal:11.0.0. See https://www.drupal.org/node/3279140');
+    $this->request('GET', $url, $request_options);
   }
 
 }

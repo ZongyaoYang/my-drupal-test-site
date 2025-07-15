@@ -4,4 +4,4 @@ dependencies: {  }
 id: valid
 label: 'Valid date format'
 locked: false
-pattern: 'j F Y'
+pattern: 'F j, Y'

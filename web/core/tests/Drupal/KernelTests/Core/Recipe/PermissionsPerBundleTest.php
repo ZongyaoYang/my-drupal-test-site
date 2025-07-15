@@ -38,7 +38,6 @@ class PermissionsPerBundleTest extends KernelTestBase {
     'field',
     'media',
     'media_test_source',
-    'image',
     'node',
     'system',
     'taxonomy',
@@ -51,7 +50,6 @@ class PermissionsPerBundleTest extends KernelTestBase {
    */
   protected function setUp(): void {
     parent::setUp();
-    $this->installEntitySchema('node');
     $this->installConfig('node');
 
     $this->createRole([], 'super_editor');
@@ -60,7 +58,6 @@ class PermissionsPerBundleTest extends KernelTestBase {
     $this->createContentType(['type' => 'blog']);
     $this->createContentType(['type' => 'landing_page']);
 
-    $this->installEntitySchema('media');
     $this->createMediaType('test', ['id' => 'beautiful']);
     $this->createMediaType('test', ['id' => 'controversial']);
     $this->createMediaType('test', ['id' => 'special']);

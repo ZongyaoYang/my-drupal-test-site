@@ -15,15 +15,18 @@ class LinkNotExistingInternalConstraintValidator extends ConstraintValidator {
 
   /**
    * {@inheritdoc}
+   *
+   * phpcs:ignore Drupal.Commenting.FunctionComment.VoidReturn
+   * @return void
    */
-  public function validate($value, Constraint $constraint): void {
+  public function validate($value, Constraint $constraint) {
     if (isset($value)) {
       try {
         /** @var \Drupal\Core\Url $url */
         $url = $value->getUrl();
       }
       // If the URL is malformed this constraint cannot check further.
-      catch (\InvalidArgumentException) {
+      catch (\InvalidArgumentException $e) {
         return;
       }
 
@@ -34,13 +37,13 @@ class LinkNotExistingInternalConstraintValidator extends ConstraintValidator {
         }
         // The following exceptions are all possible during URL generation, and
         // should be considered as disallowed URLs.
-        catch (RouteNotFoundException) {
+        catch (RouteNotFoundException $e) {
           $allowed = FALSE;
         }
-        catch (InvalidParameterException) {
+        catch (InvalidParameterException $e) {
           $allowed = FALSE;
         }
-        catch (MissingMandatoryParametersException) {
+        catch (MissingMandatoryParametersException $e) {
           $allowed = FALSE;
         }
         if (!$allowed) {

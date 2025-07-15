@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\database_test\EventSubscriber;
 
 use Drupal\Core\Database\Event\StatementExecutionEndEvent;

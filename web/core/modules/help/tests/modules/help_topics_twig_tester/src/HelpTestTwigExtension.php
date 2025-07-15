@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\help_topics_twig_tester;
 
 use Twig\Extension\AbstractExtension;
@@ -14,7 +12,7 @@ class HelpTestTwigExtension extends AbstractExtension {
   /**
    * {@inheritdoc}
    */
-  public function getNodeVisitors(): array {
+  public function getNodeVisitors() {
     return [
       new HelpTestTwigNodeVisitor(),
     ];

@@ -14,7 +14,7 @@ class InstallerExistingConfigNoSystemSiteTest extends InstallerConfigDirectoryTe
   /**
    * {@inheritdoc}
    */
-  protected function prepareEnvironment(): void {
+  protected function prepareEnvironment() {
     parent::prepareEnvironment();
     // File API functions are not available yet.
     unlink($this->siteDirectory . '/profiles/' . $this->profile . '/config/sync/system.site.yml');
@@ -23,7 +23,7 @@ class InstallerExistingConfigNoSystemSiteTest extends InstallerConfigDirectoryTe
   /**
    * {@inheritdoc}
    */
-  public function setUpSite(): void {
+  public function setUpSite() {
     // There are errors. Therefore, there is nothing to do here.
   }
 

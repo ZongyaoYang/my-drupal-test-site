@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\menu_link_content_dynamic_route;
 
 /**

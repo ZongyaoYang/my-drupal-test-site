@@ -20,10 +20,10 @@ use Drupal\Core\StreamWrapper\StreamWrapperManager;
  * Drupal and returning the file from a public directory. Modules can also
  * provide headers to specify information like the file's name or MIME type.
  *
- * @param string $uri
+ * @param $uri
  *   The URI of the file.
  *
- * @return string[]|int|null
+ * @return string[]|int
  *   If the user does not have permission to access the file, return -1. If the
  *   user has permission, return an array with the appropriate headers. If the
  *   file is not controlled by the current module, the return value should be
@@ -31,7 +31,7 @@ use Drupal\Core\StreamWrapper\StreamWrapperManager;
  *
  * @see \Drupal\system\FileDownloadController::download()
  */
-function hook_file_download($uri): array|int|null {
+function hook_file_download($uri) {
   // Check to see if this is a config download.
   $scheme = StreamWrapperManager::getScheme($uri);
   $target = StreamWrapperManager::getTarget($uri);
@@ -40,7 +40,6 @@ function hook_file_download($uri): array|int|null {
       'Content-disposition' => 'attachment; filename="config.tar.gz"',
     ];
   }
-  return NULL;
 }
 
 /**
@@ -54,7 +53,7 @@ function hook_file_download($uri): array|int|null {
  *
  * This function should alter the URI, if it wants to rewrite the file URL.
  *
- * @param string $uri
+ * @param $uri
  *   The URI to a file for which we need an external URL, or the path to a
  *   shipped file.
  */
@@ -109,19 +108,16 @@ function hook_file_url_alter(&$uri) {
 /**
  * Alter MIME type mappings used to determine MIME type from a file extension.
  *
- * @param array $mapping
+ * Invoked by
+ * \Drupal\Core\File\MimeType\ExtensionMimeTypeGuesser::guessMimeType(). It is
+ * used to allow modules to add to or modify the default mapping from
+ * \Drupal\Core\File\MimeType\ExtensionMimeTypeGuesser::$defaultMapping.
+ *
+ * @param $mapping
  *   An array of mimetypes correlated to the extensions that relate to them.
  *   The array has 'mimetypes' and 'extensions' elements, each of which is an
  *   array.
  *
- * @deprecated in drupal:11.2.0 and is removed from drupal:12.0.0. Create a
- *   \Drupal\Core\File\Event\MimeTypeMapLoadedEvent subscriber instead.
- *
- * It is used to allow modules to add to or modify the default mapping of
- * MIME type to file extensions.
- *
- * @see https://www.drupal.org/node/3494040
- * @see \Drupal\Core\File\EventSubscriber\LegacyMimeTypeMapLoadedSubscriber
  * @see \Drupal\Core\File\MimeType\ExtensionMimeTypeGuesser::guessMimeType()
  * @see \Drupal\Core\File\MimeType\ExtensionMimeTypeGuesser::$defaultMapping
  */
@@ -137,12 +133,11 @@ function hook_file_mimetype_mapping_alter(&$mapping) {
 /**
  * Alter archiver information declared by other modules.
  *
- * @param array $info
- *   An associative array of archivers, keyed by archiver ID. Each value
- *   consists of the plugin definition for that archiver.
+ * See hook_archiver_info() for a description of archivers and the archiver
+ * information structure.
  *
- * @see \Drupal\Core\Archiver\ArchiverManager
- * @see \Drupal\Core\Archiver\Attribute\Archiver
+ * @param $info
+ *   Archiver information to alter (return values from hook_archiver_info()).
  */
 function hook_archiver_info_alter(&$info) {
   $info['tar']['extensions'][] = 'tgz';
@@ -172,16 +167,12 @@ function hook_archiver_info_alter(&$info) {
  *   - 'weight': Optional. Integer weight used for sorting connection types on
  *     the authorize.php form.
  *
- * @deprecated in drupal:11.2.0 and is removed from drupal:12.0.0. There is no
- *   replacement. Use composer to manage the code for your site.
- *
- * @see https://www.drupal.org/node/3512364
  * @see \Drupal\Core\FileTransfer\FileTransfer
  * @see authorize.php
  * @see hook_filetransfer_info_alter()
  * @see drupal_get_filetransfer_info()
  */
-function hook_filetransfer_info(): array {
+function hook_filetransfer_info() {
   $info['sftp'] = [
     'title' => t('SFTP (Secure FTP)'),
     'class' => 'Drupal\Core\FileTransfer\SFTP',
@@ -197,10 +188,6 @@ function hook_filetransfer_info(): array {
  *   Reference to a nested array containing information about the FileTransfer
  *   class registry.
  *
- * @deprecated in drupal:11.2.0 and is removed from drupal:12.0.0. There is no
- *   replacement. Use composer to manage the code for your site.
- *
- * @see https://www.drupal.org/node/3512364
  * @see hook_filetransfer_info()
  */
 function hook_filetransfer_info_alter(&$filetransfer_info) {

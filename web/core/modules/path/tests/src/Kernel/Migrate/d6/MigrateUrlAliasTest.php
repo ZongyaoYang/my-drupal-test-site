@@ -13,7 +13,6 @@ use Drupal\Tests\Traits\Core\PathAliasTestTrait;
 /**
  * URL alias migration.
  *
- * @group #slow
  * @group migrate_drupal_6
  */
 class MigrateUrlAliasTest extends MigrateDrupal6TestBase {
@@ -94,7 +93,7 @@ class MigrateUrlAliasTest extends MigrateDrupal6TestBase {
   /**
    * Checks the migration results.
    */
-  protected function checkUrlMigration(): void {
+  protected function checkUrlMigration() {
     $id_map = $this->getMigration('d6_url_alias')->getIdMap();
     // Test that the field exists.
     $conditions = [

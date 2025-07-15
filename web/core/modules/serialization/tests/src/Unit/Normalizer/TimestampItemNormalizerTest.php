@@ -14,7 +14,6 @@ use Drupal\Core\TypedData\DataDefinitionInterface;
 use Drupal\Core\TypedData\Plugin\DataType\Timestamp;
 use Drupal\serialization\Normalizer\TimestampItemNormalizer;
 use Drupal\Tests\UnitTestCase;
-use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Serializer\Serializer;
 
 /**
@@ -27,8 +26,6 @@ use Symfony\Component\Serializer\Serializer;
 class TimestampItemNormalizerTest extends UnitTestCase {
 
   /**
-   * The time stamp normalizer.
-   *
    * @var \Drupal\serialization\Normalizer\TimestampItemNormalizer
    */
   protected $normalizer;
@@ -174,10 +171,9 @@ class TimestampItemNormalizerTest extends UnitTestCase {
   /**
    * Creates a TimestampItem prophecy.
    *
-   * @return \Prophecy\Prophecy\ObjectProphecy<\Drupal\Core\Field\Plugin\Field\FieldType\TimestampItem>
-   *   The TimestampItem prophecy.
+   * @return \Prophecy\Prophecy\ObjectProphecy|\Drupal\Core\Field\Plugin\Field\FieldType\TimestampItem
    */
-  protected function createTimestampItemProphecy(): ObjectProphecy {
+  protected function createTimestampItemProphecy() {
     $timestamp_item = $this->prophesize(TimestampItem::class);
     $timestamp_item->getParent()
       ->willReturn(TRUE);

@@ -8,7 +8,6 @@ namespace Drupal\Tests\node\Functional;
  * Tests if the syndicate block is available.
  *
  * @group node
- * @group legacy
  */
 class NodeSyndicateBlockTest extends NodeTestBase {
 
@@ -41,7 +40,6 @@ class NodeSyndicateBlockTest extends NodeTestBase {
     $this->drupalPlaceBlock('node_syndicate_block', ['id' => 'test_syndicate_block', 'label' => 'Subscribe to RSS Feed']);
     $this->drupalGet('');
     $this->assertSession()->elementExists('xpath', '//div[@id="block-test-syndicate-block"]/*');
-    $this->expectDeprecation('The Syndicate block is deprecated in drupal:11.2.0 and will be removed from drupal:12.0.0. There is no replacement. See https://www.drupal.org/node/3519248');
 
     // Verify syndicate block title.
     $this->assertSession()->pageTextContains('Subscribe to RSS Feed');

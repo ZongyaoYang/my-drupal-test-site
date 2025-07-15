@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\common_test\Render\MainContent;
 
 use Drupal\Core\Cache\CacheableJsonResponse;

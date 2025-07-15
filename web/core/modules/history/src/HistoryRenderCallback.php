@@ -10,9 +10,7 @@ use Drupal\Core\Render\Element\RenderCallbackInterface;
 class HistoryRenderCallback implements RenderCallbackInterface {
 
   /**
-   * Render API callback: Attaches the last read timestamp for a node.
-   *
-   * This function is assigned as a #lazy_builder callback.
+   * #lazy_builder callback; attaches the last read timestamp for a node.
    *
    * @param int $node_id
    *   The node ID for which to attach the last read timestamp.

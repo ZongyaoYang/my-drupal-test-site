@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\workspace_update_test\Negotiator;
 
 use Drupal\workspaces\Entity\Workspace;

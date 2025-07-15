@@ -2,9 +2,9 @@
 
 namespace Drupal\system\Element;
 
-use Drupal\Core\Extension\Requirement\RequirementSeverity;
 use Drupal\Core\Render\Attribute\RenderElement;
 use Drupal\Core\Render\Element\RenderElementBase;
+use Drupal\Core\Render\Element\StatusReport;
 use Drupal\Core\StringTranslation\PluralTranslatableMarkup;
 
 /**
@@ -17,27 +17,25 @@ class StatusReportPage extends RenderElementBase {
    * {@inheritdoc}
    */
   public function getInfo() {
+    $class = static::class;
     return [
       '#theme' => 'status_report_page',
       '#pre_render' => [
-        [static::class, 'preRenderCounters'],
-        [static::class, 'preRenderGeneralInfo'],
-        [static::class, 'preRenderRequirements'],
+        [$class, 'preRenderCounters'],
+        [$class, 'preRenderGeneralInfo'],
+        [$class, 'preRenderRequirements'],
       ],
     ];
   }
 
   /**
-   * Render API callback: Gets general info out of requirements.
-   *
-   * This function is assigned as a #pre_render callback.
+   * #pre_render callback to get general info out of requirements.
    */
   public static function preRenderGeneralInfo($element) {
     $element['#general_info'] = [
       '#theme' => 'status_report_general_info',
     ];
     // Loop through requirements and pull out items.
-    RequirementSeverity::convertLegacyIntSeveritiesToEnums($element['#requirements'], __METHOD__);
     foreach ($element['#requirements'] as $key => $requirement) {
       switch ($key) {
         case 'cron':
@@ -60,10 +58,10 @@ class StatusReportPage extends RenderElementBase {
         case 'php':
         case 'php_memory_limit':
           $element['#general_info']['#' . $key] = $requirement;
-          if (isset($requirement['severity']) &&
-            in_array($requirement['severity'], [RequirementSeverity::Info, RequirementSeverity::OK], TRUE)
-          ) {
-            unset($element['#requirements'][$key]);
+          if (isset($requirement['severity']) && $requirement['severity'] < REQUIREMENT_WARNING) {
+            if (empty($requirement['severity']) || $requirement['severity'] == REQUIREMENT_OK) {
+              unset($element['#requirements'][$key]);
+            }
           }
           break;
       }
@@ -73,7 +71,7 @@ class StatusReportPage extends RenderElementBase {
   }
 
   /**
-   * The #pre_render callback to create counter elements.
+   * #pre_render callback to create counter elements.
    */
   public static function preRenderCounters($element) {
     // Count number of items with different severity for summary.
@@ -95,18 +93,18 @@ class StatusReportPage extends RenderElementBase {
       ],
     ];
 
-    RequirementSeverity::convertLegacyIntSeveritiesToEnums($element['#requirements'], __METHOD__);
+    $severities = StatusReport::getSeverities();
     foreach ($element['#requirements'] as $key => &$requirement) {
-      $severity = RequirementSeverity::Info;
+      $severity = $severities[REQUIREMENT_INFO];
       if (isset($requirement['severity'])) {
-        $severity = $requirement['severity'];
+        $severity = $severities[(int) $requirement['severity']];
       }
       elseif (defined('MAINTENANCE_MODE') && MAINTENANCE_MODE == 'install') {
-        $severity = RequirementSeverity::OK;
+        $severity = $severities[REQUIREMENT_OK];
       }
 
-      if (isset($counters[$severity->status()])) {
-        $counters[$severity->status()]['amount']++;
+      if (isset($counters[$severity['status']])) {
+        $counters[$severity['status']]['amount']++;
       }
     }
 
@@ -129,19 +127,12 @@ class StatusReportPage extends RenderElementBase {
   }
 
   /**
-   * Render API callback: Create status report requirements.
-   *
-   * This function is assigned as a #pre_render callback.
+   * #pre_render callback to create status report requirements.
    */
   public static function preRenderRequirements($element) {
     $element['#requirements'] = [
       '#type' => 'status_report',
       '#requirements' => $element['#requirements'],
-      '#attached' => [
-        'library' => [
-          'system/status.report',
-        ],
-      ],
     ];
 
     return $element;

@@ -94,7 +94,7 @@ class TrustedHostsTest extends BrowserTestBase {
     $shortcut_storage = $entity_type_manager->getStorage('shortcut');
 
     $shortcut = $shortcut_storage->create([
-      'title' => 'Test Shortcut Label',
+      'title' => $this->randomString(),
       'link' => 'internal:/admin/reports/status',
       'shortcut_set' => 'default',
     ]);

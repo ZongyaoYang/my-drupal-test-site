@@ -22,7 +22,6 @@ class BigPipeRegressionTest extends WebDriverTestBase {
    */
   protected static $modules = [
     'big_pipe',
-    'big_pipe_messages_test',
     'big_pipe_regression_test',
   ];
 

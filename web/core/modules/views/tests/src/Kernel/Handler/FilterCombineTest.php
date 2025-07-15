@@ -48,9 +48,6 @@ class FilterCombineTest extends ViewsKernelTestBase {
     $this->installEntitySchema('entity_test');
   }
 
-  /**
-   * Tests the Combine field filter with the 'contains' operator.
-   */
   public function testFilterCombineContains(): void {
     $view = Views::getView('test_view');
     $view->setDisplay();

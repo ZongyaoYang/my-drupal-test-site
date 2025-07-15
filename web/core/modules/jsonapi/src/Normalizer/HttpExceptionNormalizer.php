@@ -2,7 +2,6 @@
 
 namespace Drupal\jsonapi\Normalizer;
 
-use Drupal\Core\Cache\CacheableDependencyInterface;
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\jsonapi\Normalizer\Value\HttpExceptionNormalizerValue;
@@ -44,12 +43,7 @@ class HttpExceptionNormalizer extends NormalizerBase {
    */
   public function normalize($object, $format = NULL, array $context = []): array|string|int|float|bool|\ArrayObject|NULL {
     $cacheability = new CacheableMetadata();
-    if ($object instanceof CacheableDependencyInterface) {
-      $cacheability->addCacheableDependency($object);
-    }
-    else {
-      $cacheability->setCacheMaxAge(0);
-    }
+    $cacheability->addCacheableDependency($object);
 
     $cacheability->addCacheTags(['config:system.logging']);
     if (\Drupal::config('system.logging')->get('error_level') === ERROR_REPORTING_DISPLAY_VERBOSE) {
@@ -170,6 +164,15 @@ class HttpExceptionNormalizer extends NormalizerBase {
       '505' => '#sec10.5.6',
     ];
     return empty($sections[$status_code]) ? NULL : $url . $sections[$status_code];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function hasCacheableSupportsMethod(): bool {
+    @trigger_error(__METHOD__ . '() is deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. Use getSupportedTypes() instead. See https://www.drupal.org/node/3359695', E_USER_DEPRECATED);
+
+    return TRUE;
   }
 
   /**

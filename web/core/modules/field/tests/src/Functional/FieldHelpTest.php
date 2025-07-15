@@ -25,8 +25,6 @@ class FieldHelpTest extends BrowserTestBase {
 
   /**
    * The admin user that will be created.
-   *
-   * @var \Drupal\user\Entity\User|false
    */
   protected $adminUser;
 

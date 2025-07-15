@@ -131,7 +131,7 @@ class LinkTest extends UnitTestCase {
   /**
    * Mocks the unrouted URL assembler.
    */
-  protected function mockUrlAssembler(): void {
+  protected function mockUrlAssembler() {
     $url_assembler = $this->getMockBuilder(UnroutedUrlAssemblerInterface::class)
       ->disableOriginalConstructor()
       ->getMock();

@@ -54,7 +54,7 @@ class InstallerTest extends InstallerTestBase {
   /**
    * Installer step: Select language.
    */
-  protected function setUpLanguage(): void {
+  protected function setUpLanguage() {
     // Test that \Drupal\Core\Render\BareHtmlPageRenderer adds assets and
     // metatags as expected to the first page of the installer.
     $this->assertSession()->responseContains("css/components/button.css");
@@ -69,7 +69,7 @@ class InstallerTest extends InstallerTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUpProfile(): void {
+  protected function setUpProfile() {
     $settings_services_file = DRUPAL_ROOT . '/sites/default/default.services.yml';
     // Copy the testing-specific service overrides in place.
     copy($settings_services_file, $this->siteDirectory . '/services.yml');
@@ -86,7 +86,7 @@ class InstallerTest extends InstallerTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUpSettings(): void {
+  protected function setUpSettings() {
     // Assert that the expected title is present.
     $this->assertEquals('Database configuration', $this->cssSelect('main h2')[0]->getText());
 
@@ -101,7 +101,7 @@ class InstallerTest extends InstallerTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUpSite(): void {
+  protected function setUpSite() {
     // Assert that the expected title is present.
     $this->assertEquals('Configure site', $this->cssSelect('main h2')[0]->getText());
 
@@ -117,7 +117,7 @@ class InstallerTest extends InstallerTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function visitInstaller(): void {
+  protected function visitInstaller() {
     parent::visitInstaller();
 
     // Assert the title is correct and has the title suffix.
@@ -136,8 +136,8 @@ class InstallerTest extends InstallerTestBase {
     $module_handler = \Drupal::service('module_handler');
     $module_extension_list = \Drupal::service('extension.list.module');
 
-    // Ensure the Update Status module is not installed.
-    $this->assertFalse($module_handler->moduleExists('update'), 'The Update Status module should not be installed.');
+    // Ensure the update module is not installed.
+    $this->assertFalse($module_handler->moduleExists('update'), 'The Update module is not installed.');
 
     // Assert that the module that is providing the database driver has been
     // installed.

@@ -17,7 +17,6 @@ use Drupal\Core\DrupalKernel;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\Core\Extension\Exception\UnknownExtensionException;
-use Drupal\Core\Extension\Requirement\RequirementSeverity;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Installer\Exception\AlreadyInstalledException;
@@ -88,10 +87,10 @@ const INSTALL_TASK_RUN_IF_NOT_COMPLETED = 3;
  * an error is thrown, (b) a new page needs to be displayed, or (c) the
  * installation finishes (whichever happens first).
  *
- * @param \Composer\Autoload\ClassLoader $class_loader
+ * @param $class_loader
  *   The class loader. Normally Composer's ClassLoader, as included by the
  *   front controller, but may also be decorated.
- * @param array $settings
+ * @param $settings
  *   An optional array of installation settings. Leave this empty for a normal,
  *   interactive, browser-based installation intended to occur over multiple
  *   page requests. Alternatively, if an array of settings is passed in, the
@@ -105,7 +104,7 @@ const INSTALL_TASK_RUN_IF_NOT_COMPLETED = 3;
  *
  * @see install_state_defaults()
  */
-function install_drupal($class_loader, $settings = [], ?callable $callback = NULL): void {
+function install_drupal($class_loader, $settings = [], ?callable $callback = NULL) {
   global $install_state;
   // Initialize the installation state with the settings that were passed in,
   // as well as a boolean indicating whether or not this is an interactive
@@ -190,7 +189,7 @@ function install_drupal($class_loader, $settings = [], ?callable $callback = NUL
  *
  * @see \Drupal\Core\Form\FormBuilderInterface::submitForm()
  */
-function install_state_defaults(): array {
+function install_state_defaults() {
   $defaults = [
     // The current task being processed.
     'active_task' => NULL,
@@ -250,7 +249,7 @@ function install_state_defaults(): array {
     // The server URL where the interface translation files can be downloaded.
     // Tokens in the pattern will be replaced by appropriate values for the
     // required translation file.
-    'server_pattern' => \Drupal::TRANSLATION_DEFAULT_SERVER_PATTERN,
+    'server_pattern' => 'https://ftp.drupal.org/files/translations/%core/%project/%project-%version.%language.po',
     // Installation tasks can set this to TRUE to force the page request to
     // end (even if there is no themeable output), in the case of an interactive
     // installation. This is needed only rarely; for example, it would be used
@@ -286,16 +285,16 @@ function install_state_defaults(): array {
  * This function performs commands that must run at the beginning of every page
  * request. It throws an exception if the installation should not proceed.
  *
- * @param \Composer\Autoload\ClassLoader $class_loader
+ * @param $class_loader
  *   The class loader. Normally Composer's ClassLoader, as included by the
  *   front controller, but may also be decorated.
- * @param array $install_state
+ * @param $install_state
  *   An array of information about the current installation state. This is
  *   modified with information gleaned from the beginning of the page request.
  *
  * @see install_drupal()
  */
-function install_begin_request($class_loader, &$install_state): void {
+function install_begin_request($class_loader, &$install_state) {
   $request = Request::createFromGlobals();
 
   // Add any installation parameters passed in via the URL.
@@ -384,7 +383,7 @@ function install_begin_request($class_loader, &$install_state): void {
     $sync_directory = Settings::get('config_sync_directory', FALSE);
     $install_state['config_verified'] = file_exists($sync_directory);
   }
-  catch (Exception) {
+  catch (Exception $e) {
     $install_state['config_verified'] = FALSE;
   }
   $install_state['database_verified'] = install_verify_database_settings($site_path);
@@ -398,7 +397,7 @@ function install_begin_request($class_loader, &$install_state): void {
       $table = array_key_last($system_schema);
       $install_state['base_system_verified'] = Database::getConnection()->schema()->tableExists($table);
     }
-    catch (DatabaseExceptionWrapper) {
+    catch (DatabaseExceptionWrapper $e) {
       // The last defined table of the base system_schema() does not exist yet.
       // $install_state['base_system_verified'] defaults to FALSE, so the code
       // following below will use the minimal installer service container.
@@ -494,6 +493,15 @@ function install_begin_request($class_loader, &$install_state): void {
     \Drupal::translation()->setDefaultLangcode($install_state['parameters']['langcode']);
   }
 
+  // Override the module list with a minimal set of modules.
+  $module_handler = \Drupal::moduleHandler();
+  if (!$module_handler->moduleExists('system')) {
+    $module_handler->addModule('system', 'core/modules/system');
+  }
+  if ($profile && !$module_handler->moduleExists($profile)) {
+    $module_handler->addProfile($profile, $install_state['profiles'][$profile]->getPath());
+  }
+
   // Load all modules and perform request related initialization.
   $kernel->preHandle($request);
 
@@ -539,7 +547,7 @@ function install_begin_request($class_loader, &$install_state): void {
  * user, or until a page redirect is required. Otherwise, tasks will be
  * attempted until the installation is finished.
  *
- * @param array $install_state
+ * @param $install_state
  *   An array of information about the current installation state. This is
  *   passed along to each task, so it can be modified if necessary.
  * @param callable|null $callback
@@ -594,10 +602,10 @@ function install_run_tasks(&$install_state, ?callable $callback = NULL) {
 /**
  * Runs an individual installation task.
  *
- * @param array $task
+ * @param $task
  *   An array of information about the task to be run as returned by
  *   hook_install_tasks().
- * @param array $install_state
+ * @param $install_state
  *   An array of information about the current installation state. This is
  *   passed in by reference so that it can be modified by the task.
  *
@@ -695,7 +703,7 @@ function install_run_task($task, &$install_state) {
  * the page request evolves (for example, if an installation profile hasn't
  * been selected yet, we don't yet know which profile tasks need to be run).
  *
- * @param array $install_state
+ * @param $install_state
  *   An array of information about the current installation state.
  *
  * @return array
@@ -731,14 +739,14 @@ function install_tasks_to_perform($install_state) {
  * You can override this using hook_install_tasks() or
  * hook_install_tasks_alter().
  *
- * @param array $install_state
+ * @param $install_state
  *   An array of information about the current installation state.
  *
  * @return array
  *   A list of tasks, with associated metadata as returned by
  *   hook_install_tasks().
  */
-function install_tasks($install_state): array {
+function install_tasks($install_state) {
   // Determine whether a translation file must be imported during the
   // 'install_import_translations' task. Import when a non-English language is
   // available and selected. Also we will need translations even if the
@@ -915,7 +923,7 @@ function install_tasks($install_state): array {
  * The output of this function is a list suitable for sending to
  * maintenance-task-list.html.twig.
  *
- * @param array $install_state
+ * @param $install_state
  *   An array of information about the current installation state.
  *
  * @return array
@@ -924,7 +932,7 @@ function install_tasks($install_state): array {
  *
  * @see maintenance-task-list.html.twig
  */
-function install_tasks_to_display($install_state): array {
+function install_tasks_to_display($install_state) {
   $displayed_tasks = [];
   foreach (install_tasks($install_state) as $name => $task) {
     if ($task['display']) {
@@ -972,7 +980,16 @@ function install_get_form($form_id, array &$install_state) {
     // values taken from the installation state.
     $install_form_id = $form_builder->getFormId($form_id, $form_state);
     if (!empty($install_state['forms'][$install_form_id])) {
-      $form_state->setValues($install_state['forms'][$install_form_id]);
+      $values = $install_state['forms'][$install_form_id];
+      if ($install_form_id === 'install_settings_form' && isset($values['driver']) && !str_contains($values['driver'], "\\")) {
+        @trigger_error("Passing a database driver name '{$values['driver']}' to " . __FUNCTION__ . '() is deprecated in drupal:10.2.0 and is removed from drupal:11.0.0. Pass a database driver namespace instead. See https://www.drupal.org/node/3258175', E_USER_DEPRECATED);
+        $driverExtension = Database::getDriverList()->getFromDriverName($values['driver']);
+        $tmp = [];
+        $tmp['driver'] = $driverExtension->getName();
+        $tmp[$driverExtension->getName()] = $values[$values['driver']];
+        $values = $tmp;
+      }
+      $form_state->setValues($values);
     }
     $form_builder->submitForm($form_id, $form_state);
 
@@ -988,7 +1005,7 @@ function install_get_form($form_id, array &$install_state) {
  *
  * The output of this function is suitable for sending to install_goto().
  *
- * @param array $install_state
+ * @param $install_state
  *   An array of information about the current installation state.
  *
  * @return string
@@ -1003,7 +1020,7 @@ function install_redirect_url($install_state) {
 /**
  * Returns the complete URL redirected to during an installation request.
  *
- * @param array $install_state
+ * @param $install_state
  *   An array of information about the current installation state.
  *
  * @return string
@@ -1023,12 +1040,12 @@ function install_full_redirect_url($install_state) {
  * title, but otherwise this function takes care of theming the overall page
  * output during every step of the installation.
  *
- * @param array $output
+ * @param $output
  *   The content to display on the main part of the page.
- * @param array $install_state
+ * @param $install_state
  *   An array of information about the current installation state.
  */
-function install_display_output($output, $install_state): void {
+function install_display_output($output, $install_state) {
   // Ensure the maintenance theme is initialized.
   // The regular initialization call in install_begin_request() may not be
   // reached in case of an early installer error.
@@ -1081,7 +1098,7 @@ function install_display_output($output, $install_state): void {
 /**
  * Verifies the requirements for installing Drupal.
  *
- * @param array $install_state
+ * @param $install_state
  *   An array of information about the current installation state.
  *
  * @return array
@@ -1100,10 +1117,10 @@ function install_verify_requirements(&$install_state) {
 /**
  * Installation task; install the base functionality Drupal needs to bootstrap.
  *
- * @param array $install_state
+ * @param $install_state
  *   An array of information about the current installation state.
  */
-function install_base_system(&$install_state): void {
+function install_base_system(&$install_state) {
   // Install system.module.
   drupal_install_system($install_state);
 
@@ -1132,7 +1149,7 @@ function install_verify_completed_task() {
   }
   // Do not trigger an error if the database query fails, since the database
   // might not be set up yet.
-  catch (\Exception) {
+  catch (\Exception $e) {
   }
   if (isset($task)) {
     if ($task == 'done') {
@@ -1170,7 +1187,7 @@ function install_verify_database_settings($site_path) {
  *   Thrown when the database already has a table that would be created by
  *   installing the System module.
  */
-function install_verify_database_ready(): void {
+function install_verify_database_ready() {
   $system_schema = system_schema();
   $table = array_key_last($system_schema);
 
@@ -1181,7 +1198,7 @@ function install_verify_database_ready(): void {
     }
     // Do not trigger an error if the database query fails, since the database
     // might not be set up yet.
-    catch (\Exception) {
+    catch (\Exception $e) {
     }
   }
   if ($existing_install) {
@@ -1208,7 +1225,7 @@ function install_database_errors($database, $settings_file) {
     Database::addConnectionInfo('default', 'default', $database);
     $errors = $driverExtension->getInstallTasks()->runTasks();
   }
-  catch (UnknownExtensionException) {
+  catch (UnknownExtensionException $e) {
     $errors['driver'] = t("In your %settings_file file you have configured @drupal to use a %driver server, however your PHP installation currently does not support this database type.", ['%settings_file' => $settings_file, '@drupal' => drupal_install_profile_distribution_name(), '%driver' => $database['driver']]);
   }
   return $errors;
@@ -1217,7 +1234,7 @@ function install_database_errors($database, $settings_file) {
 /**
  * Selects which profile to install.
  *
- * @param array $install_state
+ * @param $install_state
  *   An array of information about the current installation state. The chosen
  *   profile will be added here, if it was not already selected previously, as
  *   will a list of all available profiles.
@@ -1316,7 +1333,7 @@ function _install_select_profile(&$install_state) {
  *
  * @see \Drupal\Core\File\FileSystemInterface::scanDirectory()
  */
-function install_find_translations(): array {
+function install_find_translations() {
   $translations = [];
   $files = \Drupal::service('string_translator.file_translation')->findTranslationFiles();
   // English does not need a translation file.
@@ -1336,7 +1353,7 @@ function install_find_translations(): array {
 /**
  * Selects which language to use during installation.
  *
- * @param array $install_state
+ * @param $install_state
  *   An array of information about the current installation state. The chosen
  *   langcode will be added here, if it was not already selected previously, as
  *   will a list of all available languages.
@@ -1397,7 +1414,7 @@ function install_select_language(&$install_state) {
  * @param array $install_state
  *   An array of information about the current installation state.
  *
- * @return array
+ * @return string
  *   A themed status report, or an exception if there are requirement errors.
  *   Upon successful download the page is reloaded and no output is returned.
  */
@@ -1415,7 +1432,6 @@ function install_download_translation(&$install_state) {
   if ($install_state['interactive']) {
     install_goto(install_redirect_url($install_state));
   }
-  return [];
 }
 
 /**
@@ -1478,7 +1494,7 @@ function install_check_localization_server($uri) {
 }
 
 /**
- * Extracts version information from a Drupal core version string.
+ * Extracts version information from a drupal core version string.
  *
  * @param string $version
  *   Version info string (e.g., 8.0.0, 8.1.0, 8.0.0-dev, 8.0.0-unstable1,
@@ -1488,10 +1504,10 @@ function install_check_localization_server($uri) {
  *   Associative array of version info:
  *   - major: Major version (e.g., "8").
  *   - minor: Minor version (e.g., "0").
- *   - (optional) patch: Patch version (e.g., "0").
- *   - (optional) extra: Extra version info (e.g., "alpha2").
- *   - (optional) extra_text: The text part of "extra" (e.g., "alpha").
- *   - (optional) extra_number: The number part of "extra" (e.g., "2").
+ *   - patch: Patch version (e.g., "0").
+ *   - extra: Extra version info (e.g., "alpha2").
+ *   - extra_text: The text part of "extra" (e.g., "alpha").
+ *   - extra_number: The number part of "extra" (e.g., "2").
  */
 function _install_get_version_info($version) {
   preg_match('/
@@ -1499,11 +1515,8 @@ function _install_get_version_info($version) {
       (?P<major>[0-9]+)    # Major release number.
       \.          # .
       (?P<minor>[0-9]+)    # Minor release number.
-      (
-        \.        # .
-        (?P<patch>[0-9]+|x) # Patch release number.
-        |         # OR no patch release.
-      )
+      \.          # .
+      (?P<patch>[0-9]+|x)  # Patch release number.
     )             #
     (             #
       -           # - separator for "extra" version information.
@@ -1521,11 +1534,11 @@ function _install_get_version_info($version) {
 /**
  * Loads information about the chosen profile during installation.
  *
- * @param array $install_state
+ * @param $install_state
  *   An array of information about the current installation state. The loaded
  *   profile information will be added here.
  */
-function install_load_profile(&$install_state): void {
+function install_load_profile(&$install_state) {
   $profile = $install_state['parameters']['profile'];
   if ($profile !== FALSE) {
     $install_state['profiles'][$profile]->load();
@@ -1551,7 +1564,7 @@ function install_load_profile(&$install_state): void {
 /**
  * Performs a full bootstrap of Drupal during installation.
  */
-function install_bootstrap_full(): void {
+function install_bootstrap_full() {
   // Store the session on the request object and start it.
   /** @var \Symfony\Component\HttpFoundation\Session\SessionInterface $session */
   $session = \Drupal::service('session');
@@ -1562,7 +1575,7 @@ function install_bootstrap_full(): void {
 /**
  * Installs required modules via a batch process.
  *
- * @param array $install_state
+ * @param $install_state
  *   An array of information about the current installation state.
  *
  * @return array
@@ -1601,35 +1614,10 @@ function install_profile_modules(&$install_state) {
   arsort($non_required);
 
   $batch_builder = new BatchBuilder();
-
-  // Put modules into groups of up to the maximum batch size, or until a module
-  // states that it needs a container rebuild before and after install.
-  $index = 0;
-  $module_groups = [];
-  foreach (array_keys($required + $non_required) as $module) {
-    // If the container needs to be rebuilt, ensure this happens both before and
-    // after the module is installed.
-    $container_rebuild_required = !empty($files[$module]->info['container_rebuild_required']);
-    if ($container_rebuild_required && !empty($module_groups[$index])) {
-      $index++;
-    }
-    $module_groups[$index][] = $module;
-    if (count($module_groups[$index]) === Settings::get('core.multi_module_install_batch_size', 20)) {
-      $index++;
-    }
-    elseif ($container_rebuild_required) {
-      $index++;
-    }
-  }
-
-  foreach ($module_groups as $module_group) {
-    $names = [];
-    foreach ($module_group as $module) {
-      $names[] = $files[$module]->info['name'];
-    }
+  foreach ($required + $non_required as $module => $weight) {
     $batch_builder->addOperation(
       '_install_module_batch',
-      [$module_group, $names],
+      [$module, $files[$module]->info['name']],
     );
   }
   $batch_builder
@@ -1641,7 +1629,7 @@ function install_profile_modules(&$install_state) {
 /**
  * Installs entity type definitions provided by core.
  */
-function install_core_entity_type_definitions(): void {
+function install_core_entity_type_definitions() {
   $update_manager = \Drupal::entityDefinitionUpdateManager();
   foreach (\Drupal::entityTypeManager()->getDefinitions() as $entity_type) {
     if ($entity_type->getProvider() == 'core') {
@@ -1657,10 +1645,10 @@ function install_core_entity_type_definitions(): void {
  * because an installation profile typically installs 1-3 themes only (default
  * theme, base theme, admin theme).
  *
- * @param array $install_state
+ * @param $install_state
  *   An array of information about the current installation state.
  */
-function install_profile_themes(&$install_state): void {
+function install_profile_themes(&$install_state) {
   // Install the themes specified by the installation profile.
   $themes = $install_state['profile_info']['themes'];
   \Drupal::service('theme_installer')->install($themes);
@@ -1673,10 +1661,10 @@ function install_profile_themes(&$install_state): void {
 /**
  * Installs the install profile.
  *
- * @param array $install_state
+ * @param $install_state
  *   An array of information about the current installation state.
  */
-function install_install_profile(&$install_state): void {
+function install_install_profile(&$install_state) {
   // Install all available optional config. During installation the module order
   // is determined by dependencies. If there are no dependencies between modules
   // then the order in which they are installed is dependent on random factors
@@ -1696,26 +1684,19 @@ function install_install_profile(&$install_state): void {
 /**
  * Prepares the system for import and downloads additional translations.
  *
- * @param array $install_state
+ * @param $install_state
  *   An array of information about the current installation state.
  *
  * @return array
  *   The batch definition, if there are language files to download.
  */
-function install_download_additional_translations_operations(&$install_state): array {
+function install_download_additional_translations_operations(&$install_state) {
   \Drupal::moduleHandler()->loadInclude('locale', 'bulk.inc');
 
   $langcode = $install_state['parameters']['langcode'];
   if (!($language = ConfigurableLanguage::load($langcode))) {
     // Create the language if not already shipped with a profile.
     $language = ConfigurableLanguage::createFromLangcode($langcode);
-
-    $standard_languages = LanguageManager::getStandardLanguageList();
-    if (isset($standard_languages[$langcode])) {
-      // Use the localized language label since the site is being installed
-      // with that language.
-      $language->setName($standard_languages[$langcode][1]);
-    }
   }
   $language->save();
 
@@ -1754,7 +1735,7 @@ function install_download_additional_translations_operations(&$install_state): a
 /**
  * Imports languages via a batch process during installation.
  *
- * @param array $install_state
+ * @param $install_state
  *   An array of information about the current installation state.
  *
  * @return array|null
@@ -1811,7 +1792,7 @@ function install_import_translations(&$install_state) {
  * @param string $server_pattern
  *   Server access pattern (to replace language code, version number, etc. in).
  */
-function _install_prepare_import($langcodes, $server_pattern): void {
+function _install_prepare_import($langcodes, $server_pattern) {
   $module_handler = \Drupal::moduleHandler();
   $module_handler->loadInclude('locale', 'inc', 'locale.bulk');
   $matches = [];
@@ -1828,8 +1809,8 @@ function _install_prepare_import($langcodes, $server_pattern): void {
       // version number.
       if (isset($matches[1]) && $version = $matches[1]) {
         $info = _install_get_version_info($version);
-        // Picking the first file does not necessarily result in the right file.
-        // So we check if at least the major version number is available.
+        // Picking the first file does not necessarily result in the right file. So
+        // we check if at least the major version number is available.
         if ($info['major']) {
           $core = $info['major'] . '.x';
           $data = [
@@ -1858,13 +1839,13 @@ function _install_prepare_import($langcodes, $server_pattern): void {
  * If other projects besides Drupal core have been installed, their translation
  * will be imported here.
  *
- * @param array $install_state
+ * @param $install_state
  *   An array of information about the current installation state.
  *
  * @return array
  *   An array of batch definitions.
  */
-function install_finish_translations(&$install_state): array {
+function install_finish_translations(&$install_state) {
   \Drupal::moduleHandler()->loadInclude('locale', 'fetch.inc');
   \Drupal::moduleHandler()->loadInclude('locale', 'compare.inc');
   \Drupal::moduleHandler()->loadInclude('locale', 'bulk.inc');
@@ -1896,10 +1877,10 @@ function install_finish_translations(&$install_state): array {
 /**
  * Performs final installation steps and displays a 'finished' page.
  *
- * @param array $install_state
+ * @param $install_state
  *   An array of information about the current installation state.
  */
-function install_finished(&$install_state): void {
+function install_finished(&$install_state) {
   $profile = $install_state['parameters']['profile'];
 
   // Installation profiles are always loaded last.
@@ -1909,6 +1890,11 @@ function install_finished(&$install_state): void {
   // This would normally happen upon KernelEvents::TERMINATE, but since the
   // installer does not use an HttpKernel, that event is never triggered.
   \Drupal::service('router.builder')->rebuild();
+
+  // Run cron to populate update status tables (if available) so that users
+  // will be warned if they've installed an out of date Drupal version.
+  // Will also trigger indexing of profile-supplied content or feeds.
+  \Drupal::service('cron')->run();
 
   if ($install_state['interactive']) {
     // Load current user and perform final login tasks.
@@ -1932,10 +1918,10 @@ function install_finished(&$install_state): void {
  *
  * Performs batch installation of modules.
  */
-function _install_module_batch(array $modules, array $module_names, array &$context): void {
-  \Drupal::service('module_installer')->install($modules, FALSE);
-  $context['results'] = array_merge($context['results'], $modules);
-  $context['message'] = \Drupal::translation()->formatPlural(count($module_names), 'Installed %module module.', 'Installed %module modules.', ['%module' => implode(', ', $module_names)]);
+function _install_module_batch($module, $module_name, &$context) {
+  \Drupal::service('module_installer')->install([$module], FALSE);
+  $context['results'][] = $module;
+  $context['message'] = t('Installed %module module.', ['%module' => $module_name]);
 }
 
 /**
@@ -1950,7 +1936,7 @@ function _install_module_batch(array $modules, array $module_names, array &$cont
  *   Requirements compliance array. If the translation cannot be downloaded this
  *   will contain a requirements error with detailed information.
  */
-function install_check_translations($langcode, $server_pattern): array {
+function install_check_translations($langcode, $server_pattern) {
   $requirements = [];
 
   $readable = FALSE;
@@ -2019,7 +2005,7 @@ function install_check_translations($langcode, $server_pattern): array {
     $requirements['translations directory exists'] = [
       'title'       => t('Translations directory'),
       'value'       => t('The translations directory does not exist.'),
-      'severity'    => RequirementSeverity::Error,
+      'severity'    => REQUIREMENT_ERROR,
       'description' => t('The installer requires that you create a translations directory as part of the installation process. Create the directory %translations_directory . More details about installing Drupal are available in <a href=":install_txt">INSTALL.txt</a>.', ['%translations_directory' => $translations_directory, ':install_txt' => base_path() . 'core/INSTALL.txt']),
     ];
   }
@@ -2033,7 +2019,7 @@ function install_check_translations($langcode, $server_pattern): array {
       $requirements['translations directory readable'] = [
         'title'       => t('Translations directory'),
         'value'       => t('The translations directory is not readable.'),
-        'severity'    => RequirementSeverity::Error,
+        'severity'    => REQUIREMENT_ERROR,
         'description' => t('The installer requires read permissions to %translations_directory at all times. The <a href=":handbook_url">webhosting issues</a> documentation section offers help on this and other topics.', ['%translations_directory' => $translations_directory, ':handbook_url' => 'https://www.drupal.org/server-permissions']),
       ];
     }
@@ -2042,7 +2028,7 @@ function install_check_translations($langcode, $server_pattern): array {
       $requirements['translations directory writable'] = [
         'title'       => t('Translations directory'),
         'value'       => t('The translations directory is not writable.'),
-        'severity'    => RequirementSeverity::Error,
+        'severity'    => REQUIREMENT_ERROR,
         'description' => t('The installer requires write permissions to %translations_directory during the installation process. The <a href=":handbook_url">webhosting issues</a> documentation section offers help on this and other topics.', ['%translations_directory' => $translations_directory, ':handbook_url' => 'https://www.drupal.org/server-permissions']),
       ];
     }
@@ -2059,7 +2045,7 @@ function install_check_translations($langcode, $server_pattern): array {
     $requirements['online'] = [
       'title'       => t('Internet'),
       'value'       => t('The translation server is offline.'),
-      'severity'    => RequirementSeverity::Error,
+      'severity'    => REQUIREMENT_ERROR,
       'description' => t('The installer requires to contact the translation server to download a translation file. Check your internet connection and verify that your website can reach the translation server at <a href=":server_url">@server_url</a>.', [':server_url' => $server_url, '@server_url' => $server_url]),
     ];
   }
@@ -2074,7 +2060,7 @@ function install_check_translations($langcode, $server_pattern): array {
       $requirements['translation available'] = [
         'title'       => t('Translation'),
         'value'       => t('The %language translation is not available.', ['%language' => $language]),
-        'severity'    => RequirementSeverity::Error,
+        'severity'    => REQUIREMENT_ERROR,
         'description' => t('The %language translation file is not available at the translation server. <a href=":url">Choose a different language</a> or select English and translate your website later.', ['%language' => $language, ':url' => $_SERVER['SCRIPT_NAME']]),
       ];
     }
@@ -2093,7 +2079,7 @@ function install_check_translations($langcode, $server_pattern): array {
       $requirements['translation downloaded'] = [
         'title'       => t('Translation'),
         'value'       => t('The %language translation could not be downloaded.', ['%language' => $language]),
-        'severity'    => RequirementSeverity::Error,
+        'severity'    => REQUIREMENT_ERROR,
         'description' => t('The %language translation file could not be downloaded. <a href=":url">Choose a different language</a> or select English and translate your website later.', ['%language' => $language, ':url' => $_SERVER['SCRIPT_NAME']]),
       ];
     }
@@ -2153,7 +2139,7 @@ function install_check_requirements($install_state) {
       $requirements["default $file file exists"] = [
         'title' => $default_file_info['title_default'],
         'value' => $default_file_info['description_default'],
-        'severity' => RequirementSeverity::Error,
+        'severity' => REQUIREMENT_ERROR,
         'description' => t('The @drupal installer requires that the %default-file file must not be deleted or modified from the original download.', [
           '@drupal' => drupal_install_profile_distribution_name(),
           '%default-file' => $default_file,
@@ -2212,7 +2198,7 @@ function install_check_requirements($install_state) {
       $requirements["$file file exists"] = [
         'title' => $default_file_info['title'],
         'value' => t('The %file does not exist.', ['%file' => $default_file_info['title']]),
-        'severity' => RequirementSeverity::Error,
+        'severity' => REQUIREMENT_ERROR,
         'description' => t('The @drupal installer requires that you create a %file as part of the installation process. Copy the %default_file file to %file. More details about installing Drupal are available in <a href=":install_txt">INSTALL.txt</a>.', [
           '@drupal' => drupal_install_profile_distribution_name(),
           '%file' => $file,
@@ -2231,7 +2217,7 @@ function install_check_requirements($install_state) {
         $requirements["$file file readable"] = [
           'title' => $default_file_info['title'],
           'value' => t('The %file is not readable.', ['%file' => $default_file_info['title']]),
-          'severity' => RequirementSeverity::Error,
+          'severity' => REQUIREMENT_ERROR,
           'description' => t('@drupal requires read permissions to %file at all times. The <a href=":handbook_url">webhosting issues</a> documentation section offers help on this and other topics.', [
             '@drupal' => drupal_install_profile_distribution_name(),
             '%file' => $file,
@@ -2244,7 +2230,7 @@ function install_check_requirements($install_state) {
         $requirements["$file file writable"] = [
           'title' => $default_file_info['title'],
           'value' => t('The %file is not writable.', ['%file' => $default_file_info['title']]),
-          'severity' => RequirementSeverity::Error,
+          'severity' => REQUIREMENT_ERROR,
           'description' => t('The @drupal installer requires write permissions to %file during the installation process. The <a href=":handbook_url">webhosting issues</a> documentation section offers help on this and other topics.', [
             '@drupal' => drupal_install_profile_distribution_name(),
             '%file' => $file,
@@ -2262,7 +2248,7 @@ function install_check_requirements($install_state) {
         $requirements["$file file ownership"] = [
           'title' => $default_file_info['title'],
           'value' => t('The @file is owned by the web server.', ['@file' => $default_file_info['title']]),
-          'severity' => RequirementSeverity::Error,
+          'severity' => REQUIREMENT_ERROR,
           'description' => t('The @drupal installer failed to create a %file file with proper file ownership. Log on to your web server, remove the existing %file file, and create a new one by copying the %default_file file to %file. More details about installing Drupal are available in <a href=":install_txt">INSTALL.txt</a>. The <a href=":handbook_url">webhosting issues</a> documentation section offers help on this and other topics.', [
             '@drupal' => drupal_install_profile_distribution_name(),
             '%file' => $file,
@@ -2288,7 +2274,7 @@ function install_check_requirements($install_state) {
         $requirements['database_install_errors'] = [
           'title' => t('Database settings'),
           'description' => $error_message,
-          'severity' => RequirementSeverity::Error,
+          'severity' => REQUIREMENT_ERROR,
         ];
       }
     }
@@ -2316,18 +2302,18 @@ function install_check_requirements($install_state) {
  */
 function install_display_requirements($install_state, $requirements) {
   // Check the severity of the requirements reported.
-  $severity = RequirementSeverity::maxSeverityFromRequirements($requirements);
+  $severity = drupal_requirements_severity($requirements);
 
   // If there are errors, always display them. If there are only warnings, skip
   // them if the user has provided a URL parameter acknowledging the warnings
   // and indicating a desire to continue anyway. See drupal_requirements_url().
-  if ($severity === RequirementSeverity::Error || ($severity === RequirementSeverity::Warning && empty($install_state['parameters']['continue']))) {
+  if ($severity == REQUIREMENT_ERROR || ($severity == REQUIREMENT_WARNING && empty($install_state['parameters']['continue']))) {
     if ($install_state['interactive']) {
       $build['report']['#type'] = 'status_report';
       $build['report']['#requirements'] = $requirements;
-      if ($severity == RequirementSeverity::Warning) {
+      if ($severity == REQUIREMENT_WARNING) {
         $build['#title'] = t('Requirements review');
-        $build['#suffix'] = t('Check the messages and <a href=":retry">retry</a>, or you may choose to <a href=":cont">continue anyway</a>.', [':retry' => drupal_requirements_url(RequirementSeverity::Error), ':cont' => drupal_requirements_url($severity)]);
+        $build['#suffix'] = t('Check the messages and <a href=":retry">retry</a>, or you may choose to <a href=":cont">continue anyway</a>.', [':retry' => drupal_requirements_url(REQUIREMENT_ERROR), ':cont' => drupal_requirements_url($severity)]);
       }
       else {
         $build['#title'] = t('Requirements problem');
@@ -2342,7 +2328,7 @@ function install_display_requirements($install_state, $requirements) {
         // Skip warnings altogether for non-interactive installations; these
         // proceed in a single request so there is no good opportunity (and no
         // good method) to warn the user anyway.
-        if (isset($requirement['severity']) && $requirement['severity'] === RequirementSeverity::Error) {
+        if (isset($requirement['severity']) && $requirement['severity'] == REQUIREMENT_ERROR) {
           $render_array = [
             '#type' => 'inline_template',
             '#template' => '{{ title }}:{{ value }}<br /><br />{{ description }}',
@@ -2419,7 +2405,7 @@ function install_config_import_batch() {
 
     return $batch_builder->toArray();
   }
-  catch (ConfigImporterException) {
+  catch (ConfigImporterException $e) {
     global $install_state;
     // There are validation errors.
     $messenger = \Drupal::messenger();
@@ -2437,7 +2423,7 @@ function install_config_import_batch() {
  * @param array $install_state
  *   An array of information about the current installation state.
  *
- * @return string|null
+ * @return string
  *   A themed status report, or an exception if there are requirement errors.
  *   Upon successful download the page is reloaded and no output is returned.
  *
@@ -2448,7 +2434,6 @@ function install_config_download_translations(&$install_state) {
   if ($needs_download) {
     return install_download_translation($install_state);
   }
-  return NULL;
 }
 
 /**
@@ -2457,7 +2442,7 @@ function install_config_download_translations(&$install_state) {
  * This step ensures that the final configuration matches the configuration
  * provided to the installer.
  */
-function install_config_revert_install_changes(): void {
+function install_config_revert_install_changes() {
   global $install_state;
 
   $storage_comparer = new StorageComparer(\Drupal::service('config.storage.sync'), \Drupal::service('config.storage'));
@@ -2479,7 +2464,7 @@ function install_config_revert_install_changes(): void {
     try {
       $config_importer->import();
     }
-    catch (ConfigImporterException) {
+    catch (ConfigImporterException $e) {
       $messenger = \Drupal::messenger();
       // There are validation errors.
       $messenger->addError(t('The configuration synchronization failed validation.'));
@@ -2561,10 +2546,10 @@ function _install_config_locale_overrides() {
  *   The configuration to process.
  * @param array $langcodes
  *   The langcodes available on the site.
- * @param array $context
+ * @param $context
  *   The batch context.
  */
-function _install_config_locale_overrides_process_batch(array $names, array $langcodes, &$context): void {
+function _install_config_locale_overrides_process_batch(array $names, array $langcodes, &$context) {
   // Get the services we need.
   $language_manager = \Drupal::languageManager();
   /** @var \Drupal\locale\LocaleConfigManager $locale_config_manager */
@@ -2623,15 +2608,12 @@ function install_recipe_required_modules() {
   // The system module is already installed. See install_base_system().
   unset($required['system']);
 
-  $modules = [];
-  $names = [];
   foreach ($required as $module => $weight) {
-    $modules[] = $module;
-    $names[] = $files[$module]->info['name'];
+    $batch_builder->addOperation(
+      '_install_module_batch',
+      [$module, $files[$module]->info['name']],
+    );
   }
-  $batch_builder->addOperation('_install_module_batch',
-    [$modules, $names]
-  );
   return $batch_builder->toArray();
 }
 

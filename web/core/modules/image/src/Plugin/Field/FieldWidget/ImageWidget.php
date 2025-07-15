@@ -12,7 +12,6 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\file\Entity\File;
 use Drupal\file\Plugin\Field\FieldWidget\FileWidget;
 use Drupal\image\Entity\ImageStyle;
-use Symfony\Component\Validator\ConstraintViolationInterface;
 
 /**
  * Plugin implementation of the 'image_image' widget.
@@ -108,7 +107,9 @@ class ImageWidget extends FileWidget {
   }
 
   /**
-   * {@inheritdoc}
+   * Overrides \Drupal\file\Plugin\Field\FieldWidget\FileWidget::formMultipleElements().
+   *
+   * Special handling for draggable multiple widgets and 'add more' button.
    */
   protected function formMultipleElements(FieldItemListInterface $items, array &$form, FormStateInterface $form_state) {
     $elements = parent::formMultipleElements($items, $form, $form_state);
@@ -341,16 +342,6 @@ class ImageWidget extends FileWidget {
       }
     }
     return $changed;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function errorElement(array $element, ConstraintViolationInterface $error, array $form, FormStateInterface $form_state) {
-    $element = parent::errorElement($element, $error, $form, $form_state);
-
-    $property_path_array = explode('.', $error->getPropertyPath());
-    return ($element === FALSE) ? FALSE : $element[$property_path_array[1]];
   }
 
 }

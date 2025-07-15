@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\ajax_forms_test\Controller;
 
 use Drupal\Core\Url;

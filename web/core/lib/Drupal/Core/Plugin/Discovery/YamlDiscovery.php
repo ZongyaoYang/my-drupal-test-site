@@ -32,9 +32,9 @@ class YamlDiscovery implements DiscoveryInterface {
   /**
    * Contains an array of translatable properties passed along to t().
    *
-   * @var array
-   *
    * @see \Drupal\Core\Plugin\Discovery\YamlDiscovery::addTranslatableProperty()
+   *
+   * @var array
    */
   protected $translatableProperties = [];
 
@@ -88,7 +88,6 @@ class YamlDiscovery implements DiscoveryInterface {
               $options['context'] = $definition[$context_key];
               unset($definition[$context_key]);
             }
-            // phpcs:ignore Drupal.Semantics.FunctionT.NotLiteralString
             $definition[$property] = new TranslatableMarkup($definition[$property], [], $options);
           }
         }

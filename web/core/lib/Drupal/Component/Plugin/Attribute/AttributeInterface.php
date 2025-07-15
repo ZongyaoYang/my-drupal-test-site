@@ -16,7 +16,6 @@ interface AttributeInterface {
    * Gets the name of the provider of the attribute class.
    *
    * @return string|null
-   *   The provider of the attribute class.
    */
   public function getProvider(): ?string;
 
@@ -32,7 +31,6 @@ interface AttributeInterface {
    * Gets the unique ID for this attribute class.
    *
    * @return string
-   *   The attribute class ID.
    */
   public function getId(): string;
 
@@ -40,7 +38,6 @@ interface AttributeInterface {
    * Gets the class of the attribute class.
    *
    * @return class-string|null
-   *   The attribute class.
    */
   public function getClass(): ?string;
 

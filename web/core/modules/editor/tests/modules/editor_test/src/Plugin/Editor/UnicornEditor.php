@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\editor_test\Plugin\Editor;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -49,9 +47,7 @@ class UnicornEditor extends EditorBase {
   }
 
   /**
-   * Render API callback: Image upload handler for confirmation form.
-   *
-   * This function is assigned as a #element_validate callback.
+   * #element_validate handler for "image_upload" in buildConfigurationForm().
    *
    * Moves the text editor's image upload settings into $editor->image_upload.
    *

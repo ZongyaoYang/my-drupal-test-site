@@ -1,4 +1,4 @@
-const fs = require('node:fs');
+const fs = require('fs');
 const log = require('./log');
 const compile = require('./compile');
 

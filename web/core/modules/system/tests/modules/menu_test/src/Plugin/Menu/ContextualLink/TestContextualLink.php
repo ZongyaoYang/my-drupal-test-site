@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\menu_test\Plugin\Menu\ContextualLink;
 
 use Drupal\Core\Menu\ContextualLinkDefault;

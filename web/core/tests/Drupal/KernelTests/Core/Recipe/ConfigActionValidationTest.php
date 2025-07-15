@@ -77,7 +77,7 @@ name: Config actions making bad decisions
 config:
   actions:
     $config_name:
-      setProperties:
+      simpleConfigUpdate:
         $label_key: ''
 YAML;
 

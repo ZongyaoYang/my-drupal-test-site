@@ -36,7 +36,7 @@ interface CacheableDependencyInterface {
    *
    * When this object is modified, these cache tags will be invalidated.
    *
-   * @return list<string>
+   * @return string[]
    *   A set of cache tags.
    */
   public function getCacheTags();

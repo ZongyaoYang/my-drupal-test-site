@@ -10,7 +10,6 @@ use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Query\PagerSelectExtender;
-use Drupal\Core\Database\Query\SelectInterface;
 use Drupal\Core\Database\Query\TableSortExtender;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -105,6 +104,7 @@ class DbLogController extends ControllerBase {
    */
   public function overview(Request $request) {
 
+    $filter = $this->buildFilterQuery($request);
     $rows = [];
 
     $classes = static::getLogLevelClassMap();
@@ -154,8 +154,9 @@ class DbLogController extends ControllerBase {
     ]);
     $query->leftJoin('users_field_data', 'ufd', '[w].[uid] = [ufd].[uid]');
 
-    $this->addFilterToQuery($request, $query);
-
+    if (!empty($filter['where'])) {
+      $query->where($filter['where'], $filter['args']);
+    }
     $result = $query
       ->limit(50)
       ->orderByHeader($header)
@@ -185,7 +186,6 @@ class DbLogController extends ControllerBase {
         'data' => [
           // Cells.
           ['class' => ['icon']],
-          // phpcs:ignore Drupal.Semantics.FunctionT.NotLiteralString
           $this->t($dblog->type),
           $this->dateFormatter->format($dblog->timestamp, 'short'),
           $message,
@@ -227,12 +227,7 @@ class DbLogController extends ControllerBase {
    *   If no event found for the given ID.
    */
   public function eventDetails($event_id) {
-    $query = $this->database->select('watchdog', 'w')
-      ->fields('w')
-      ->condition('w.wid', $event_id);
-    $query->leftJoin('users', 'u', '[u].[uid] = [w].[uid]');
-    $query->addField('u', 'uid', 'uid');
-    $dblog = $query->execute()->fetchObject();
+    $dblog = $this->database->query('SELECT [w].*, [u].[uid] FROM {watchdog} [w] LEFT JOIN {users} [u] ON [u].[uid] = [w].[uid] WHERE [w].[wid] = :id', [':id' => $event_id])->fetchObject();
 
     if (empty($dblog)) {
       throw new NotFoundHttpException();
@@ -248,7 +243,6 @@ class DbLogController extends ControllerBase {
     $rows = [
       [
         ['data' => $this->t('Type'), 'header' => TRUE],
-        // phpcs:ignore Drupal.Semantics.FunctionT.NotLiteralString
         $this->t($dblog->type),
       ],
       [
@@ -305,16 +299,14 @@ class DbLogController extends ControllerBase {
   /**
    * Builds a query for database log administration filters based on session.
    *
-   * This method retrieves the session-based filters from the request and
-   * applies them to the provided query object. If no filters are present, the
-   * query is left unchanged.
-   *
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The request.
-   * @param \Drupal\Core\Database\Query\SelectInterface $query
-   *   The database query.
+   *
+   * @return array|null
+   *   An associative array with keys 'where' and 'args' or NULL if there were
+   *   no filters set.
    */
-  protected function addFilterToQuery(Request $request, SelectInterface &$query): void {
+  protected function buildFilterQuery(Request $request) {
     $session_filters = $request->getSession()->get('dblog_overview_filter', []);
     if (empty($session_filters)) {
       return;
@@ -324,29 +316,24 @@ class DbLogController extends ControllerBase {
 
     $filters = dblog_filters();
 
-    // Build the condition.
-    $condition_and = $query->getConnection()->condition('AND');
-    $condition_and_used = FALSE;
+    // Build query.
+    $where = $args = [];
     foreach ($session_filters as $key => $filter) {
-      $condition_or = $query->getConnection()->condition('OR');
-      $condition_or_used = FALSE;
+      $filter_where = [];
       foreach ($filter as $value) {
-        if ($key == 'severity') {
-          $value = (int) $value;
-        }
-        if (in_array($value, array_keys($filters[$key]['options']))) {
-          $condition_or->condition($filters[$key]['field'], $value);
-          $condition_or_used = TRUE;
-        }
+        $filter_where[] = $filters[$key]['where'];
+        $args[] = $value;
       }
-      if ($condition_or_used) {
-        $condition_and->condition($condition_or);
-        $condition_and_used = TRUE;
+      if (!empty($filter_where)) {
+        $where[] = '(' . implode(' OR ', $filter_where) . ')';
       }
     }
-    if ($condition_and_used) {
-      $query->condition($condition_and);
-    }
+    $where = !empty($where) ? implode(' AND ', $where) : '';
+
+    return [
+      'where' => $where,
+      'args' => $args,
+    ];
   }
 
   /**
@@ -387,7 +374,6 @@ class DbLogController extends ControllerBase {
             $row->backtrace = $variables['@backtrace_string'];
           }
         }
-        // phpcs:ignore Drupal.Semantics.FunctionT.NotLiteralString
         $message = $this->t(Xss::filterAdmin($row->message), $variables);
       }
     }

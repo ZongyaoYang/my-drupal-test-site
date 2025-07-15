@@ -4,18 +4,16 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\views\Kernel\Entity;
 
-use Drupal\entity_test\Entity\EntityTestMultiValueBaseField;
+use Drupal\entity_test\Entity\EntityTestMultiValueBasefield;
 use Drupal\Tests\views\Kernel\ViewsKernelTestBase;
 use Drupal\views\Views;
-
-// cspell:ignore basefield
 
 /**
  * Tests entity views with multivalue base fields.
  *
  * @group views
  */
-class EntityViewsWithMultivalueBaseFieldTest extends ViewsKernelTestBase {
+class EntityViewsWithMultivalueBasefieldTest extends ViewsKernelTestBase {
 
   /**
    * {@inheritdoc}
@@ -40,10 +38,10 @@ class EntityViewsWithMultivalueBaseFieldTest extends ViewsKernelTestBase {
    * Tests entity views with multivalue base fields.
    */
   public function testView(): void {
-    EntityTestMultiValueBaseField::create([
+    EntityTestMultiValueBasefield::create([
       'name' => 'test',
     ])->save();
-    EntityTestMultiValueBaseField::create([
+    EntityTestMultiValueBasefield::create([
       'name' => ['test2', 'test3'],
     ])->save();
 

@@ -7,9 +7,6 @@ namespace Drupal\Tests\user\Functional\Views;
 use Drupal\Tests\views\Functional\ViewTestBase;
 use Drupal\user\Entity\User;
 
-/**
- * Base test class for user-related Views tests.
- */
 abstract class UserTestBase extends ViewTestBase {
 
   /**

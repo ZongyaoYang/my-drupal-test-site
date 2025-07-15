@@ -6,7 +6,6 @@ namespace Drupal\Tests\config_translation\Functional;
 
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Language\Language;
-use Drupal\entity_test\EntityTestHelper;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\node\Entity\NodeType;
@@ -222,7 +221,7 @@ class ConfigTranslationUiModulesTest extends ConfigTranslationUiTestBase {
     $field_storage->save();
 
     $bundle = $this->randomMachineName();
-    EntityTestHelper::createBundle($bundle);
+    entity_test_create_bundle($bundle);
     $field = FieldConfig::create([
       'field_name' => $field_name,
       'entity_type' => 'entity_test',
@@ -257,7 +256,7 @@ class ConfigTranslationUiModulesTest extends ConfigTranslationUiTestBase {
     ])->save();
 
     $bundle = $this->randomMachineName();
-    EntityTestHelper::createBundle($bundle);
+    entity_test_create_bundle($bundle);
     $field = FieldConfig::create([
       'field_name' => $field_name,
       'entity_type' => 'entity_test',
@@ -392,8 +391,9 @@ class ConfigTranslationUiModulesTest extends ConfigTranslationUiTestBase {
       'entity_type' => 'node',
       'type' => 'text',
     ]);
-    $field_storage->save();
 
+    $field_storage->setSetting('translatable_storage_setting', 'translatable_storage_setting');
+    $field_storage->save();
     $field = FieldConfig::create([
       'field_name' => $field_name,
       'entity_type' => 'node',

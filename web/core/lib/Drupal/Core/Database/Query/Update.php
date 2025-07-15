@@ -2,6 +2,7 @@
 
 namespace Drupal\Core\Database\Query;
 
+use Drupal\Core\Database\Database;
 use Drupal\Core\Database\Connection;
 
 /**
@@ -37,8 +38,6 @@ class Update extends Query implements ConditionInterface {
   /**
    * Array of fields to update to an expression in case of a duplicate record.
    *
-   * @var array
-   *
    * This variable is a nested array in the following format:
    * @code
    * <some field> => [
@@ -46,6 +45,8 @@ class Update extends Query implements ConditionInterface {
    *  'arguments' => <array of arguments for condition, or NULL for none>,
    * ];
    * @endcode
+   *
+   * @var array
    */
   protected $expressionFields = [];
 
@@ -60,6 +61,9 @@ class Update extends Query implements ConditionInterface {
    *   Array of database options.
    */
   public function __construct(Connection $connection, $table, array $options = []) {
+    // @todo Remove $options['return'] in Drupal 11.
+    // @see https://www.drupal.org/project/drupal/issues/3256524
+    $options['return'] = Database::RETURN_AFFECTED;
     parent::__construct($connection, $options);
     $this->table = $table;
 
@@ -69,7 +73,7 @@ class Update extends Query implements ConditionInterface {
   /**
    * Adds a set of field->value pairs to be updated.
    *
-   * @param array $fields
+   * @param $fields
    *   An associative array of fields to write into the database. The array keys
    *   are the field names and the values are the values to which to set them.
    *
@@ -87,12 +91,12 @@ class Update extends Query implements ConditionInterface {
    * Expression fields are cases such as counter=counter+1. This method takes
    * precedence over fields().
    *
-   * @param string $field
+   * @param $field
    *   The field to set.
-   * @param string $expression
+   * @param $expression
    *   The field will be set to the value of this expression. This parameter
    *   may include named placeholders.
-   * @param array|null $arguments
+   * @param $arguments
    *   If specified, this is an array of key/value pairs for named placeholders
    *   corresponding to the expression.
    *
@@ -142,6 +146,12 @@ class Update extends Query implements ConditionInterface {
    *   The prepared statement.
    */
   public function __toString() {
+    if (!is_array($this->fields) ||
+      !is_array($this->arguments) ||
+      !is_array($this->expressionFields)) {
+      throw new \UnexpectedValueException();
+    }
+
     // Create a sanitized comment string to prepend to the query.
     $comments = $this->connection->makeComment($this->comments);
 

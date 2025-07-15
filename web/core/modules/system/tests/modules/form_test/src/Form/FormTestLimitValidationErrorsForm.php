@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\form_test\Form;
 
 use Drupal\Core\Form\FormBase;
@@ -63,23 +61,23 @@ class FormTestLimitValidationErrorsForm extends FormBase {
       '#type' => 'submit',
       '#limit_validation_errors' => [['test']],
       '#submit' => ['::partialSubmitForm'],
-      '#value' => $this->t('Partial validate'),
+      '#value' => t('Partial validate'),
     ];
     $form['actions']['partial_numeric_index'] = [
       '#type' => 'submit',
       '#limit_validation_errors' => [['test_numeric_index', 0]],
       '#submit' => ['::partialSubmitForm'],
-      '#value' => $this->t('Partial validate (numeric index)'),
+      '#value' => t('Partial validate (numeric index)'),
     ];
     $form['actions']['substring'] = [
       '#type' => 'submit',
       '#limit_validation_errors' => [['test_substring', 'foo']],
       '#submit' => ['::partialSubmitForm'],
-      '#value' => $this->t('Partial validate (substring)'),
+      '#value' => t('Partial validate (substring)'),
     ];
     $form['actions']['full'] = [
       '#type' => 'submit',
-      '#value' => $this->t('Full validate'),
+      '#value' => t('Full validate'),
     ];
     return $form;
   }
@@ -89,7 +87,7 @@ class FormTestLimitValidationErrorsForm extends FormBase {
    */
   public function elementValidateLimitValidationErrors($element, FormStateInterface $form_state) {
     if ($element['#value'] == 'invalid') {
-      $form_state->setError($element, $this->t('@label element is invalid', ['@label' => $element['#title']]));
+      $form_state->setError($element, t('@label element is invalid', ['@label' => $element['#title']]));
     }
   }
 
@@ -103,8 +101,8 @@ class FormTestLimitValidationErrorsForm extends FormBase {
    * {@inheritdoc}
    */
   public function partialSubmitForm(array &$form, FormStateInterface $form_state) {
-    // The title has not been validated, thus its value - in case of the test
-    // case an empty string - may not be set.
+    // The title has not been validated, thus its value - in case of the test case
+    // an empty string - may not be set.
     if (!$form_state->hasValue('title') && $form_state->hasValue('test')) {
       $this->messenger()->addStatus('Only validated values appear in the form values.');
     }

@@ -10,9 +10,6 @@ use Drupal\Tests\rest\Functional\EntityResource\ConfigEntityResourceTestBase;
 use Drupal\Tests\system\Functional\Entity\Traits\EntityDefinitionTestTrait;
 use Drupal\user\Entity\User;
 
-/**
- * Resource test base for the EntityTest entity.
- */
 abstract class EntityTestResourceTestBase extends ConfigEntityResourceTestBase {
 
   use EntityDefinitionTestTrait;

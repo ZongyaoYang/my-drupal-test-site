@@ -132,7 +132,6 @@ class HelpTopicDiscovery implements DiscoveryInterface {
               break;
 
             case 'label':
-              // phpcs:ignore Drupal.Semantics.FunctionT.NotLiteralString
               $data[$key] = new TranslatableMarkup($value);
               break;
 

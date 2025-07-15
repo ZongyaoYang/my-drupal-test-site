@@ -185,9 +185,6 @@ class EntityTestTextItemNormalizerTest extends EntityTestResourceTestBase {
     $this->assertEqualsCanonicalizing($expected_cache_tags, explode(' ', $response->getHeader('X-Drupal-Cache-Tags')[0]));
   }
 
-  /**
-   * Provides test cases for text format retrieval with expected cache tags.
-   */
   public static function providerTestGetWithFormat() {
     return [
       'format specified (different from fallback format)' => [

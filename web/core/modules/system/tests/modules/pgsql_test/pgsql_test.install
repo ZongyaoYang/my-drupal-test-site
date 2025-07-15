@@ -5,12 +5,10 @@
  * Install, update and uninstall functions for the pgsql_test module.
  */
 
-declare(strict_types=1);
-
 /**
  * Implements hook_schema().
  */
-function pgsql_test_schema(): array {
+function pgsql_test_schema() {
   $schema['pgsql_sequence_test'] = [
     'description' => 'Test sequence changes on pgsql driver.',
     'fields' => [

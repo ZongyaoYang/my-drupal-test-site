@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\field_test\Plugin\Field\FieldWidget;
 
 use Drupal\Core\Field\Attribute\FieldWidget;
@@ -57,10 +55,7 @@ class TestFieldWidget extends WidgetBase {
    */
   public function settingsSummary() {
     $summary = [];
-    $summary[] = $this->t('@setting: @value', [
-      '@setting' => 'test_widget_setting',
-      '@value' => $this->getSetting('test_widget_setting'),
-    ]);
+    $summary[] = $this->t('@setting: @value', ['@setting' => 'test_widget_setting', '@value' => $this->getSetting('test_widget_setting')]);
     return $summary;
   }
 

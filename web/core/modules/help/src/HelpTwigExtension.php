@@ -41,7 +41,7 @@ class HelpTwigExtension extends AbstractExtension {
   /**
    * {@inheritdoc}
    */
-  public function getFunctions(): array {
+  public function getFunctions() {
     return [
       new TwigFunction('help_route_link', [$this, 'getRouteLink']),
       new TwigFunction('help_topic_link', [$this, 'getTopicLink']),
@@ -97,7 +97,7 @@ class HelpTwigExtension extends AbstractExtension {
         $build = ['#markup' => $text];
       }
     }
-    catch (RouteNotFoundException | MissingMandatoryParametersException | InvalidParameterException) {
+    catch (RouteNotFoundException | MissingMandatoryParametersException | InvalidParameterException $e) {
       // If the route had one of these exceptions, return the link text.
       $build = ['#markup' => $text];
     }
@@ -127,7 +127,7 @@ class HelpTwigExtension extends AbstractExtension {
     try {
       $plugin = $this->pluginManager->createInstance($topic_id);
     }
-    catch (PluginNotFoundException) {
+    catch (PluginNotFoundException $e) {
       // Not a topic.
       $plugin = FALSE;
     }

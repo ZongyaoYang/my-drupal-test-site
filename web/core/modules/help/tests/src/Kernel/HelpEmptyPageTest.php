@@ -24,7 +24,7 @@ class HelpEmptyPageTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public function register(ContainerBuilder $container): void {
+  public function register(ContainerBuilder $container) {
     parent::register($container);
 
     $container->set('url_generator', new SupernovaGenerator());

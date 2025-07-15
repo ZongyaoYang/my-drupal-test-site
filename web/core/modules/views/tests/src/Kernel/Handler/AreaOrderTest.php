@@ -33,7 +33,7 @@ class AreaOrderTest extends ViewsKernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUpFixtures(): void {
+  protected function setUpFixtures() {
     // Install the themes used for this test.
     $this->container->get('theme_installer')->install(['olivero']);
 

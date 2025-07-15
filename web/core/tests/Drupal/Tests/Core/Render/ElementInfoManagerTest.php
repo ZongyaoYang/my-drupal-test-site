@@ -113,7 +113,6 @@ class ElementInfoManagerTest extends UnitTestCase {
    * Provides tests data for testGetInfoElementPlugin().
    *
    * @return array
-   *   An array of test data for testGetInfoElementPlugin().
    */
   public static function providerTestGetInfoElementPlugin() {
     $data = [];

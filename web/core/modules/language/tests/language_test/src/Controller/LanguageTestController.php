@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\language_test\Controller;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -79,7 +77,7 @@ class LanguageTestController implements ContainerInjectionInterface {
     return [
       'no_language' => [
         '#type' => 'link',
-        '#title' => $this->t('Link to the current path with no langcode provided.'),
+        '#title' => t('Link to the current path with no langcode provided.'),
         '#url' => Url::fromRoute('<current>'),
         '#options' => [
           'attributes' => [
@@ -90,7 +88,7 @@ class LanguageTestController implements ContainerInjectionInterface {
       ],
       'fr' => [
         '#type' => 'link',
-        '#title' => $this->t('Link to a French version of the current path.'),
+        '#title' => t('Link to a French version of the current path.'),
         '#url' => Url::fromRoute('<current>'),
         '#options' => [
           'language' => $languages['fr'],
@@ -102,7 +100,7 @@ class LanguageTestController implements ContainerInjectionInterface {
       ],
       'en' => [
         '#type' => 'link',
-        '#title' => $this->t('Link to an English version of the current path.'),
+        '#title' => t('Link to an English version of the current path.'),
         '#url' => Url::fromRoute('<current>'),
         '#options' => [
           'language' => $languages['en'],

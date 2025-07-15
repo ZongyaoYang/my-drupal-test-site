@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\announce_feed_test\Controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;

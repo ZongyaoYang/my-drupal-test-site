@@ -169,7 +169,6 @@ class LinkCollectionNormalizerTest extends KernelTestBase {
    * Provides test cases for testing link access checking.
    *
    * @return array[]
-   *   An array of test cases for testLinkAccess().
    */
   public static function linkAccessTestData() {
     return [

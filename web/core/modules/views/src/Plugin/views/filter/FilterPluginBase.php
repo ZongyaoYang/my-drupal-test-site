@@ -85,7 +85,7 @@ abstract class FilterPluginBase extends HandlerBase implements CacheableDependen
    *
    * @var array
    */
-  // phpcs:ignore Drupal.NamingConventions.ValidVariableName.LowerCamelName, Drupal.Commenting.VariableComment.Missing
+  // phpcs:ignore Drupal.NamingConventions.ValidVariableName.LowerCamelName
   public $group_info = NULL;
 
   /**
@@ -100,7 +100,7 @@ abstract class FilterPluginBase extends HandlerBase implements CacheableDependen
    *
    * @var bool
    */
-  // phpcs:ignore Drupal.NamingConventions.ValidVariableName.LowerCamelName, Drupal.Commenting.VariableComment.Missing
+  // phpcs:ignore Drupal.NamingConventions.ValidVariableName.LowerCamelName
   public $no_operator = FALSE;
 
   /**
@@ -108,7 +108,7 @@ abstract class FilterPluginBase extends HandlerBase implements CacheableDependen
    *
    * @var bool
    */
-  // phpcs:ignore Drupal.NamingConventions.ValidVariableName.LowerCamelName, Drupal.Commenting.VariableComment.Missing
+  // phpcs:ignore Drupal.NamingConventions.ValidVariableName.LowerCamelName
   public $always_required = FALSE;
 
   /**
@@ -151,9 +151,6 @@ abstract class FilterPluginBase extends HandlerBase implements CacheableDependen
     }
   }
 
-  /**
-   * {@inheritdoc}
-   */
   protected function defineOptions() {
     $options = parent::defineOptions();
 
@@ -788,9 +785,6 @@ abstract class FilterPluginBase extends HandlerBase implements CacheableDependen
    * Validate the options form.
    */
   public function validateExposeForm($form, FormStateInterface $form_state) {
-    $remember_role_keys = ['options', 'expose', 'remember_roles'];
-    $roles = $form_state->getValue($remember_role_keys);
-    $form_state->setValue($remember_role_keys, array_filter($roles));
     $identifier = $form_state->getValue(['options', 'expose', 'identifier']);
     $this->validateIdentifier($identifier, $form_state, $form['expose']['identifier']);
 
@@ -811,7 +805,6 @@ abstract class FilterPluginBase extends HandlerBase implements CacheableDependen
    *   A group entry as defined by buildGroupForm().
    *
    * @return bool
-   *   TRUE if the grouped filter entry has a valid value, FALSE otherwise.
    */
   protected function hasValidGroupedValue(array $group) {
     if (!method_exists($this, 'operators')) {
@@ -889,7 +882,6 @@ abstract class FilterPluginBase extends HandlerBase implements CacheableDependen
    *   (optional) The form element to set any errors on.
    *
    * @return string
-   *   The error message if validation fails, or NULL if validation passes.
    */
   protected function validateIdentifier($identifier, ?FormStateInterface $form_state = NULL, &$form_group = []) {
     $error = '';
@@ -1148,10 +1140,10 @@ abstract class FilterPluginBase extends HandlerBase implements CacheableDependen
     }
     $form['#theme'] = 'views_ui_build_group_filter_form';
 
-    // #flatten will move everything from $form['group_info'][$key] to
-    // $form[$key] prior to rendering. That's why the preRender for it needs to
-    // run first, so that when the next preRender (the one for fieldsets) runs,
-    // it gets the flattened data.
+    // #flatten will move everything from $form['group_info'][$key] to $form[$key]
+    // prior to rendering. That's why the preRender for it needs to run first,
+    // so that when the next preRender (the one for fieldsets) runs, it gets
+    // the flattened data.
     array_unshift($form['#pre_render'], [static::class, 'preRenderFlattenData']);
     $form['group_info']['#flatten'] = TRUE;
 
@@ -1226,11 +1218,9 @@ abstract class FilterPluginBase extends HandlerBase implements CacheableDependen
         continue;
       }
       // Each rows contains three widgets:
-      // - The title, where users define how they identify a pair of
-      //   operator | value.
-      // - The operator.
-      // - The value (or values) to use in the filter with the selected
-      //   operator.
+      // a) The title, where users define how they identify a pair of operator | value
+      // b) The operator
+      // c) The value (or values) to use in the filter with the selected operator
 
       // In each row, we have to display the operator form and the value from
       // $row acts as a fake form to render each widget in a row.
@@ -1406,8 +1396,7 @@ abstract class FilterPluginBase extends HandlerBase implements CacheableDependen
       $form['#size'] = NULL;
     }
 
-    // Cleanup in case the translated element's (radios or checkboxes) display
-    // value contains html.
+    // Cleanup in case the translated element's (radios or checkboxes) display value contains html.
     if ($form['#type'] == 'select') {
       $this->prepareFilterSelectOptions($form['#options']);
     }
@@ -1517,8 +1506,7 @@ abstract class FilterPluginBase extends HandlerBase implements CacheableDependen
         $this->options['expose']['operator_id'] = $operator_id;
         $this->options['expose']['use_operator'] = TRUE;
 
-        // Value can be optional, For example for 'empty' and 'not empty'
-        // filters.
+        // Value can be optional, For example for 'empty' and 'not empty' filters.
         if (isset($selected_group_options['value']) && $selected_group_options['value'] !== '') {
           $input[$this->options['group_info']['identifier']] = $selected_group_options['value'];
         }
@@ -1657,9 +1645,6 @@ abstract class FilterPluginBase extends HandlerBase implements CacheableDependen
     return TRUE;
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function storeExposedInput($input, $status) {
     if (empty($this->options['exposed']) || empty($this->options['expose']['identifier'])) {
       return TRUE;
@@ -1738,7 +1723,6 @@ abstract class FilterPluginBase extends HandlerBase implements CacheableDependen
    * if OR grouping is in use.
    *
    * @return bool
-   *   TRUE if the filter can be used in OR groups, FALSE otherwise.
    */
   public function canGroup() {
     return TRUE;

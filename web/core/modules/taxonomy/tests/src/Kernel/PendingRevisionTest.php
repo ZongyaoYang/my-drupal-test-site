@@ -121,9 +121,6 @@ class PendingRevisionTest extends KernelTestBase {
     $this->assertEquals($term->id(), $taxonomy_index[$node->id()]->tid);
   }
 
-  /**
-   * Retrieves the taxonomy index from the database.
-   */
   protected function getTaxonomyIndex() {
     return \Drupal::database()->select('taxonomy_index')
       ->fields('taxonomy_index')

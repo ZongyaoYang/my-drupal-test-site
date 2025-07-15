@@ -16,10 +16,7 @@ const adminTest = {
 };
 const testCases = [
   { name: 'User Edit', path: '/user/1/edit' },
-  {
-    name: 'Create Article',
-    path: '/node/add/article?destination=/admin/content',
-  },
+  { name: 'Create Article', path: '/user/1/edit' },
   { name: 'Create Page', path: '/node/add/page?destination=/admin/content' },
   { name: 'Content Page', path: '/admin/content' },
   { name: 'Structure Page', path: '/admin/structure' },

@@ -67,9 +67,6 @@ class AttributeBridgeDecoratorTest extends TestCase {
 
 }
 
-/**
- * An interface for testing the Discovery interface.
- */
 interface ExtendedDiscoveryInterface extends DiscoveryInterface {
 
   public function otherMethod(string $id): bool;

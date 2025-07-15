@@ -29,17 +29,18 @@ class Checkbox extends FormElementBase {
    * {@inheritdoc}
    */
   public function getInfo() {
+    $class = static::class;
     return [
       '#input' => TRUE,
       '#return_value' => 1,
       '#process' => [
-        [static::class, 'processCheckbox'],
-        [static::class, 'processAjaxForm'],
-        [static::class, 'processGroup'],
+        [$class, 'processCheckbox'],
+        [$class, 'processAjaxForm'],
+        [$class, 'processGroup'],
       ],
       '#pre_render' => [
-        [static::class, 'preRenderCheckbox'],
-        [static::class, 'preRenderGroup'],
+        [$class, 'preRenderCheckbox'],
+        [$class, 'preRenderGroup'],
       ],
       '#theme' => 'input__checkbox',
       '#theme_wrappers' => ['form_element'],

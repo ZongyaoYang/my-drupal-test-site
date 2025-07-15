@@ -15,7 +15,7 @@ class Tasks extends CoreTasks {
    * {@inheritdoc}
    */
   public function name() {
-    return 'Fake driver by the driver_missing_dependency_test module';
+    return t('Fake driver by the driver_missing_dependency_test module');
   }
 
 }

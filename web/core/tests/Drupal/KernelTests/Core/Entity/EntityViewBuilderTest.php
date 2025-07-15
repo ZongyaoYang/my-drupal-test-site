@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\KernelTests\Core\Entity;
 
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityViewBuilder;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Cache\Cache;
@@ -349,7 +348,7 @@ class EntityViewBuilderTest extends EntityKernelTestBase {
    * @return \Drupal\Core\Entity\EntityInterface
    *   The created entity.
    */
-  protected function createTestEntity($entity_type): EntityInterface {
+  protected function createTestEntity($entity_type) {
     $data = [
       'bundle' => $entity_type,
       'name' => $this->randomMachineName(),

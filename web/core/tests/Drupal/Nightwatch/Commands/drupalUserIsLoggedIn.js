@@ -8,7 +8,7 @@
  */
 exports.command = function drupalUserIsLoggedIn(callback) {
   if (typeof callback === 'function') {
-    this.cookies.getAll((cookies) => {
+    this.getCookies((cookies) => {
       const sessionExists = cookies.value.some((cookie) =>
         cookie.name.match(/^S?SESS/),
       );

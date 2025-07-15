@@ -6,9 +6,6 @@ use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\MigrateMessageInterface;
 use Drupal\Component\EventDispatcher\Event;
 
-/**
- * Base class for migration events.
- */
 class EventBase extends Event {
 
   /**

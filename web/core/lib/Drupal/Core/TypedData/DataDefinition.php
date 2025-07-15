@@ -312,10 +312,10 @@ class DataDefinition implements DataDefinitionInterface, \ArrayAccess {
    * {@inheritdoc}
    *
    * This is for BC support only.
-   *
    * @todo Remove in https://www.drupal.org/node/1928868.
    */
-  public function offsetExists($offset): bool {
+  #[\ReturnTypeWillChange]
+  public function offsetExists($offset) {
     // PHP's array access does not work correctly with isset(), so we have to
     // bake isset() in here. See https://bugs.php.net/bug.php?id=41727.
     return array_key_exists($offset, $this->definition) && isset($this->definition[$offset]);
@@ -325,10 +325,10 @@ class DataDefinition implements DataDefinitionInterface, \ArrayAccess {
    * {@inheritdoc}
    *
    * This is for BC support only.
-   *
    * @todo Remove in https://www.drupal.org/node/1928868.
    */
-  public function &offsetGet($offset): mixed {
+  #[\ReturnTypeWillChange]
+  public function &offsetGet($offset) {
     if (!isset($this->definition[$offset])) {
       $this->definition[$offset] = NULL;
     }
@@ -339,10 +339,10 @@ class DataDefinition implements DataDefinitionInterface, \ArrayAccess {
    * {@inheritdoc}
    *
    * This is for BC support only.
-   *
    * @todo Remove in https://www.drupal.org/node/1928868.
    */
-  public function offsetSet($offset, $value): void {
+  #[\ReturnTypeWillChange]
+  public function offsetSet($offset, $value) {
     $this->definition[$offset] = $value;
   }
 
@@ -350,10 +350,10 @@ class DataDefinition implements DataDefinitionInterface, \ArrayAccess {
    * {@inheritdoc}
    *
    * This is for BC support only.
-   *
    * @todo Remove in https://www.drupal.org/node/1928868.
    */
-  public function offsetUnset($offset): void {
+  #[\ReturnTypeWillChange]
+  public function offsetUnset($offset) {
     unset($this->definition[$offset]);
   }
 
@@ -361,7 +361,6 @@ class DataDefinition implements DataDefinitionInterface, \ArrayAccess {
    * Returns all definition values as array.
    *
    * @return array
-   *   The array holding values for all definition keys.
    */
   public function toArray() {
     return $this->definition;
@@ -370,7 +369,7 @@ class DataDefinition implements DataDefinitionInterface, \ArrayAccess {
   /**
    * {@inheritdoc}
    */
-  public function __sleep(): array {
+  public function __sleep() {
     // Never serialize the typed data manager.
     $vars = get_object_vars($this);
     unset($vars['typedDataManager']);

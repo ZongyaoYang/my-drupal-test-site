@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\update_test;
 
 use Drupal\Core\FileTransfer\Local;
@@ -34,7 +32,7 @@ class TestFileTransferWithSettingsForm extends Local {
     $form = [];
     $form['update_test_username'] = [
       '#type' => 'textfield',
-      '#title' => 'Update Test Username',
+      '#title' => t('Update Test Username'),
     ];
     return $form;
   }

@@ -39,7 +39,7 @@ class FileFieldItemList extends EntityReferenceFieldItemList {
 
       // On new revisions, all files are considered to be a new usage and no
       // deletion of previous file usages are necessary.
-      if ($entity->getRevisionId() != $entity->getOriginal()?->getRevisionId()) {
+      if (!empty($entity->original) && $entity->getRevisionId() != $entity->original->getRevisionId()) {
         foreach ($files as $file) {
           \Drupal::service('file.usage')->add($file, 'file', $entity->getEntityTypeId(), $entity->id());
         }
@@ -50,9 +50,10 @@ class FileFieldItemList extends EntityReferenceFieldItemList {
       $field_name = $this->getFieldDefinition()->getName();
       $original_ids = [];
       $langcode = $this->getLangcode();
-      $original = $entity->getOriginal();
+      $original = $entity->original;
       if ($original->hasTranslation($langcode)) {
-        foreach ($original->getTranslation($langcode)->{$field_name} as $item) {
+        $original_items = $original->getTranslation($langcode)->{$field_name};
+        foreach ($original_items as $item) {
           $original_ids[] = $item->target_id;
         }
       }

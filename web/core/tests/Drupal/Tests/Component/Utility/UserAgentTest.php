@@ -25,7 +25,7 @@ class UserAgentTest extends TestCase {
    * @return array
    *   Language codes, ordered by priority.
    */
-  protected function getLanguages(): array {
+  protected function getLanguages() {
     return [
       // In our test case, 'en' has priority over 'en-US'.
       'en',
@@ -53,7 +53,7 @@ class UserAgentTest extends TestCase {
    * @return array
    *   Language mappings.
    */
-  protected function getMappings(): array {
+  protected function getMappings() {
     return [
       'no' => 'nb',
       'pt' => 'pt-pt',

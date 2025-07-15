@@ -2,9 +2,6 @@
 
 namespace Drupal\Core\Entity;
 
-/**
- * Provides an interface for the entity autocomplete matcher.
- */
 interface EntityAutocompleteMatcherInterface {
 
   /**
@@ -21,7 +18,7 @@ interface EntityAutocompleteMatcherInterface {
    *
    * @return array
    *   An array of matched entity labels, in the format required by the AJAX
-   *   autocomplete API. For example, [value' => $value, 'label' => $label].
+   *   autocomplete API (e.g. array('value' => $value, 'label' => $label)).
    *
    * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
    *   Thrown when the current user doesn't have access to the specified entity.

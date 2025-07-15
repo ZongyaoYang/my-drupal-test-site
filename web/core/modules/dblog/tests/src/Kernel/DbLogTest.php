@@ -66,12 +66,7 @@ class DbLogTest extends KernelTestBase {
    * Tests that only valid placeholders are stored in the variables column.
    */
   public function testInvalidPlaceholders(): void {
-    \Drupal::logger('my_module')
-      ->warning('Hello @string @array @object', [
-        '@string' => '',
-        '@array' => [],
-        '@object' => new \stdClass(),
-      ]);
+    \Drupal::logger('my_module')->warning('Hello @string @array @object', ['@string' => '', '@array' => [], '@object' => new \stdClass()]);
     $variables = \Drupal::database()
       ->select('watchdog', 'w')
       ->fields('w', ['variables'])
@@ -88,7 +83,7 @@ class DbLogTest extends KernelTestBase {
    * @return int
    *   Number of new watchdog entries.
    */
-  private function runCron(): int {
+  private function runCron() {
     $connection = Database::getConnection();
     // Get last ID to compare against; log entries get deleted, so we can't
     // reliably add the number of newly created log entries to the current count

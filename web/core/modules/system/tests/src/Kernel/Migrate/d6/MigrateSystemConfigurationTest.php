@@ -18,11 +18,6 @@ class MigrateSystemConfigurationTest extends MigrateDrupal6TestBase {
    */
   protected static $modules = ['file', 'system'];
 
-  /**
-   * The expected configuration after migration.
-   *
-   * @var array
-   */
   protected $expectedConfig = [
     'system.cron' => [
       'threshold' => [

@@ -41,11 +41,7 @@ abstract class FileTestBase extends KernelTestBase {
     // file_default_scheme(). As we are creating the configuration here remove
     // the global override.
     unset($GLOBALS['config']['system.file']);
-    \Drupal::configFactory()->getEditable('system.file')
-      ->set('default_scheme', 'public')
-      ->set('allow_insecure_uploads', FALSE)
-      ->set('temporary_maximum_age', 21600)
-      ->save();
+    \Drupal::configFactory()->getEditable('system.file')->set('default_scheme', 'public')->save();
   }
 
   /**
@@ -83,11 +79,11 @@ abstract class FileTestBase extends KernelTestBase {
   /**
    * Helper function to test the permissions of a file.
    *
-   * @param string $filepath
+   * @param $filepath
    *   String file path.
-   * @param int $expected_mode
+   * @param $expected_mode
    *   Octal integer like 0664 or 0777.
-   * @param string|null $message
+   * @param $message
    *   Optional message.
    */
   public function assertFilePermissions($filepath, $expected_mode, $message = NULL) {
@@ -118,11 +114,11 @@ abstract class FileTestBase extends KernelTestBase {
   /**
    * Helper function to test the permissions of a directory.
    *
-   * @param string $directory
+   * @param $directory
    *   String directory path.
-   * @param int $expected_mode
+   * @param $expected_mode
    *   Octal integer like 0664 or 0777.
-   * @param string|null $message
+   * @param $message
    *   Optional message.
    */
   public function assertDirectoryPermissions($directory, $expected_mode, $message = NULL) {
@@ -174,13 +170,13 @@ abstract class FileTestBase extends KernelTestBase {
   /**
    * Create a file and return the URI of it.
    *
-   * @param string|null $filepath
+   * @param $filepath
    *   Optional string specifying the file path. If none is provided then a
    *   randomly named file will be created in the site's files directory.
-   * @param string|null $contents
+   * @param $contents
    *   Optional contents to save into the file. If a NULL value is provided an
    *   arbitrary string will be used.
-   * @param string|null $scheme
+   * @param $scheme
    *   Optional string indicating the stream scheme to use. Drupal core includes
    *   public, private, and temporary. The public wrapper is the default.
    *

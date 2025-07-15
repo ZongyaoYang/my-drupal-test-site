@@ -96,7 +96,6 @@ class GetTest extends MigrateProcessTestCase {
    * Provides data for the successful lookup test.
    *
    * @return array
-   *   An array of data for the test.
    */
   public static function integerValuesDataProvider() {
     return [

@@ -5,7 +5,6 @@ namespace Drupal\Core\Template;
 use Drupal\Component\Render\PlainTextOutput;
 use Drupal\Component\Render\MarkupInterface;
 use Drupal\Component\Utility\NestedArray;
-use Drupal\Core\Serialization\Attribute\JsonSchema;
 
 /**
  * Collects, sanitizes, and renders HTML attributes.
@@ -74,7 +73,7 @@ class Attribute implements \ArrayAccess, \IteratorAggregate, MarkupInterface {
    *
    * @var \Drupal\Core\Template\AttributeValueBase[]
    */
-  protected $storage = [];
+  protected array $storage = [];
 
   /**
    * Constructs a \Drupal\Core\Template\Attribute object.
@@ -91,7 +90,8 @@ class Attribute implements \ArrayAccess, \IteratorAggregate, MarkupInterface {
   /**
    * {@inheritdoc}
    */
-  public function offsetGet($name): mixed {
+  #[\ReturnTypeWillChange]
+  public function offsetGet($name) {
     if (isset($this->storage[$name])) {
       return $this->storage[$name];
     }
@@ -102,13 +102,13 @@ class Attribute implements \ArrayAccess, \IteratorAggregate, MarkupInterface {
       $this->offsetSet('class', []);
       return $this->storage['class'];
     }
-    return NULL;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function offsetSet($name, $value): void {
+  #[\ReturnTypeWillChange]
+  public function offsetSet($name, $value) {
     $this->storage[$name] = $this->createAttributeValue($name, $value);
   }
 
@@ -161,26 +161,29 @@ class Attribute implements \ArrayAccess, \IteratorAggregate, MarkupInterface {
   /**
    * {@inheritdoc}
    */
-  public function offsetUnset($name): void {
+  #[\ReturnTypeWillChange]
+  public function offsetUnset($name) {
     unset($this->storage[$name]);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function offsetExists($name): bool {
+  #[\ReturnTypeWillChange]
+  public function offsetExists($name) {
     return isset($this->storage[$name]);
   }
 
   /**
    * Adds classes or merges them on to array of existing CSS classes.
    *
-   * @param string|array ...$args
+   * @param string|array ...
    *   CSS classes to add to the class attribute array.
    *
    * @return $this
    */
-  public function addClass(...$args) {
+  public function addClass() {
+    $args = func_get_args();
     if ($args) {
       $classes = [];
       foreach ($args as $arg) {
@@ -237,12 +240,13 @@ class Attribute implements \ArrayAccess, \IteratorAggregate, MarkupInterface {
   /**
    * Removes an attribute from an Attribute object.
    *
-   * @param string|array ...$args
+   * @param string|array ...
    *   Attributes to remove from the attribute array.
    *
    * @return $this
    */
-  public function removeAttribute(...$args) {
+  public function removeAttribute() {
+    $args = func_get_args();
     foreach ($args as $arg) {
       // Support arrays or multiple arguments.
       if (is_array($arg)) {
@@ -261,14 +265,15 @@ class Attribute implements \ArrayAccess, \IteratorAggregate, MarkupInterface {
   /**
    * Removes argument values from array of existing CSS classes.
    *
-   * @param string|array ...$args
+   * @param string|array ...
    *   CSS classes to remove from the class attribute array.
    *
    * @return $this
    */
-  public function removeClass(...$args) {
+  public function removeClass() {
     // With no class attribute, there is no need to remove.
     if (isset($this->storage['class']) && $this->storage['class'] instanceof AttributeArray) {
+      $args = func_get_args();
       $classes = [];
       foreach ($args as $arg) {
         // Merge the values passed in from the classes array.
@@ -321,7 +326,6 @@ class Attribute implements \ArrayAccess, \IteratorAggregate, MarkupInterface {
   /**
    * Implements the magic __toString() method.
    */
-  #[JsonSchema(['type' => 'string', 'description' => 'Rendered HTML element attributes'])]
   public function __toString() {
     $return = '';
     /** @var \Drupal\Core\Template\AttributeValueBase $value */
@@ -361,7 +365,8 @@ class Attribute implements \ArrayAccess, \IteratorAggregate, MarkupInterface {
   /**
    * {@inheritdoc}
    */
-  public function getIterator(): \ArrayIterator {
+  #[\ReturnTypeWillChange]
+  public function getIterator() {
     return new \ArrayIterator($this->storage);
   }
 
@@ -378,7 +383,8 @@ class Attribute implements \ArrayAccess, \IteratorAggregate, MarkupInterface {
    * @return string
    *   The safe string content.
    */
-  public function jsonSerialize(): string {
+  #[\ReturnTypeWillChange]
+  public function jsonSerialize() {
     return (string) $this;
   }
 

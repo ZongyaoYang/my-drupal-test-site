@@ -31,7 +31,7 @@ interface PoStreamInterface {
   /**
    * Set the URI of the PO stream that is going to be read or written.
    *
-   * @param string $uri
+   * @param $uri
    *   URI string to set for this stream.
    */
   public function setURI($uri);

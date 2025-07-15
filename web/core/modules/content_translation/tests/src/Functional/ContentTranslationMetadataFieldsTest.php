@@ -38,7 +38,7 @@ class ContentTranslationMetadataFieldsTest extends ContentTranslationTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setupBundle(): void {
+  protected function setupBundle() {
     parent::setupBundle();
     $this->createContentType(['type' => $this->bundle]);
   }

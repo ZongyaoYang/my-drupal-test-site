@@ -2,12 +2,6 @@
 
 /**
  * @file
- */
-
-use Drupal\views_ui\ViewUI;
-
-/**
- * @file
  * Describes hooks provided by the Views UI module.
  */
 
@@ -34,7 +28,7 @@ use Drupal\views_ui\ViewUI;
  *
  * @see \Drupal\views_ui\ViewUI::renderDisplayTop()
  */
-function hook_views_ui_display_top_alter(&$build, ViewUI $view, $display_id) {
+function hook_views_ui_display_top_alter(&$build, \Drupal\views_ui\ViewUI $view, $display_id) {
   $build['custom']['#markup'] = 'This text should always appear';
 }
 
@@ -56,7 +50,7 @@ function hook_views_ui_display_top_alter(&$build, ViewUI $view, $display_id) {
  *
  * @see \Drupal\views_ui\ViewEditForm::getDisplayTab()
  */
-function hook_views_ui_display_tab_alter(&$build, ViewUI $view, $display_id) {
+function hook_views_ui_display_tab_alter(&$build, \Drupal\views_ui\ViewUI $view, $display_id) {
   $build['custom']['#markup'] = 'This text should always appear';
 }
 

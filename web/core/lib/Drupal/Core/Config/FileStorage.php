@@ -63,7 +63,7 @@ class FileStorage implements StorageInterface {
   }
 
   /**
-   * Gets the extension used by the file storage for all configuration files.
+   * Returns the file extension used by the file storage for all configuration files.
    *
    * @return string
    *   The file extension.

@@ -88,7 +88,7 @@ class HelpTopicTwigLoaderTest extends UnitTestCase {
   /**
    * Sets up the virtual file system.
    */
-  protected function setUpVfs(): void {
+  protected function setUpVfs() {
     $content = <<<EOF
 ---
 label: Test

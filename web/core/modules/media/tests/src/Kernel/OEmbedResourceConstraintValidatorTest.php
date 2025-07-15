@@ -36,7 +36,6 @@ class OEmbedResourceConstraintValidatorTest extends KernelTestBase {
     parent::setUp();
     $this->installEntitySchema('file');
     $this->installEntitySchema('user');
-    $this->installEntitySchema('media');
   }
 
   /**
@@ -107,21 +106,13 @@ class OEmbedResourceConstraintValidatorTest extends KernelTestBase {
   protected function getValue(Media $media) {
     return new class ($media) {
 
-      /**
-       * The test entity.
-       *
-       * @var \Drupal\media\Entity\Media
-       */
       private $entity;
 
       public function __construct($entity) {
         $this->entity = $entity;
       }
 
-      /**
-       * Returns the test entity.
-       */
-      public function getEntity(): Media {
+      public function getEntity() {
         return $this->entity;
       }
 

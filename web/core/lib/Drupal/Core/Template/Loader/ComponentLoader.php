@@ -87,7 +87,7 @@ class ComponentLoader implements LoaderInterface {
       $component = $this->pluginManager->find($name);
       $path = $component->getTemplatePath();
     }
-    catch (ComponentNotFoundException) {
+    catch (ComponentNotFoundException $e) {
       return new Source('', $name, '');
     }
     $original_code = file_get_contents($path);
@@ -101,7 +101,7 @@ class ComponentLoader implements LoaderInterface {
     try {
       $component = $this->pluginManager->find($name);
     }
-    catch (ComponentNotFoundException) {
+    catch (ComponentNotFoundException $e) {
       throw new LoaderError('Unable to find component');
     }
     return implode('--', array_filter([
@@ -119,11 +119,16 @@ class ComponentLoader implements LoaderInterface {
     try {
       $component = $this->pluginManager->find($name);
     }
-    catch (ComponentNotFoundException) {
+    catch (ComponentNotFoundException $e) {
       throw new LoaderError('Unable to find component');
     }
+    // If any of the templates, or the component definition, are fresh. Then the
+    // component is fresh.
     $metadata_path = $component->getPluginDefinition()[YamlDirectoryDiscovery::FILE_KEY];
-    return $file_is_fresh($component->getTemplatePath()) && $file_is_fresh($metadata_path);
+    if ($file_is_fresh($metadata_path)) {
+      return TRUE;
+    }
+    return $file_is_fresh($component->getTemplatePath());
   }
 
 }

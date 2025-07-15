@@ -15,7 +15,7 @@ use Drupal\Tests\media\Traits\MediaTypeCreationTrait;
 use Drupal\Tests\TestFileCreationTrait;
 use Drupal\Tests\ckeditor5\Traits\CKEditor5TestTrait;
 use Drupal\ckeditor5\Plugin\Editor\CKEditor5;
-use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\ConstraintViolation;
 
 /**
  * Base class for CKEditor 5 Media integration tests.
@@ -145,7 +145,7 @@ abstract class MediaTestBase extends WebDriverTestBase {
       ],
     ])->save();
     $this->assertSame([], array_map(
-      function (ConstraintViolationInterface $v) {
+      function (ConstraintViolation $v) {
         return (string) $v->getMessage();
       },
       iterator_to_array(CKEditor5::validatePair(
@@ -255,7 +255,7 @@ abstract class MediaTestBase extends WebDriverTestBase {
    * @return int
    *   The size of the bytes transferred.
    */
-  protected function getLastPreviewRequestTransferSize(): int {
+  protected function getLastPreviewRequestTransferSize() {
     $javascript = <<<JS
 (function(){
   return window.performance

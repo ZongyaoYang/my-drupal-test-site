@@ -22,7 +22,7 @@ class TextItemBaseTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = ['filter', 'text', 'entity_test', 'field', 'user'];
+  protected static $modules = ['filter', 'text', 'entity_test', 'field'];
 
   /**
    * Tests creation of sample values.
@@ -67,8 +67,6 @@ class TextItemBaseTest extends KernelTestBase {
    * @covers ::calculateDependencies
    */
   public function testCalculateDependencies(): void {
-    $this->installEntitySchema('user');
-    $this->installEntitySchema('entity_test');
     $format = FilterFormat::create([
       'format' => 'test_format',
       'name' => 'Test format',

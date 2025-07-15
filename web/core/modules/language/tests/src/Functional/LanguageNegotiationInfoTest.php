@@ -45,7 +45,6 @@ class LanguageNegotiationInfoTest extends BrowserTestBase {
    * Returns the configurable language manager.
    *
    * @return \Drupal\language\ConfigurableLanguageManager
-   *   The language manager.
    */
   protected function languageManager() {
     return $this->container->get('language_manager');
@@ -169,7 +168,7 @@ class LanguageNegotiationInfoTest extends BrowserTestBase {
   /**
    * Check that language negotiation for fixed types matches the stored one.
    */
-  protected function checkFixedLanguageTypes(): void {
+  protected function checkFixedLanguageTypes() {
     $configurable = $this->languageManager()->getLanguageTypes();
     foreach ($this->languageManager()->getDefinedLanguageTypesInfo() as $type => $info) {
       if (!in_array($type, $configurable) && isset($info['fixed'])) {
@@ -214,7 +213,7 @@ class LanguageNegotiationInfoTest extends BrowserTestBase {
    * @return bool
    *   TRUE if the specified language type is configurable, FALSE otherwise.
    */
-  protected function isLanguageTypeConfigurable($type): bool {
+  protected function isLanguageTypeConfigurable($type) {
     $configurable_types = $this->config('language.types')->get('configurable');
     return in_array($type, $configurable_types);
   }

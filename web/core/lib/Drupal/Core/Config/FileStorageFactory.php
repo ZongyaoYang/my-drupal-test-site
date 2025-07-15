@@ -12,8 +12,7 @@ class FileStorageFactory {
   /**
    * Returns a FileStorage object working with the sync config directory.
    *
-   * @return \Drupal\Core\Config\FileStorage
-   *   The file storage object for the configuration sync directory.
+   * @return \Drupal\Core\Config\FileStorage FileStorage
    *
    * @throws \Drupal\Core\Config\ConfigDirectoryNotDefinedException
    *   In case the sync directory does not exist or is not defined in

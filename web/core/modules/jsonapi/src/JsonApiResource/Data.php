@@ -69,7 +69,8 @@ abstract class Data implements \IteratorAggregate, \Countable {
    * @return \ArrayIterator
    *   An \ArrayIterator instance
    */
-  public function getIterator(): \ArrayIterator {
+  #[\ReturnTypeWillChange]
+  public function getIterator() {
     return new \ArrayIterator($this->data);
   }
 
@@ -79,7 +80,8 @@ abstract class Data implements \IteratorAggregate, \Countable {
    * @return int
    *   The number of parameters
    */
-  public function count(): int {
+  #[\ReturnTypeWillChange]
+  public function count() {
     return count($this->data);
   }
 
@@ -100,8 +102,8 @@ abstract class Data implements \IteratorAggregate, \Countable {
   /**
    * Returns the collection as an array.
    *
-   * @return \Drupal\jsonapi\JsonApiResource\ResourceIdentifierInterface[]
-   *   Array of contained data.
+   * @return \Drupal\Core\Entity\EntityInterface[]
+   *   The array of entities.
    */
   public function toArray() {
     return $this->data;

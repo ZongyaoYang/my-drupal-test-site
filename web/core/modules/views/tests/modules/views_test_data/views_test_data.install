@@ -5,19 +5,17 @@
  * Install, update, and uninstall functions for the Views Test module.
  */
 
-declare(strict_types=1);
-
 /**
  * Implements hook_schema().
  */
-function views_test_data_schema(): array {
+function views_test_data_schema() {
   return \Drupal::state()->get('views_test_data_schema');
 }
 
 /**
  * Implements hook_install().
  */
-function views_test_data_install(): void {
+function views_test_data_install() {
   // Add the marquee tag to possible html elements to test the field handler.
   $values = [
     'div' => 'DIV',

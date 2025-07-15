@@ -2,6 +2,7 @@
 
 /**
  * @file
+ * Preprocessors and helper functions to make theming easier.
  */
 
 use Drupal\Component\Utility\Html;
@@ -19,7 +20,7 @@ use Drupal\Core\Utility\TableSort;
  *   An associative array containing:
  *   - view: The ViewExecutable object.
  */
-function template_preprocess_views_view(&$variables): void {
+function template_preprocess_views_view(&$variables) {
   $view = $variables['view'];
   $id = $view->storage->id();
 
@@ -34,10 +35,17 @@ function template_preprocess_views_view(&$variables): void {
 
   $css_class = $view->display_handler->getOption('css_class');
   if (!empty($css_class)) {
+    // Views uses its own sanitization method. This is preserved to keep
+    // backwards compatibility.
+    // @todo https://www.drupal.org/project/drupal/issues/2977950 Decide what to
+    //   do with the backwards compatibility layer.
+    $bc_classes = explode(' ', preg_replace('/[^a-zA-Z0-9- ]/', '-', $css_class));
+    // Sanitize the classes using the classes using the proper API.
     $sanitized_classes = array_map('\Drupal\Component\Utility\Html::cleanCssIdentifier', explode(' ', $css_class));
+    $view_classes = array_unique(array_merge($bc_classes, $sanitized_classes));
     // Merge the view display classes into any existing classes if they exist.
-    $variables['attributes']['class'] = !empty($variables['attributes']['class']) ? array_merge($variables['attributes']['class'], $sanitized_classes) : $sanitized_classes;
-    $variables['css_class'] = implode(' ', $sanitized_classes);
+    $variables['attributes']['class'] = !empty($variables['attributes']['class']) ? array_merge($variables['attributes']['class'], $view_classes) : $view_classes;
+    $variables['css_class'] = implode(' ', $view_classes);
   }
 
   // contextual_preprocess() only works on render elements, and since this theme
@@ -87,7 +95,7 @@ function template_preprocess_views_view(&$variables): void {
  *       visually distinct.
  *   - row: An array containing information about the current row.
  */
-function template_preprocess_views_view_fields(&$variables): void {
+function template_preprocess_views_view_fields(&$variables) {
   $view = $variables['view'];
 
   // Loop through the fields for this view.
@@ -210,7 +218,7 @@ function template_preprocess_views_view_fields(&$variables): void {
  *   - content: The content to be grouped.
  *   - title: The group heading.
  */
-function template_preprocess_views_view_grouping(&$variables): void {
+function template_preprocess_views_view_grouping(&$variables) {
   $variables['content'] = $variables['view']->style_plugin->renderGroupingSets($variables['rows'], $variables['grouping_level']);
 }
 
@@ -226,7 +234,7 @@ function template_preprocess_views_view_grouping(&$variables): void {
  *     field.
  *   - view: Instance of the ViewExecutable object for the parent view.
  */
-function template_preprocess_views_view_field(&$variables): void {
+function template_preprocess_views_view_field(&$variables) {
   $variables['output'] = $variables['field']->advancedRender($variables['row']);
 }
 
@@ -242,7 +250,7 @@ function template_preprocess_views_view_field(&$variables): void {
  *   - view: A ViewExecutable object.
  *   - rows: The raw row data.
  */
-function template_preprocess_views_view_summary(&$variables): void {
+function template_preprocess_views_view_summary(&$variables) {
   /** @var \Drupal\views\ViewExecutable $view */
   $view = $variables['view'];
   $argument = $view->argument[$view->build_info['summary_level']];
@@ -253,12 +261,15 @@ function template_preprocess_views_view_summary(&$variables): void {
     $url_options['query'] = $view->exposed_raw_input;
   }
 
-  $currentPath = \Drupal::service('path.current')->getPath();
   $active_urls = [
     // Force system path.
-    Url::fromUserInput($currentPath, ['alias' => TRUE])->toString(),
+    Url::fromRoute('<current>', [], ['alias' => TRUE])->toString(),
+    // Force system path.
+    Url::fromRouteMatch(\Drupal::routeMatch())->setOption('alias', TRUE)->toString(),
     // Could be an alias.
-    Url::fromUserInput($currentPath)->toString(),
+    Url::fromRoute('<current>')->toString(),
+    // Could be an alias.
+    Url::fromRouteMatch(\Drupal::routeMatch())->toString(),
   ];
   $active_urls = array_combine($active_urls, $active_urls);
 
@@ -299,7 +310,7 @@ function template_preprocess_views_view_summary(&$variables): void {
 
         $url->setRouteParameters($parameters);
       }
-      catch (Exception) {
+      catch (Exception $e) {
         // If the given route doesn't exist, default to <front>
         $url = Url::fromRoute('<front>');
       }
@@ -327,7 +338,7 @@ function template_preprocess_views_view_summary(&$variables): void {
  *     - separator: A string to be placed between inline fields to keep them
  *       visually distinct.
  */
-function template_preprocess_views_view_summary_unformatted(&$variables): void {
+function template_preprocess_views_view_summary_unformatted(&$variables) {
   /** @var \Drupal\views\ViewExecutable $view */
   $view = $variables['view'];
   $argument = $view->argument[$view->build_info['summary_level']];
@@ -339,12 +350,11 @@ function template_preprocess_views_view_summary_unformatted(&$variables): void {
   }
 
   $count = 0;
-  $currentPath = \Drupal::service('path.current')->getPath();
   $active_urls = [
     // Force system path.
-    Url::fromUserInput($currentPath, ['alias' => TRUE])->toString(),
+    Url::fromRoute('<current>', [], ['alias' => TRUE])->toString(),
     // Could be an alias.
-    Url::fromUserInput($currentPath)->toString(),
+    Url::fromRoute('<current>')->toString(),
   ];
   $active_urls = array_combine($active_urls, $active_urls);
 
@@ -386,7 +396,7 @@ function template_preprocess_views_view_summary_unformatted(&$variables): void {
 
         $url->setRouteParameters($parameters);
       }
-      catch (Exception) {
+      catch (Exception $e) {
         // If the given route doesn't exist, default to <front>
         $url = Url::fromRoute('<front>');
       }
@@ -411,14 +421,13 @@ function template_preprocess_views_view_summary_unformatted(&$variables): void {
  *   - view: A ViewExecutable object.
  *   - rows: The raw row data.
  */
-function template_preprocess_views_view_table(&$variables): void {
+function template_preprocess_views_view_table(&$variables) {
   $view = $variables['view'];
 
   // We need the raw data for this grouping, which is passed in
   // as $variables['rows'].
   // However, the template also needs to use for the rendered fields.  We
-  // therefore swap the raw data out to a new variable and reset
-  // $variables['rows']
+  // therefore swap the raw data out to a new variable and reset $variables['rows']
   // so that it can get rebuilt.
   // Store rows so that they may be used by further preprocess functions.
   $result = $variables['result'] = $variables['rows'];
@@ -689,12 +698,6 @@ function template_preprocess_views_view_table(&$variables): void {
     // This is needed to target tables constructed by this function.
     $variables['responsive'] = TRUE;
   }
-
-  // Fetch classes from handler options.
-  if ($handler->options['class']) {
-    $class = explode(' ', $handler->options['class']);
-    $variables['attributes']['class'] = array_map('\Drupal\Component\Utility\Html::cleanCssIdentifier', $class);
-  }
 }
 
 /**
@@ -707,7 +710,7 @@ function template_preprocess_views_view_table(&$variables): void {
  *   - view: The view object.
  *   - rows: An array of row items. Each row is an array of content.
  */
-function template_preprocess_views_view_grid(&$variables): void {
+function template_preprocess_views_view_grid(&$variables) {
   $options = $variables['options'] = $variables['view']->style_plugin->options;
   $horizontal = ($options['alignment'] === 'horizontal');
 
@@ -808,7 +811,7 @@ function template_preprocess_views_view_grid(&$variables): void {
  *   - view: The view object.
  *   - rows: An array of row items. Each row is an array of content.
  */
-function template_preprocess_views_view_grid_responsive(&$variables): void {
+function template_preprocess_views_view_grid_responsive(&$variables) {
   $variables['options'] = $variables['view']->style_plugin->options;
   $view = $variables['view'];
 
@@ -839,7 +842,7 @@ function template_preprocess_views_view_grid_responsive(&$variables): void {
  *   - view: The view object.
  *   - rows: An array of row items. Each row is an array of content.
  */
-function template_preprocess_views_view_unformatted(&$variables): void {
+function template_preprocess_views_view_unformatted(&$variables) {
   $view = $variables['view'];
   $rows = $variables['rows'];
   $style = $view->style_plugin;
@@ -865,24 +868,16 @@ function template_preprocess_views_view_unformatted(&$variables): void {
  *   An associative array containing:
  *   - view: A View object.
  */
-function template_preprocess_views_view_list(&$variables): void {
+function template_preprocess_views_view_list(&$variables) {
   $handler = $variables['view']->style_plugin;
 
   // Fetch classes from handler options.
-  $variables['list']['attributes'] = new Attribute();
   if ($handler->options['class']) {
     $class = explode(' ', $handler->options['class']);
     $class = array_map('\Drupal\Component\Utility\Html::cleanCssIdentifier', $class);
 
     // Initialize a new attribute class for $class.
-    $variables['list']['attributes']->addClass($class);
-  }
-
-  $type = $handler->options['type'];
-
-  if ($type === 'ol') {
-    $pager = $variables['view']->getPager();
-    $variables['list']['attributes']['start'] = $variables['view']->getCurrentPage() * $pager->options['items_per_page'] + 1;
+    $variables['list']['attributes'] = new Attribute(['class' => $class]);
   }
 
   // Fetch wrapper classes from handler options.
@@ -891,7 +886,7 @@ function template_preprocess_views_view_list(&$variables): void {
     $variables['attributes']['class'] = array_map('\Drupal\Component\Utility\Html::cleanCssIdentifier', $wrapper_class);
   }
 
-  $variables['list']['type'] = $type;
+  $variables['list']['type'] = $handler->options['type'];
 
   template_preprocess_views_view_unformatted($variables);
 }
@@ -906,7 +901,7 @@ function template_preprocess_views_view_list(&$variables): void {
  *   - view: A ViewExecutable object.
  *   - rows: The raw row data.
  */
-function template_preprocess_views_view_rss(&$variables): void {
+function template_preprocess_views_view_rss(&$variables) {
   $view = $variables['view'];
   $items = $variables['rows'];
   $style = $view->style_plugin;
@@ -944,7 +939,7 @@ function template_preprocess_views_view_rss(&$variables): void {
  *   An associative array containing:
  *   - row: The raw results rows.
  */
-function template_preprocess_views_view_row_rss(&$variables): void {
+function template_preprocess_views_view_row_rss(&$variables) {
   $item = $variables['row'];
   $variables['title'] = $item->title;
   $variables['link'] = $item->link;
@@ -976,7 +971,7 @@ function template_preprocess_views_view_row_rss(&$variables): void {
  *   - view: A ViewExecutable object.
  *   - rows: The raw row data.
  */
-function template_preprocess_views_view_opml(&$variables): void {
+function template_preprocess_views_view_opml(&$variables) {
   $view = $variables['view'];
   $items = $variables['rows'];
 
@@ -1005,7 +1000,7 @@ function template_preprocess_views_view_opml(&$variables): void {
  *   An associative array containing:
  *   - row: The raw results rows.
  */
-function template_preprocess_views_view_row_opml(&$variables): void {
+function template_preprocess_views_view_row_opml(&$variables) {
   $item = $variables['row'];
 
   $variables['attributes'] = new Attribute($item);
@@ -1020,7 +1015,7 @@ function template_preprocess_views_view_row_opml(&$variables): void {
  *   An associative array containing:
  *   - form: A render element representing the form.
  */
-function template_preprocess_views_exposed_form(&$variables): void {
+function template_preprocess_views_exposed_form(&$variables) {
   $form = &$variables['form'];
 
   if (!empty($form['q'])) {
@@ -1050,7 +1045,7 @@ function template_preprocess_views_exposed_form(&$variables): void {
  *   - parameters: Any extra GET parameters that should be retained, such as
  *     exposed input.
  */
-function template_preprocess_views_mini_pager(&$variables): void {
+function template_preprocess_views_mini_pager(&$variables) {
   /** @var \Drupal\Core\Pager\PagerManagerInterface $pager_manager */
   $pager_manager = \Drupal::service('pager.manager');
 

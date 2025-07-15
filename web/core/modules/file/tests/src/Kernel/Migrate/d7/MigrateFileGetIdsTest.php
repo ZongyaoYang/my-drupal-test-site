@@ -19,7 +19,7 @@ class MigrateFileGetIdsTest extends MigrateFileTest {
   /**
    * {@inheritdoc}
    */
-  protected function getFileMigrationInfo(): array {
+  protected function getFileMigrationInfo() {
     $migration_info = parent::getFileMigrationInfo();
     $migration_info['plugin_id'] = 'd7_file_used';
     return $migration_info;

@@ -24,7 +24,7 @@ class FieldConfigAccessControlHandler extends EntityAccessControlHandler {
     // a certain field storage config entity, it should also be allowed for all
     // associated field config entities.
     // @see \Drupal\Core\Field\FieldDefinitionInterface
-    /** @var \Drupal\field\FieldConfigInterface $entity */
+    /** \Drupal\field\FieldConfigInterface $entity */
     $field_storage_entity = $entity->getFieldStorageDefinition();
     return $field_storage_entity->access($operation, $account, TRUE);
   }

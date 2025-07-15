@@ -60,7 +60,7 @@ class PathValidator implements PathValidatorInterface {
    * @param \Drupal\Core\Session\AccountInterface $account
    *   The current user.
    * @param \Drupal\Core\PathProcessor\InboundPathProcessorInterface $path_processor
-   *   The path processor.
+   *   The path processor;
    */
   public function __construct(AccessAwareRouterInterface $access_aware_router, UrlMatcherInterface $access_unaware_router, AccountInterface $account, InboundPathProcessorInterface $path_processor) {
     $this->accessAwareRouter = $access_aware_router;
@@ -159,23 +159,23 @@ class PathValidator implements PathValidatorInterface {
       $router = $this->accessAwareRouter;
     }
 
-    $initial_request_context = $router->getContext() ?: new RequestContext();
+    $initial_request_context = $router->getContext() ? $router->getContext() : new RequestContext();
     $path = $this->pathProcessor->processInbound('/' . $path, $request);
 
     try {
       $router->setContext((new RequestContext())->fromRequest($request));
       $result = $router->match($path);
     }
-    catch (ResourceNotFoundException) {
+    catch (ResourceNotFoundException $e) {
       $result = FALSE;
     }
-    catch (ParamNotConvertedException) {
+    catch (ParamNotConvertedException $e) {
       $result = FALSE;
     }
-    catch (AccessDeniedHttpException) {
+    catch (AccessDeniedHttpException $e) {
       $result = FALSE;
     }
-    catch (MethodNotAllowedException) {
+    catch (MethodNotAllowedException $e) {
       $result = FALSE;
     }
     catch (BadRequestException) {

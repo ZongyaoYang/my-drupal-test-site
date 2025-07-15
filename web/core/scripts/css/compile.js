@@ -1,5 +1,5 @@
 const log = require('./log');
-const fs = require('node:fs');
+const fs = require('fs');
 const postcss = require('postcss');
 const postcssImport = require('postcss-import');
 const postcssHeader = require('postcss-header');
@@ -33,8 +33,6 @@ module.exports = (filePath, callback) => {
           'has-pseudo-class': false,
           'image-set-function': false,
           'prefers-color-scheme-query': false,
-          'content-alt-text': false,
-          'nesting-rules': { edition: '2021' },
         }
       }),
       postcssPixelsToRem({

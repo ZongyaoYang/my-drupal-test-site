@@ -211,7 +211,6 @@ class ViewsTest extends UnitTestCase {
    * Data provider for testGetApplicableViews.
    *
    * @return array
-   *   An array of test data.
    */
   public static function providerTestGetApplicableViews() {
     return [

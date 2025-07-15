@@ -9,7 +9,6 @@ use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
 use Drupal\Core\KeyValueStore\KeyValueStoreInterface;
-use Drupal\migrate\Event\MigrateRollbackEvent;
 use Drupal\migrate\MigrateException;
 use Drupal\migrate\MigrateExecutable;
 use Drupal\migrate\MigrateSkipRowException;
@@ -449,30 +448,49 @@ class MigrateSourceTest extends MigrateTestCase {
     return new MigrateExecutable($migration, $message, $event_dispatcher);
   }
 
+}
+
+/**
+ * Stubbed source plugin for testing base class implementations.
+ */
+class StubSourcePlugin extends SourcePluginBase {
+
   /**
-   * @covers ::preRollback
+   * Helper for setting internal module handler implementation.
+   *
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The module handler.
    */
-  public function testPreRollback(): void {
-    $this->migrationConfiguration['id'] = 'test_migration';
-    $plugin_id = 'test_migration';
-    $migration = $this->getMigration();
+  public function setModuleHandler(ModuleHandlerInterface $module_handler) {
+    $this->moduleHandler = $module_handler;
+  }
 
-    // Verify that preRollback() sets the high water mark to NULL.
-    $key_value = $this->createMock(KeyValueStoreInterface::class);
-    $key_value->expects($this->once())
-      ->method('set')
-      ->with($plugin_id, NULL);
-    $key_value_factory = $this->createMock(KeyValueFactoryInterface::class);
-    $key_value_factory->expects($this->once())
-      ->method('get')
-      ->with('migrate:high_water')
-      ->willReturn($key_value);
-    $container = new ContainerBuilder();
-    $container->set('keyvalue', $key_value_factory);
-    \Drupal::setContainer($container);
+  /**
+   * {@inheritdoc}
+   */
+  public function fields() {
+    return [];
+  }
 
-    $source = new StubSourceGeneratorPlugin([], $plugin_id, [], $migration);
-    $source->preRollback(new MigrateRollbackEvent($migration));
+  /**
+   * {@inheritdoc}
+   */
+  public function __toString() {
+    return '';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getIds() {
+    return [];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function initializeIterator() {
+    return [];
   }
 
 }
@@ -524,10 +542,15 @@ class StubSourceGeneratorPlugin extends StubSourcePlugin {
   /**
    * {@inheritdoc}
    */
-  protected function initializeIterator(): \Generator {
-    yield 'foo';
-    yield 'bar';
-    yield 'iggy';
+  protected function initializeIterator() {
+    $data = [
+      ['title' => 'foo'],
+      ['title' => 'bar'],
+      ['title' => 'iggy'],
+    ];
+    foreach ($data as $row) {
+      yield $row;
+    }
   }
 
 }

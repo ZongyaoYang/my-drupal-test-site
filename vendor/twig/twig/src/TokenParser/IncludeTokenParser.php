@@ -30,7 +30,7 @@ class IncludeTokenParser extends AbstractTokenParser
 {
     public function parse(Token $token): Node
     {
-        $expr = $this->parser->parseExpression();
+        $expr = $this->parser->getExpressionParser()->parseExpression();
 
         [$variables, $only, $ignoreMissing] = $this->parseArguments();
 
@@ -53,7 +53,7 @@ class IncludeTokenParser extends AbstractTokenParser
 
         $variables = null;
         if ($stream->nextIf(Token::NAME_TYPE, 'with')) {
-            $variables = $this->parser->parseExpression();
+            $variables = $this->parser->getExpressionParser()->parseExpression();
         }
 
         $only = false;

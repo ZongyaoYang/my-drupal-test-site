@@ -1,11 +1,7 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\batch_test\Form;
 
-use Drupal\batch_test\BatchTestDefinitions;
-use Drupal\batch_test\BatchTestHelper;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 
@@ -31,14 +27,14 @@ class BatchTestSimpleForm extends FormBase {
       '#type' => 'select',
       '#title' => 'Choose batch',
       '#options' => [
-        'batch0' => 'batch 0',
-        'batch1' => 'batch 1',
-        'batch2' => 'batch 2',
-        'batch3' => 'batch 3',
-        'batch4' => 'batch 4',
-        'batch6' => 'batch 6',
-        'batch7' => 'batch 7',
-        'batch8' => 'batch 8',
+        'batch_0' => 'batch 0',
+        'batch_1' => 'batch 1',
+        'batch_2' => 'batch 2',
+        'batch_3' => 'batch 3',
+        'batch_4' => 'batch 4',
+        'batch_6' => 'batch 6',
+        'batch_7' => 'batch 7',
+        'batch_8' => 'batch 8',
       ],
       '#multiple' => TRUE,
     ];
@@ -54,12 +50,11 @@ class BatchTestSimpleForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $batch_test_definitions = new BatchTestDefinitions();
-    $batch_test_helper = new BatchTestHelper();
-    $batch_test_helper->stack(NULL, TRUE);
+    batch_test_stack(NULL, TRUE);
 
     foreach ($form_state->getValue('batch') as $batch) {
-      batch_set($batch_test_definitions->$batch());
+      $function = '_batch_test_' . $batch;
+      batch_set($function());
     }
 
     $form_state->setRedirect('batch_test.redirect');

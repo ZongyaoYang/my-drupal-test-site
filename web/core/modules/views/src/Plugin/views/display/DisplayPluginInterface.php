@@ -74,7 +74,6 @@ interface DisplayPluginInterface {
    * Whether the display allows the use of AJAX or not.
    *
    * @return bool
-   *   TRUE if AJAX is allowed, FALSE otherwise.
    */
   public function usesAJAX();
 
@@ -82,7 +81,6 @@ interface DisplayPluginInterface {
    * Whether the display is actually using AJAX or not.
    *
    * @return bool
-   *   TRUE if AJAX is enabled, FALSE otherwise.
    */
   public function ajaxEnabled();
 
@@ -98,7 +96,6 @@ interface DisplayPluginInterface {
    * Whether the display allows the use of a pager or not.
    *
    * @return bool
-   *   TRUE if a pager is allowed, FALSE otherwise.
    */
   public function usesPager();
 
@@ -106,7 +103,6 @@ interface DisplayPluginInterface {
    * Whether the display is using a pager or not.
    *
    * @return bool
-   *   TRUE if a pager is in use, FALSE otherwise.
    */
   public function isPagerEnabled();
 
@@ -114,7 +110,6 @@ interface DisplayPluginInterface {
    * Whether the display allows the use of a 'more' link or not.
    *
    * @return bool
-   *   TRUE if a 'more' link is allowed, FALSE otherwise.
    */
   public function usesMore();
 
@@ -122,12 +117,11 @@ interface DisplayPluginInterface {
    * Whether the display is using the 'more' link or not.
    *
    * @return bool
-   *   TRUE if the 'more' link is in use, FALSE otherwise.
    */
   public function isMoreEnabled();
 
   /**
-   * Does the display have group by enabled?
+   * Does the display have groupby enabled?
    */
   public function useGroupBy();
 
@@ -145,7 +139,6 @@ interface DisplayPluginInterface {
    * Determines whether this display can use attachments.
    *
    * @return bool
-   *   TRUE if attachments can be used, FALSE otherwise.
    */
   public function acceptAttachments();
 
@@ -153,7 +146,6 @@ interface DisplayPluginInterface {
    * Returns whether the display can use attachments.
    *
    * @return bool
-   *   TRUE if attachments are supported, FALSE otherwise.
    */
   public function usesAttachments();
 
@@ -242,7 +234,6 @@ interface DisplayPluginInterface {
    * in both cases.
    *
    * @return \Drupal\views\Plugin\views\display\DisplayRouterInterface|null
-   *   The linked display or NULL if none exists.
    */
   public function getRoutedDisplay();
 
@@ -250,7 +241,6 @@ interface DisplayPluginInterface {
    * Returns a URL to $this display or its configured linked display.
    *
    * @return \Drupal\Core\Url|null
-   *   The URL to the display or NULL if none exists.
    */
   public function getUrl();
 
@@ -271,7 +261,6 @@ interface DisplayPluginInterface {
    * Determines if the display's style uses fields.
    *
    * @return bool
-   *   TRUE if fields are used, FALSE otherwise.
    */
   public function usesFields();
 
@@ -282,7 +271,6 @@ interface DisplayPluginInterface {
    *   The type of the plugin.
    *
    * @return \Drupal\views\Plugin\views\ViewsPluginInterface
-   *   The plugin instance.
    */
   public function getPlugin($type);
 
@@ -295,7 +283,6 @@ interface DisplayPluginInterface {
    * Get a full array of handlers for $type. This caches them.
    *
    * @return \Drupal\views\Plugin\views\ViewsHandlerInterface[]
-   *   An array of handlers for the specified type.
    */
   public function getHandlers($type);
 
@@ -411,17 +398,15 @@ interface DisplayPluginInterface {
   public function render();
 
   /**
-   * Render API callback: Performs view display rendering.
+   * #pre_render callback for view display rendering.
    *
-   * This function is assigned as a #pre_render callback.
+   * @see self::render()
    *
    * @param array $element
-   *   The element to #pre_render.
+   *   The element to #pre_render
    *
    * @return array
    *   The processed element.
-   *
-   * @see self::render()
    */
   public function elementPreRender(array $element);
 
@@ -432,7 +417,7 @@ interface DisplayPluginInterface {
    *   Identifier of the specific area to render.
    * @param bool $empty
    *   (optional) Indicator whether or not the view result is empty. Defaults to
-   *   FALSE.
+   *   FALSE
    *
    * @return array
    *   A render array for the given area.
@@ -571,8 +556,8 @@ interface DisplayPluginInterface {
   /**
    * Is the output of the view empty.
    *
-   * If a view has no result and neither the empty, nor the footer nor the
-   * header does show anything return FALSE.
+   * If a view has no result and neither the empty, nor the footer nor the header
+   * does show anything return FALSE.
    *
    * @return bool
    *   Returns TRUE if the output is empty, else FALSE.
@@ -629,7 +614,6 @@ interface DisplayPluginInterface {
    * Gets the display extenders.
    *
    * @return \Drupal\views\Plugin\views\display_extender\DisplayExtenderPluginBase[]
-   *   An array of display extender plugins.
    */
   public function getExtenders();
 

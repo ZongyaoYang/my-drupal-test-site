@@ -51,7 +51,7 @@ class PagerTest extends WizardTestBase {
    * @param bool $pager
    *   A boolean for whether the View created should use a pager.
    */
-  protected function createViewAtPath($path, $pager = TRUE): void {
+  protected function createViewAtPath($path, $pager = TRUE) {
     $view = [];
     $view['label'] = $this->randomMachineName(16);
     $view['id'] = $this->randomMachineName(16);

@@ -18,7 +18,6 @@ interface ViewsPluginInterface extends PluginInspectionInterface, DerivativeInsp
    * Returns the plugin provider.
    *
    * @return string
-   *   The provider of the plugin.
    */
   public function getProvider();
 

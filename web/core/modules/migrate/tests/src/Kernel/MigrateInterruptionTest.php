@@ -74,7 +74,7 @@ class MigrateInterruptionTest extends KernelTestBase {
    * @param string $name
    *   The event name.
    */
-  public function postRowSaveEventRecorder(MigratePostRowSaveEvent $event, $name): void {
+  public function postRowSaveEventRecorder(MigratePostRowSaveEvent $event, $name) {
     $event->getMigration()->interruptMigration(MigrationInterface::RESULT_INCOMPLETE);
   }
 

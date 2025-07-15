@@ -127,7 +127,7 @@ class FieldTypePluginManagerTest extends FieldKernelTestBase {
   /**
    * Enable all core modules.
    */
-  protected function enableAllCoreModules(): void {
+  protected function enableAllCoreModules() {
     $listing = new ExtensionDiscovery($this->root);
     $module_list = $listing->scan('module', FALSE);
     /** @var \Drupal\Core\Extension\ModuleHandlerInterface $module_handler */

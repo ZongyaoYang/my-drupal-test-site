@@ -25,13 +25,6 @@ final class NavigationServiceProvider implements ServiceProviderInterface {
         ->register('navigation.shortcut_lazy_builder', ShortcutLazyBuilder::class)
         ->addArgument(new Reference('shortcut.lazy_builders'));
     }
-
-    // If Workspaces module service is available, register our own service.
-    if ($container->has('workspaces.lazy_builders')) {
-      $container
-        ->register('navigation.workspaces_lazy_builders', WorkspacesLazyBuilder::class)
-        ->addArgument(new Reference('workspaces.manager'));
-    }
   }
 
 }

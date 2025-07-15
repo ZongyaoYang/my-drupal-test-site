@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\layout_builder_form_block_test\Plugin\Block;
 
 use Drupal\Core\Block\Attribute\Block;

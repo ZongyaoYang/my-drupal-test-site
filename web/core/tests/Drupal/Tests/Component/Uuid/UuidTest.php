@@ -40,7 +40,6 @@ class UuidTest extends TestCase {
    * Data provider for UUID instance tests.
    *
    * @return array
-   *   An array of UUID generator instances.
    */
   public static function providerUuidInstances() {
 

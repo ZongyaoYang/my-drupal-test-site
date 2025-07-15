@@ -12,7 +12,6 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Routing\RouteMatch;
 use Drupal\Tests\UnitTestCase;
-use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Routing\Route;
 
 /**
@@ -55,10 +54,7 @@ class EntityFormTest extends UnitTestCase {
   public function testFormId($expected, $definition): void {
     $this->entityType->set('entity_keys', ['bundle' => $definition['bundle']]);
 
-    $entity = $this->getMockBuilder(StubEntityBase::class)
-      ->setConstructorArgs([[], $definition['entity_type']])
-      ->onlyMethods(['getEntityType', 'bundle'])
-      ->getMock();
+    $entity = $this->getMockForAbstractClass('Drupal\Core\Entity\EntityBase', [[], $definition['entity_type']], '', TRUE, TRUE, TRUE, ['getEntityType', 'bundle']);
 
     $entity->expects($this->any())
       ->method('getEntityType')
@@ -245,10 +241,10 @@ class EntityFormTest extends UnitTestCase {
   /**
    * Sets up the storage accessed via the entity type manager in the form.
    *
-   * @return \Prophecy\Prophecy\ObjectProphecy<\Drupal\Core\Entity\EntityStorageInterface>
+   * @return \Prophecy\Prophecy\ObjectProphecy
    *   The storage prophecy.
    */
-  protected function setUpStorage(): ObjectProphecy {
+  protected function setUpStorage() {
     $storage = $this->prophesize(EntityStorageInterface::class);
 
     $entity_type_manager = $this->prophesize(EntityTypeManagerInterface::class);

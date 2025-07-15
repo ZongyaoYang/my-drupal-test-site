@@ -67,12 +67,9 @@ class ProviderFilterDecorator implements DiscoveryInterface {
     return array_filter($definitions, function ($definition) use ($provider_exists) {
       // Plugin definitions can be objects (for example, Typed Data) those will
       // become empty array here and cause no problems.
-      $definition = (array) $definition + [
-        'provider' => [],
-        'providers' => [],
-      ];
+      $definition = (array) $definition + ['provider' => []];
       // There can be one or many providers, handle them as multiple always.
-      $providers = $definition['providers'] ?: (array) $definition['provider'];
+      $providers = (array) $definition['provider'];
       return count($providers) == count(array_filter($providers, $provider_exists));
     });
   }

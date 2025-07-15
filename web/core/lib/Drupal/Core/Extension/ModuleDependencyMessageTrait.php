@@ -49,8 +49,6 @@ trait ModuleDependencyMessageTrait {
         ]);
       }
     }
-
-    return NULL;
   }
 
 }

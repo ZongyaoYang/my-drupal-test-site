@@ -23,19 +23,19 @@ class Rss extends RssPluginBase {
   /**
    * {@inheritdoc}
    */
-  // phpcs:ignore Drupal.NamingConventions.ValidVariableName.LowerCamelName, Drupal.Commenting.VariableComment.Missing
+  // phpcs:ignore Drupal.NamingConventions.ValidVariableName.LowerCamelName
   protected $base_table = 'comment_field_data';
 
   /**
    * {@inheritdoc}
    */
-  // phpcs:ignore Drupal.NamingConventions.ValidVariableName.LowerCamelName, Drupal.Commenting.VariableComment.Missing
+  // phpcs:ignore Drupal.NamingConventions.ValidVariableName.LowerCamelName
   public string $base_field = 'cid';
 
   /**
    * The field alias.
    */
-  // phpcs:ignore Drupal.NamingConventions.ValidVariableName.LowerCamelName, Drupal.Commenting.VariableComment.Missing
+  // phpcs:ignore Drupal.NamingConventions.ValidVariableName.LowerCamelName
   public string $field_alias;
 
   /**
@@ -48,9 +48,6 @@ class Rss extends RssPluginBase {
    */
   protected $entityTypeId = 'comment';
 
-  /**
-   * {@inheritdoc}
-   */
   public function preRender($result) {
     $cids = [];
 
@@ -71,9 +68,6 @@ class Rss extends RssPluginBase {
     return $options;
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function render($row) {
     global $base_url;
 

@@ -15,8 +15,6 @@ use Drupal\text\Plugin\migrate\field\d7\TextField;
 class TextFieldTest extends UnitTestCase {
 
   /**
-   * The migration field plugin.
-   *
    * @var \Drupal\migrate_drupal\Plugin\MigrateFieldInterface
    */
   protected $plugin;

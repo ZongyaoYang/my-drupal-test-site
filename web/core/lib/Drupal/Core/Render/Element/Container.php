@@ -49,15 +49,16 @@ class Container extends RenderElementBase {
    * {@inheritdoc}
    */
   public function getInfo() {
+    $class = static::class;
     return [
       '#optional' => FALSE,
       '#process' => [
-        [static::class, 'processGroup'],
-        [static::class, 'processContainer'],
+        [$class, 'processGroup'],
+        [$class, 'processContainer'],
       ],
       '#pre_render' => [
-        [static::class, 'preRenderGroup'],
-        [static::class, 'preRenderContainer'],
+        [$class, 'preRenderGroup'],
+        [$class, 'preRenderContainer'],
       ],
       '#theme_wrappers' => ['container'],
     ];

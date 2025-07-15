@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\migrate_drupal\Traits;
 
-/**
- * Test trait that provides instances of Drupal 6 and Drupal 7 migrations.
- */
 trait CreateMigrationsTrait {
 
   /**

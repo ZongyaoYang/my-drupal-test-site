@@ -2,12 +2,12 @@
 
 /**
  * @file
+ * Batch process to check the availability of remote or local po files.
  */
 
 use Drupal\Core\File\Exception\FileException;
 use Drupal\Core\File\Exception\InvalidStreamWrapperException;
 use Drupal\Core\File\FileExists;
-use Drupal\Core\Hook\Attribute\ProceduralHookScanStop;
 use Drupal\Core\Url;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
@@ -37,8 +37,7 @@ require_once __DIR__ . '/locale.translation.inc';
  * @param array|\ArrayAccess $context
  *   The batch context.
  */
-#[ProceduralHookScanStop]
-function locale_translation_batch_version_check(string $project, string $langcode, array|\ArrayAccess &$context): void {
+function locale_translation_batch_version_check(string $project, string $langcode, array|\ArrayAccess &$context) {
   $locale_project = \Drupal::service('locale.project')->get($project);
 
   if (empty($locale_project)) {
@@ -80,7 +79,7 @@ function locale_translation_batch_version_check(string $project, string $langcod
  * @param array|\ArrayAccess $context
  *   The batch context.
  */
-function locale_translation_batch_status_check($project, $langcode, array $options, &$context): void {
+function locale_translation_batch_status_check($project, $langcode, array $options, &$context) {
   $failure = $checked = FALSE;
   $options += [
     'finish_feedback' => TRUE,
@@ -139,7 +138,7 @@ function locale_translation_batch_status_check($project, $langcode, array $optio
  * @param array $results
  *   Batch results.
  */
-function locale_translation_batch_status_finished($success, $results): void {
+function locale_translation_batch_status_finished($success, $results) {
   if ($success) {
     if (isset($results['failed_files'])) {
       if (\Drupal::moduleHandler()->moduleExists('dblog') && \Drupal::currentUser()->hasPermission('access site reports')) {
@@ -173,8 +172,8 @@ function locale_translation_batch_status_finished($success, $results): void {
  * Downloads a remote gettext file into the translations directory. When
  * successfully the translation status is updated.
  *
- * @param string $project
- *   The name of the project to import translations.
+ * @param object $project
+ *   Source object of the translatable project.
  * @param string $langcode
  *   Language code.
  * @param array $context
@@ -182,7 +181,7 @@ function locale_translation_batch_status_finished($success, $results): void {
  *
  * @see locale_translation_batch_fetch_import()
  */
-function locale_translation_batch_fetch_download($project, $langcode, &$context): void {
+function locale_translation_batch_fetch_download($project, $langcode, &$context) {
   $sources = locale_translation_get_status([$project], [$langcode]);
   if (isset($sources[$project][$langcode])) {
     $source = $sources[$project][$langcode];
@@ -204,8 +203,8 @@ function locale_translation_batch_fetch_download($project, $langcode, &$context)
  * Imports a gettext file from the translation directory. When successfully the
  * translation status is updated.
  *
- * @param string $project
- *   The name of the project to import translations.
+ * @param object $project
+ *   Source object of the translatable project.
  * @param string $langcode
  *   Language code.
  * @param array $options
@@ -216,7 +215,7 @@ function locale_translation_batch_fetch_download($project, $langcode, &$context)
  * @see locale_translate_batch_import_files()
  * @see locale_translation_batch_fetch_download()
  */
-function locale_translation_batch_fetch_import($project, $langcode, $options, &$context): void {
+function locale_translation_batch_fetch_import($project, $langcode, $options, &$context) {
   $sources = locale_translation_get_status([$project], [$langcode]);
   if (isset($sources[$project][$langcode])) {
     $source = $sources[$project][$langcode];
@@ -243,15 +242,6 @@ function locale_translation_batch_fetch_import($project, $langcode, $options, &$
           }
         }
       }
-      elseif ($source->type == LOCALE_TRANSLATION_CURRENT) {
-        /*
-         * This can happen if the locale_translation_batch_fetch_import
-         * batch was interrupted
-         * and the translation was imported by another batch.
-         */
-        $context['message'] = t('Ignoring already imported translation for %project.', ['%project' => $source->project]);
-        $context['finished'] = 1;
-      }
     }
   }
 }
@@ -266,12 +256,12 @@ function locale_translation_batch_fetch_import($project, $langcode, $options, &$
  * @param array $results
  *   Batch results.
  */
-function locale_translation_batch_fetch_finished($success, $results): void {
+function locale_translation_batch_fetch_finished($success, $results) {
   \Drupal::moduleHandler()->loadInclude('locale', 'inc', 'locale.bulk');
   if ($success) {
     \Drupal::state()->set('locale.translation_last_checked', \Drupal::time()->getRequestTime());
   }
-  locale_translate_batch_finished($success, $results);
+  return locale_translate_batch_finished($success, $results);
 }
 
 /**

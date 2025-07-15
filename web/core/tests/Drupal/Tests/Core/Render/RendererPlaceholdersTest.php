@@ -62,7 +62,6 @@ class RendererPlaceholdersTest extends RendererTestBase {
    *   https://www.drupal.org/node/2559847
    *
    * @return array
-   *   An array of test cases.
    */
   public static function providerPlaceholders(): array {
     $args = [static::randomContextValue()];
@@ -78,7 +77,7 @@ class RendererPlaceholdersTest extends RendererTestBase {
       // \Drupal\Core\Render\Markup::create() is necessary as the render
       // system would mangle this markup. As this is exactly what happens at
       // runtime this is a valid use-case.
-      return Markup::create('<drupal-render-placeholder callback="Drupal\Tests\Core\Render\PlaceholdersTest::callback" arguments="0=' . $args[0] . '" token="' . $token . '"></drupal-render-placeholder>');
+      return Markup::create('<drupal-render-placeholder callback="Drupal\Tests\Core\Render\PlaceholdersTest::callback" arguments="' . '0=' . $args[0] . '" token="' . $token . '"></drupal-render-placeholder>');
     };
 
     $extract_placeholder_render_array = function ($placeholder_render_array) {
@@ -150,7 +149,7 @@ class RendererPlaceholdersTest extends RendererTestBase {
     // Note the absence of '#create_placeholder', presence of max-age=0 created
     // by the #lazy_builder callback.
     // @todo in https://www.drupal.org/node/2559847
-    //   $base_element_a5 = [];
+    $base_element_a5 = [];
     // Note the absence of '#create_placeholder', presence of high cardinality
     // cache context created by the #lazy_builder callback.
     // @see \Drupal\Tests\Core\Render\PlaceholdersTest::callbackPerUser()
@@ -204,8 +203,7 @@ class RendererPlaceholdersTest extends RendererTestBase {
     $cases = [];
 
     // Case one: render array that has a placeholder that is:
-    // - automatically created, but manually triggered (#create_placeholder =
-    //   TRUE)
+    // - automatically created, but manually triggered (#create_placeholder = TRUE)
     // - uncacheable
     $element_without_cache_keys = $base_element_a1;
     $expected_placeholder_render_array = $extract_placeholder_render_array($base_element_a1['placeholder']);
@@ -220,8 +218,7 @@ class RendererPlaceholdersTest extends RendererTestBase {
     ];
 
     // Case two: render array that has a placeholder that is:
-    // - automatically created, but manually triggered (#create_placeholder =
-    //   TRUE)
+    // - automatically created, but manually triggered (#create_placeholder = TRUE)
     // - cacheable
     $element_with_cache_keys = $base_element_a1;
     $element_with_cache_keys['placeholder']['#cache']['keys'] = $keys;
@@ -533,7 +530,7 @@ class RendererPlaceholdersTest extends RendererTestBase {
    *   - A render array containing a placeholder.
    *   - The context used for that #lazy_builder callback.
    */
-  protected function generatePlaceholderElement(): array {
+  protected function generatePlaceholderElement() {
     $args = [static::randomContextValue()];
     $test_element = [];
     $test_element['#attached']['drupalSettings']['foo'] = 'bar';
@@ -553,7 +550,7 @@ class RendererPlaceholdersTest extends RendererTestBase {
    *
    * @internal
    */
-  protected function assertPlaceholderRenderCache($cache_keys, array $expected_data): void {
+  protected function assertPlaceholderRenderCache($cache_keys, array $expected_data) {
     if ($cache_keys !== FALSE) {
       $cached = $this->memoryCache->get($cache_keys, CacheableMetadata::createFromRenderArray($expected_data));
       $cached_element = $cached->data;
@@ -1077,8 +1074,8 @@ HTML;
 
     $element1 = $element2 = $test_element;
     // Render the element twice so that it is in the render cache.
-    $this->renderer->renderRoot($element1);
-    $this->renderer->renderRoot($element2);
+    $result = $this->renderer->renderRoot($element1);
+    $result = $this->renderer->renderRoot($element2);
     $placeholder_string = (string) $this->renderCache->placeholderElements[0]['#markup'];
     $this->assertSame($this->renderCache->placeholderElements[0]['#attached']['placeholders'][$placeholder_string]['#preview'], ['#markup' => 'Lazy Builder Preview']);
   }
@@ -1109,7 +1106,7 @@ HTML;
    * @return array
    *   The generated render array for testing.
    */
-  protected function generatePlaceholdersWithChildrenTestElement(array $args_1, array $args_2, array $args_3): array {
+  protected function generatePlaceholdersWithChildrenTestElement(array $args_1, array $args_2, array $args_3) {
     $test_element = [
       '#type' => 'details',
       '#cache' => [
@@ -1152,10 +1149,7 @@ HTML;
   }
 
   /**
-   * Sets up the theme manager for the <details>-tag.
-   *
    * @return \Drupal\Core\Theme\ThemeManagerInterface|\PHPUnit\Framework\MockObject\Builder\InvocationMocker
-   *   The mocked theme manager.
    */
   protected function setupThemeManagerForDetails() {
     return $this->themeManager->expects($this->any())
@@ -1183,9 +1177,7 @@ EOS;
 class RecursivePlaceholdersTest implements TrustedCallbackInterface {
 
   /**
-   * Render API callback: Bubbles another placeholder.
-   *
-   * This function is assigned as a #lazy_builder callback.
+   * #lazy_builder callback; bubbles another placeholder.
    *
    * @param string $animal
    *   An animal.
@@ -1211,9 +1203,6 @@ class RecursivePlaceholdersTest implements TrustedCallbackInterface {
 
 }
 
-/**
- * Class for testing the placeholdering render cache.
- */
 class TestPlaceholderingRenderCache extends PlaceholderingRenderCache {
 
   /**

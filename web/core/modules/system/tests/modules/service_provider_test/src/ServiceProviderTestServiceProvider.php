@@ -1,16 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\service_provider_test;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\DependencyInjection\ServiceModifierInterface;
 use Drupal\Core\Site\Settings;
 
-/**
- * Service provider for service provider testing module.
- */
 class ServiceProviderTestServiceProvider implements ServiceModifierInterface {
 
   /**
@@ -31,7 +26,7 @@ class ServiceProviderTestServiceProvider implements ServiceModifierInterface {
       $this_module_relative_path = $module_handler->getModule('service_provider_test')->getPath();
       $container->setParameter('service_provider_test_path', $this_module_relative_path);
     }
-    catch (\Exception) {
+    catch (\Exception $e) {
       throw new \LogicException('Unable to identify installation path of this module.');
     }
 

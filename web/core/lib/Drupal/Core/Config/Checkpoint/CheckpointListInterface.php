@@ -45,7 +45,6 @@ interface CheckpointListInterface extends \IteratorAggregate, \Countable {
    *   The checkpoint ID.
    *
    * @return iterable<string, \Drupal\Core\Config\Checkpoint\Checkpoint>
-   *   The parents for the given checkpoint.
    */
   public function getParents(string $id): iterable;
 

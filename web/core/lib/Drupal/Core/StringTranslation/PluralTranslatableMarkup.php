@@ -123,9 +123,6 @@ class PluralTranslatableMarkup extends TranslatableMarkup {
    * Gets the plural index through the gettext formula.
    *
    * @return int
-   *   The numeric index of the plural variant to use for this language and
-   *   count combination. Defaults to -1 when the language was not found or does
-   *   not have a plural formula.
    */
   protected function getPluralIndex() {
     // We have to test both if the function and the service exist since in
@@ -143,7 +140,7 @@ class PluralTranslatableMarkup extends TranslatableMarkup {
   /**
    * {@inheritdoc}
    */
-  public function __sleep(): array {
+  public function __sleep() {
     return array_merge(parent::__sleep(), ['count']);
   }
 

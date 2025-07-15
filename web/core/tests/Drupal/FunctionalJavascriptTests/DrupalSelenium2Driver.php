@@ -9,11 +9,43 @@ use Behat\Mink\Exception\DriverException;
 use WebDriver\Element;
 use WebDriver\Exception;
 use WebDriver\Exception\UnknownError;
+use WebDriver\ServiceFactory;
 
 /**
  * Provides a driver for Selenium testing.
  */
 class DrupalSelenium2Driver extends Selenium2Driver {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($browserName = 'firefox', $desiredCapabilities = NULL, $wdHost = 'http://localhost:4444/wd/hub') {
+    parent::__construct($browserName, $desiredCapabilities, $wdHost);
+    ServiceFactory::getInstance()->setServiceClass('service.curl', WebDriverCurlService::class);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setCookie($name, $value = NULL) {
+    if ($value === NULL) {
+      $this->getWebDriverSession()->deleteCookie($name);
+      return;
+    }
+
+    $cookieArray = [
+      'name' => $name,
+      'value' => urlencode($value),
+      'secure' => FALSE,
+      // Unlike \Behat\Mink\Driver\Selenium2Driver::setCookie we set a domain
+      // and an expire date, as otherwise cookies leak from one test site into
+      // another.
+      'domain' => parse_url($this->getWebDriverSession()->url(), PHP_URL_HOST),
+      'expires' => time() + 80000,
+    ];
+
+    $this->getWebDriverSession()->setCookie($cookieArray);
+  }
 
   /**
    * Uploads a file to the Selenium instance and returns the remote path.
@@ -135,8 +167,7 @@ if (typeof Drupal !== 'undefined') {
   };
 }
 JS);
-        if (!is_string($value) && strtolower($element->name()) === 'input' &&
-          in_array(strtolower($element->attribute('type')), ['text', 'number', 'radio'], TRUE)) {
+        if (!is_string($value) && strtolower($element->name()) === 'input' && in_array(strtolower($element->attribute('type')), ['text', 'number', 'radio'], TRUE)) {
           // @todo Trigger deprecation in
           //   https://www.drupal.org/project/drupal/issues/3421105.
           $value = (string) $value;
@@ -199,7 +230,7 @@ JS);
     try {
       parent::dragTo($sourceXpath, $destinationXpath);
     }
-    catch (Exception) {
+    catch (Exception $e) {
       // Do not care if this fails for any reason. It is a source of random
       // fails. The calling code should be doing assertions on the results of
       // dragging anyway. See upstream issues:

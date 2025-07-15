@@ -142,7 +142,6 @@ class RenderCacheIntegrationTest extends ViewsKernelTestBase {
     $build = $this->assertViewsCacheTags($view, $tags_page_2, $do_assert_views_caches, $tags_page_2);
     // @todo Static render arrays don't support different pages yet, see
     //   https://www.drupal.org/node/2500701.
-    // phpcs:ignore
     // $this->assertViewsCacheTagsFromStaticRenderArray($view, $tags_page_2, $do_assert_views_caches);
     $this->assertStringContainsString($random_name, (string) $build['#markup']);
     $view->destroy();
@@ -292,16 +291,7 @@ class RenderCacheIntegrationTest extends ViewsKernelTestBase {
     $view = View::load('test_display');
     $view->save();
 
-    $this->assertEqualsCanonicalizing(
-      [
-        'languages:' . LanguageInterface::TYPE_CONTENT,
-        'languages:' . LanguageInterface::TYPE_INTERFACE,
-        'url.query_args',
-        'user.node_grants:view',
-        'user.permissions',
-      ],
-      $view->getDisplay('default')['cache_metadata']['contexts']
-    );
+    $this->assertEqualsCanonicalizing(['languages:' . LanguageInterface::TYPE_CONTENT, 'languages:' . LanguageInterface::TYPE_INTERFACE, 'url.query_args', 'user.node_grants:view', 'user.permissions'], $view->getDisplay('default')['cache_metadata']['contexts']);
   }
 
 }

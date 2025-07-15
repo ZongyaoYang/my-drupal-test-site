@@ -49,7 +49,7 @@ JS;
   /**
    * Waits for CKEditor to initialize.
    */
-  protected function waitForEditor(): void {
+  protected function waitForEditor() {
     $assert_session = $this->assertSession();
     $this->assertNotEmpty($assert_session->waitForElement('css', '.ck-editor'));
   }
@@ -60,7 +60,7 @@ JS;
    * @param string $name
    *   The name of the button, such as `drupallink`, `source`, etc.
    */
-  protected function pressEditorButton($name): void {
+  protected function pressEditorButton($name) {
     $this->getEditorButton($name)->click();
   }
 
@@ -85,7 +85,7 @@ JS;
    * @param string $name
    *   The name of the button, such as `drupallink`, `source`, etc.
    */
-  protected function assertEditorButtonDisabled($name): void {
+  protected function assertEditorButtonDisabled($name) {
     $button = $this->getEditorButton($name);
     $this->assertTrue($button->hasAttribute('aria-disabled'));
     $this->assertTrue($button->hasClass('ck-disabled'));
@@ -97,7 +97,7 @@ JS;
    * @param string $name
    *   The name of the button, such as `drupallink`, `source`, etc.
    */
-  protected function assertEditorButtonEnabled($name): void {
+  protected function assertEditorButtonEnabled($name) {
     $button = $this->getEditorButton($name);
     $this->assertFalse($button->hasAttribute('aria-disabled'));
     $this->assertFalse($button->hasClass('ck-disabled'));

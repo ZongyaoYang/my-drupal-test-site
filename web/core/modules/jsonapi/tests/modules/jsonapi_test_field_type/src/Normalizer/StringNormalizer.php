@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\jsonapi_test_field_type\Normalizer;
 
 use Drupal\Core\Field\Plugin\Field\FieldType\StringItem;

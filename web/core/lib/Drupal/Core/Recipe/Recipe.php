@@ -6,11 +6,9 @@ namespace Drupal\Core\Recipe;
 
 use Drupal\Core\DefaultContent\Finder;
 use Drupal\Core\Extension\Dependency;
-use Drupal\Core\Extension\ExtensionDiscovery;
 use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Extension\ThemeExtensionList;
 use Drupal\Component\Serialization\Yaml;
-use Drupal\Core\Render\Element;
 use Drupal\Core\TypedData\PrimitiveInterface;
 use Drupal\Core\Validation\Plugin\Validation\Constraint\RegexConstraint;
 use Symfony\Component\Validator\Constraints\All;
@@ -61,8 +59,6 @@ final class Recipe {
    *   The default content finder.
    * @param string $path
    *   The recipe's path.
-   * @param array $extra
-   *   Any extra information to expose to specific modules.
    */
   public function __construct(
     public readonly string $name,
@@ -74,7 +70,6 @@ final class Recipe {
     public readonly InputConfigurator $input,
     public readonly Finder $content,
     public readonly string $path,
-    private readonly array $extra,
   ) {}
 
   /**
@@ -94,7 +89,7 @@ final class Recipe {
     $config = new ConfigConfigurator($recipe_data['config'], $path, \Drupal::service('config.storage'));
     $input = new InputConfigurator($recipe_data['input'] ?? [], $recipes, basename($path), \Drupal::typedDataManager());
     $content = new Finder($path . '/content');
-    return new static($recipe_data['name'], $recipe_data['description'], $recipe_data['type'], $recipes, $install, $config, $input, $content, $path, $recipe_data['extra'] ?? []);
+    return new static($recipe_data['name'], $recipe_data['description'], $recipe_data['type'], $recipes, $install, $config, $input, $content, $path);
   }
 
   /**
@@ -185,7 +180,7 @@ final class Recipe {
         ]),
       ]),
       'input' => new Optional([
-        new Type('associative_array'),
+        new Type('array'),
         new All([
           new Collection(
             fields: [
@@ -197,7 +192,7 @@ final class Recipe {
               // There can be an optional set of constraints, which is an
               // associative array of arrays, as in config schema.
               'constraints' => new Optional([
-                new Type('associative_array'),
+                new Type('array'),
               ]),
               'data_type' => [
                 // The data type must be known to the typed data system.
@@ -208,29 +203,16 @@ final class Recipe {
                   'interface' => PrimitiveInterface::class,
                 ]),
               ],
-              // The `prompt` and `form` elements, though optional, have their
-              // own sets of constraints,
+              // If there is a `prompt` element, it has its own set of
+              // constraints.
               'prompt' => new Optional([
                 new Collection([
                   'method' => [
                     new Choice(['ask', 'askHidden', 'confirm', 'choice']),
                   ],
                   'arguments' => new Optional([
-                    new Type('associative_array'),
+                    new Type('array'),
                   ]),
-                ]),
-              ]),
-              'form' => new Optional([
-                new Sequentially([
-                  new Type('associative_array'),
-                  // Every element in the `form` array has to be a form API
-                  // property, prefixed with `#`. Because recipe inputs can only
-                  // be primitive data types, child elements aren't allowed.
-                  new Callback(function (array $element, ExecutionContextInterface $context): void {
-                    if (Element::children($element)) {
-                      $context->addViolation('Form elements for recipe inputs cannot have child elements.');
-                    }
-                  }),
                 ]),
               ]),
               // Every input must define a default value.
@@ -242,7 +224,7 @@ final class Recipe {
                   'value' => new Optional(),
                   'config' => new Optional([
                     new Sequentially([
-                      new Type('list'),
+                      new Type('array'),
                       new Count(2),
                       new All([
                         new Type('string'),
@@ -299,12 +281,6 @@ final class Recipe {
       ]),
       'content' => new Optional([
         new Type('array'),
-      ]),
-      'extra' => new Optional([
-        new Sequentially([
-          new Type('associative_array'),
-          new Callback(self::validateKeysAreValidExtensionNames(...)),
-        ]),
       ]),
     ]);
 
@@ -431,42 +407,6 @@ final class Recipe {
         '%config_provider' => $config_provider,
       ]);
     }
-  }
-
-  /**
-   * Validates that the keys of an array are valid extension names.
-   *
-   * Note that the keys do not have to be the names of extensions that are
-   * installed, or even extensions that exist. They just have to follow the
-   * form of a valid extension name.
-   *
-   * @param array $value
-   *   The array being validated.
-   * @param \Symfony\Component\Validator\Context\ExecutionContextInterface $context
-   *   The validator execution context.
-   */
-  private static function validateKeysAreValidExtensionNames(array $value, ExecutionContextInterface $context): void {
-    $keys = array_keys($value);
-    foreach ($keys as $key) {
-      if (!preg_match(ExtensionDiscovery::PHP_FUNCTION_PATTERN, $key)) {
-        $context->addViolation('%name is not a valid extension name.', [
-          '%name' => $key,
-        ]);
-      }
-    }
-  }
-
-  /**
-   * Returns extra information to expose to a particular extension.
-   *
-   * @param string $extension_name
-   *   The name of a Drupal extension.
-   *
-   * @return mixed
-   *   The extra data exposed to the given extension, or NULL if there is none.
-   */
-  public function getExtra(string $extension_name): mixed {
-    return $this->extra[$extension_name] ?? NULL;
   }
 
 }

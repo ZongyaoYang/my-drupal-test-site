@@ -1,10 +1,7 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\ajax_forms_test\Form;
 
-use Drupal\ajax_forms_test\Callbacks;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 
@@ -32,7 +29,7 @@ class AjaxFormsTestValidationForm extends FormBase {
       '#type' => 'textfield',
       '#default_value' => $form_state->getValue('driver_text', ''),
       '#ajax' => [
-        'callback' => [Callbacks::class, 'validationFormCallback'],
+        'callback' => 'ajax_forms_test_validation_form_callback',
         'wrapper' => 'message_area',
         'method' => 'replaceWith',
       ],
@@ -45,7 +42,7 @@ class AjaxFormsTestValidationForm extends FormBase {
       '#type' => 'number',
       '#default_value' => $form_state->getValue('driver_number', ''),
       '#ajax' => [
-        'callback' => [Callbacks::class, 'validationNumberFormCallback'],
+        'callback' => 'ajax_forms_test_validation_number_form_callback',
         'wrapper' => 'message_area_number',
         'method' => 'replaceWith',
       ],

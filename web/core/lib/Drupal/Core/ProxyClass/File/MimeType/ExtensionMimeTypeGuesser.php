@@ -78,9 +78,9 @@ namespace Drupal\Core\ProxyClass\File\MimeType {
         /**
          * {@inheritdoc}
          */
-        public function setMapping(?array $mapping = NULL): void
+        public function setMapping(?array $mapping = NULL)
         {
-            $this->lazyLoadItself()->setMapping($mapping);
+            return $this->lazyLoadItself()->setMapping($mapping);
         }
 
         /**

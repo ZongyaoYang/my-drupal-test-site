@@ -396,13 +396,7 @@ abstract class EntityDisplayBase extends ConfigEntityBase implements EntityDispl
     }
 
     // Let other modules feedback about their own additions.
-    $weights = array_merge($weights,
-      \Drupal::moduleHandler()->invokeAll('field_info_max_weight', [
-        $this->targetEntityType,
-        $this->bundle,
-        $this->displayContext,
-        $this->mode,
-      ]));
+    $weights = array_merge($weights, \Drupal::moduleHandler()->invokeAll('field_info_max_weight', [$this->targetEntityType, $this->bundle, $this->displayContext, $this->mode]));
 
     return $weights ? max($weights) : NULL;
   }
@@ -439,10 +433,6 @@ abstract class EntityDisplayBase extends ConfigEntityBase implements EntityDispl
    *   A field definition.
    *
    * @return array|null
-   *   The array of display options for the field, or NULL if the field is not
-   *   displayed.
-   *
-   * @see \Drupal\Core\Field\FieldDefinitionInterface::getDisplayOptions
    */
   private function fieldHasDisplayOptions(FieldDefinitionInterface $definition) {
     // The display only cares about fields that specify display options.
@@ -558,7 +548,7 @@ abstract class EntityDisplayBase extends ConfigEntityBase implements EntityDispl
   /**
    * {@inheritdoc}
    */
-  public function __sleep(): array {
+  public function __sleep() {
     // Only store the definition, not external objects or derived data.
     $keys = array_keys($this->toArray());
     // In addition, we need to keep the entity type and the "is new" status.
@@ -577,7 +567,7 @@ abstract class EntityDisplayBase extends ConfigEntityBase implements EntityDispl
   /**
    * {@inheritdoc}
    */
-  public function __wakeup(): void {
+  public function __wakeup() {
     // Determine what were the properties from toArray() that were saved in
     // __sleep().
     $keys = $this->_serializedKeys;

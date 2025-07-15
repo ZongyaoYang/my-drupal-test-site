@@ -15,7 +15,7 @@ trait MigrateMenuLinkTestTrait {
   /**
    * Asserts various aspects of a menu link entity.
    *
-   * @param int $id
+   * @param string $id
    *   The link ID.
    * @param string $langcode
    *   The language of the menu link.
@@ -23,7 +23,7 @@ trait MigrateMenuLinkTestTrait {
    *   The expected title of the link.
    * @param string $menu
    *   The expected ID of the menu to which the link will belong.
-   * @param string|null $description
+   * @param string $description
    *   The link's expected description.
    * @param bool $enabled
    *   Whether the link is enabled.

@@ -32,7 +32,7 @@ trait AssertPageCacheContextsAndTagsTrait {
    * @return string[]
    *   The header value, potentially exploded by spaces.
    */
-  protected function getCacheHeaderValues($header_name): array {
+  protected function getCacheHeaderValues($header_name) {
     $header_value = $this->getSession()->getResponseHeader($header_name);
     return empty($header_value) ? [] : explode(' ', $header_value);
   }
@@ -129,7 +129,7 @@ trait AssertPageCacheContextsAndTagsTrait {
    * @return bool
    *   Always returns TRUE.
    */
-  protected function assertCacheContexts(array $expected_contexts, $message = NULL, $include_default_contexts = TRUE): bool {
+  protected function assertCacheContexts(array $expected_contexts, $message = NULL, $include_default_contexts = TRUE) {
     if ($include_default_contexts) {
       $default_contexts = ['languages:language_interface', 'theme'];
       // Add the user based contexts to the list of default contexts except when

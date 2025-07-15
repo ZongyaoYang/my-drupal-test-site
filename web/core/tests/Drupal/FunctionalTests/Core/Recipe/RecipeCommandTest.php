@@ -9,12 +9,10 @@ use Drupal\Core\Config\Checkpoint\Checkpoint;
 use Drupal\Tests\BrowserTestBase;
 
 /**
- * Tests recipe command.
- *
- * BrowserTestBase is used for a proper Drupal install.
- *
  * @coversDefaultClass \Drupal\Core\Recipe\RecipeCommand
  * @group Recipe
+ *
+ * BrowserTestBase is used for a proper Drupal install.
  */
 class RecipeCommandTest extends BrowserTestBase {
 

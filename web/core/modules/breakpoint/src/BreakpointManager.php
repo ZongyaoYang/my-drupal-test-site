@@ -259,7 +259,6 @@ class BreakpointManager extends DefaultPluginManager implements BreakpointManage
     }
     else {
       // Custom group label that should be translatable.
-      // phpcs:ignore Drupal.Semantics.FunctionT.NotLiteralString
       $label = $this->t($group, [], ['context' => 'breakpoint']);
     }
     return $label;

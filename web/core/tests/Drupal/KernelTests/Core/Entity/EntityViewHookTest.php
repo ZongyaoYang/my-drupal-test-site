@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drupal\KernelTests\Core\Entity;
 
 use Drupal\entity_test\Entity\EntityTest;
-use Drupal\entity_test\EntityTestHelper;
 
 /**
  * Test view/render hooks for entities.
@@ -26,7 +25,7 @@ class EntityViewHookTest extends EntityKernelTestBase {
    * Tests hook_entity_display_build_alter().
    */
   public function testHookEntityDisplayBuildAlter(): void {
-    EntityTestHelper::createBundle('display_build_alter_bundle');
+    entity_test_create_bundle('display_build_alter_bundle');
     /** @var \Drupal\Core\Render\RendererInterface $renderer */
     $renderer = $this->container->get('renderer');
 

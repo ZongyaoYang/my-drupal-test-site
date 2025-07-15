@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\file_test\StreamWrapper;
 
 use Drupal\Core\StreamWrapper\ReadOnlyStream;
@@ -25,14 +23,14 @@ class DummyExternalReadOnlyWrapper extends ReadOnlyStream {
    * {@inheritdoc}
    */
   public function getName() {
-    return 'Dummy external stream wrapper (readonly)';
+    return t('Dummy external stream wrapper (readonly)');
   }
 
   /**
    * {@inheritdoc}
    */
   public function getDescription() {
-    return 'Dummy external read-only stream wrapper for testing.';
+    return t('Dummy external read-only stream wrapper for testing.');
   }
 
   /**

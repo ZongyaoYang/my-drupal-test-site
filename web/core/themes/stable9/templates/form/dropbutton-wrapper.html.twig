@@ -6,10 +6,15 @@
  * Available variables:
  * - children: Contains the child elements of the dropbutton menu.
  *
+ * @see template_preprocess()
  */
 #}
 {% if children %}
-  <div class="dropbutton-wrapper" data-drupal-ajax-container>
-    <div class="dropbutton-widget">{{- children -}}</div>
-  </div>
-{%- endif %}
+  {% apply spaceless %}
+    <div class="dropbutton-wrapper" data-drupal-ajax-container>
+      <div class="dropbutton-widget">
+        {{ children }}
+      </div>
+    </div>
+  {% endapply %}
+{% endif %}

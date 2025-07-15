@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\block_test\Plugin\Block;
 
 use Drupal\block_test\PluginForm\EmptyBlockForm;

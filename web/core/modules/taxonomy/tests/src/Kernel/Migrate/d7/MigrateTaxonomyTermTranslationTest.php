@@ -12,7 +12,6 @@ use Drupal\taxonomy\TermInterface;
  * Test migration of translated taxonomy terms.
  *
  * @group migrate_drupal_7
- * @group #slow
  */
 class MigrateTaxonomyTermTranslationTest extends MigrateDrupal7TestBase {
 

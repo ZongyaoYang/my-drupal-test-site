@@ -20,8 +20,6 @@ class UnversionedAssetTest extends BrowserTestBase {
 
   /**
    * The file assets path settings value.
-   *
-   * @var string
    */
   protected $fileAssetsPath;
 

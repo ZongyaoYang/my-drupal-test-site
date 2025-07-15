@@ -80,7 +80,7 @@ class FilterFormTest extends BrowserTestBase {
   /**
    * Tests the behavior of the 'text_format' element as an administrator.
    */
-  protected function doFilterFormTestAsAdmin(): void {
+  protected function doFilterFormTestAsAdmin() {
     $this->drupalLogin($this->adminUser);
     $this->drupalGet('filter-test/text-format');
 
@@ -128,7 +128,7 @@ class FilterFormTest extends BrowserTestBase {
   /**
    * Tests the behavior of the 'text_format' element as a normal user.
    */
-  protected function doFilterFormTestAsNonAdmin(): void {
+  protected function doFilterFormTestAsNonAdmin() {
     $this->drupalLogin($this->webUser);
     $this->drupalGet('filter-test/text-format');
 

@@ -22,9 +22,11 @@ class ParametersConfigurator extends AbstractConfigurator
 {
     public const FACTORY = 'parameters';
 
-    public function __construct(
-        private ContainerBuilder $container,
-    ) {
+    private ContainerBuilder $container;
+
+    public function __construct(ContainerBuilder $container)
+    {
+        $this->container = $container;
     }
 
     /**
@@ -33,7 +35,7 @@ class ParametersConfigurator extends AbstractConfigurator
     final public function set(string $name, mixed $value): static
     {
         if ($value instanceof Expression) {
-            throw new InvalidArgumentException(\sprintf('Using an expression in parameter "%s" is not allowed.', $name));
+            throw new InvalidArgumentException(sprintf('Using an expression in parameter "%s" is not allowed.', $name));
         }
 
         $this->container->setParameter($name, static::processValue($value, true));

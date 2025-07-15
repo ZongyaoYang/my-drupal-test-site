@@ -85,9 +85,9 @@ class MigrateExecutable implements MigrateExecutableInterface {
   /**
    * Migration message service.
    *
-   * @var \Drupal\migrate\MigrateMessageInterface
-   *
    * @todo https://www.drupal.org/node/2822663 Make this protected.
+   *
+   * @var \Drupal\migrate\MigrateMessageInterface
    */
   public $message;
 
@@ -135,7 +135,6 @@ class MigrateExecutable implements MigrateExecutableInterface {
    * Gets the event dispatcher.
    *
    * @return \Symfony\Contracts\EventDispatcher\EventDispatcherInterface
-   *   The event dispatcher service.
    */
   protected function getEventDispatcher() {
     if (!$this->eventDispatcher) {
@@ -153,7 +152,6 @@ class MigrateExecutable implements MigrateExecutableInterface {
       $this->message->display($this->t('Migration @id is busy with another operation: @status',
         [
           '@id' => $this->migration->id(),
-          // phpcs:ignore Drupal.Semantics.FunctionT.NotLiteralString
           '@status' => $this->t($this->migration->getStatusLabel()),
         ]), 'error');
       return MigrationInterface::RESULT_FAILED;
@@ -317,7 +315,6 @@ class MigrateExecutable implements MigrateExecutableInterface {
   public function rollback() {
     // Only begin the rollback operation if the migration is currently idle.
     if ($this->migration->getStatus() !== MigrationInterface::STATUS_IDLE) {
-      // phpcs:ignore Drupal.Semantics.FunctionT.NotLiteralString
       $this->message->display($this->t('Migration @id is busy with another operation: @status', ['@id' => $this->migration->id(), '@status' => $this->t($this->migration->getStatusLabel())]), 'error');
       return MigrationInterface::RESULT_FAILED;
     }
@@ -325,8 +322,8 @@ class MigrateExecutable implements MigrateExecutableInterface {
     // Announce that rollback is about to happen.
     $this->getEventDispatcher()->dispatch(new MigrateRollbackEvent($this->migration), MigrateEvents::PRE_ROLLBACK);
 
-    // Optimistically assume things are going to work out; if not, $return will
-    // be updated to some other status.
+    // Optimistically assume things are going to work out; if not, $return will be
+    // updated to some other status.
     $return = MigrationInterface::RESULT_COMPLETED;
 
     $this->migration->setStatus(MigrationInterface::STATUS_ROLLING_BACK);
@@ -455,7 +452,7 @@ class MigrateExecutable implements MigrateExecutableInterface {
         try {
           $value = $plugin->transform($value, $this, $row, $destination);
         }
-        catch (MigrateSkipProcessException) {
+        catch (MigrateSkipProcessException $e) {
           $value = NULL;
           break;
         }
@@ -556,8 +553,8 @@ class MigrateExecutable implements MigrateExecutableInterface {
       );
       $usage = $this->attemptMemoryReclaim();
       $pct_memory = $usage / $this->memoryLimit;
-      // Use a lower threshold - we don't want to be in a situation where we
-      // keep coming back here and trimming a tiny amount
+      // Use a lower threshold - we don't want to be in a situation where we keep
+      // coming back here and trimming a tiny amount
       if ($pct_memory > (0.90 * $threshold)) {
         $this->message->display(
           $this->t(
@@ -612,12 +609,35 @@ class MigrateExecutable implements MigrateExecutableInterface {
     // plenty of memory to continue.
     drupal_static_reset();
 
+    // Entity storage can blow up with caches, so clear it out.
+    \Drupal::service('entity.memory_cache')->deleteAll();
+
     // @todo Explore resetting the container.
 
     // Run garbage collector to further reduce memory.
     gc_collect_cycles();
 
     return memory_get_usage();
+  }
+
+  /**
+   * Generates a string representation for the given byte count.
+   *
+   * @param int $size
+   *   A size in bytes.
+   *
+   * @return string
+   *   A translated string representation of the size.
+   *
+   * @deprecated in drupal:10.2.0 and is removed from drupal:11.0.0. Use
+   *   \Drupal\Core\StringTranslation\ByteSizeMarkup::create($size, $langcode)
+   *   instead.
+   *
+   * @see https://www.drupal.org/node/2999981
+   */
+  protected function formatSize($size) {
+    @trigger_error(__METHOD__ . '() is deprecated in drupal:10.2.0 and is removed from drupal:11.0.0. Use \Drupal\Core\StringTranslation\ByteSizeMarkup::create($size, $langcode) instead. See https://www.drupal.org/node/2999981', E_USER_DEPRECATED);
+    return format_size($size);
   }
 
 }

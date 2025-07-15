@@ -5,7 +5,6 @@
  * Hooks specific to the Node module.
  */
 
-use Drupal\Core\Session\AccountInterface;
 use Drupal\node\NodeInterface;
 use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\Xss;
@@ -74,8 +73,7 @@ use Drupal\Component\Utility\Xss;
  * @see node_access_rebuild()
  * @ingroup node_access
  */
-function hook_node_grants(AccountInterface $account, $operation): array {
-  $grants = [];
+function hook_node_grants(\Drupal\Core\Session\AccountInterface $account, $operation) {
   if ($account->hasPermission('access private content')) {
     $grants['example'] = [1];
   }
@@ -108,8 +106,8 @@ function hook_node_grants(AccountInterface $account, $operation): array {
  * - 'gid': A 'grant ID' from hook_node_grants().
  * - 'grant_view': If set to 1 a user that has been identified as a member
  *   of this gid within this realm can view this node. This should usually be
- *   set to $node->isPublished(). Failure to do so may expose unpublished
- *   content to some users.
+ *   set to $node->isPublished(). Failure to do so may expose unpublished content
+ *   to some users.
  * - 'grant_update': If set to 1 a user that has been identified as a member
  *   of this gid within this realm can edit this node.
  * - 'grant_delete': If set to 1 a user that has been identified as a member
@@ -144,20 +142,20 @@ function hook_node_grants(AccountInterface $account, $operation): array {
  * @param \Drupal\node\NodeInterface $node
  *   The node that has just been saved.
  *
- * @return array
+ * @return array|null
  *   An array of grants as defined above.
  *
  * @see hook_node_access_records_alter()
  * @ingroup node_access
  */
-function hook_node_access_records(NodeInterface $node): array {
-  $grants = [];
+function hook_node_access_records(\Drupal\node\NodeInterface $node) {
   // We only care about the node if it has been marked private. If not, it is
   // treated just like any other node and we completely ignore it.
   if ($node->private->value) {
+    $grants = [];
     // Only published Catalan translations of private nodes should be viewable
-    // to all users. If we fail to check $node->isPublished(), all users would
-    // be able to view an unpublished node.
+    // to all users. If we fail to check $node->isPublished(), all users would be able
+    // to view an unpublished node.
     if ($node->isPublished()) {
       $grants[] = [
         'realm' => 'example',
@@ -182,8 +180,9 @@ function hook_node_access_records(NodeInterface $node): array {
         'langcode' => 'ca',
       ];
     }
+
+    return $grants;
   }
-  return $grants;
 }
 
 /**
@@ -217,7 +216,7 @@ function hook_node_access_records(NodeInterface $node): array {
  * @see hook_node_grants_alter()
  * @ingroup node_access
  */
-function hook_node_access_records_alter(&$grants, NodeInterface $node) {
+function hook_node_access_records_alter(&$grants, \Drupal\node\NodeInterface $node) {
   // Our module allows editors to mark specific articles with the 'is_preview'
   // field. If the node being saved has a TRUE value for that field, then only
   // our grants are retained, and other grants are removed. Doing so ensures
@@ -262,7 +261,7 @@ function hook_node_access_records_alter(&$grants, NodeInterface $node) {
  * @see hook_node_access_records_alter()
  * @ingroup node_access
  */
-function hook_node_grants_alter(&$grants, AccountInterface $account, $operation) {
+function hook_node_grants_alter(&$grants, \Drupal\Core\Session\AccountInterface $account, $operation) {
   // Our sample module never allows certain roles to edit or delete
   // content. Since some other node access modules might allow this
   // permission, we expressly remove it by returning an empty $grants
@@ -301,7 +300,7 @@ function hook_node_grants_alter(&$grants, AccountInterface $account, $operation)
  *
  * @ingroup entity_crud
  */
-function hook_node_search_result(NodeInterface $node): array {
+function hook_node_search_result(\Drupal\node\NodeInterface $node) {
   $rating = \Drupal::database()->query('SELECT SUM([points]) FROM {my_rating} WHERE [nid] = :nid', ['nid' => $node->id()])->fetchField();
   return ['rating' => \Drupal::translation()->formatPlural($rating, '1 point', '@count points')];
 }
@@ -315,12 +314,12 @@ function hook_node_search_result(NodeInterface $node): array {
  * @param \Drupal\node\NodeInterface $node
  *   The node being indexed.
  *
- * @return string|\Stringable
+ * @return string
  *   Additional node information to be indexed.
  *
  * @ingroup entity_crud
  */
-function hook_node_update_index(NodeInterface $node): string|\Stringable {
+function hook_node_update_index(\Drupal\node\NodeInterface $node) {
   $text = '';
   $ratings = \Drupal::database()->query('SELECT [title], [description] FROM {my_ratings} WHERE [nid] = :nid', [':nid' => $node->id()]);
   foreach ($ratings as $rating) {
@@ -372,30 +371,28 @@ function hook_node_update_index(NodeInterface $node): string|\Stringable {
  *
  * @ingroup entity_crud
  */
-function hook_ranking(): array {
-  $data = [];
+function hook_ranking() {
   // If voting is disabled, we can avoid returning the array, no hard feelings.
   if (\Drupal::config('vote.settings')->get('node_enabled')) {
-    $data += [
+    return [
       'vote_average' => [
         'title' => t('Average vote'),
-        // Note that we use i.sid, the search index's search item id, rather
-        // than n.nid.
+        // Note that we use i.sid, the search index's search item id, rather than
+        // n.nid.
         'join' => [
           'type' => 'LEFT',
           'table' => 'vote_node_data',
           'alias' => 'vote_node_data',
           'on' => 'vote_node_data.nid = i.sid',
         ],
-        // The highest possible score should be 1, and the lowest possible
-        // score, always 0, should be 0.
+        // The highest possible score should be 1, and the lowest possible score,
+        // always 0, should be 0.
         'score' => 'vote_node_data.average / CAST(%f AS DECIMAL)',
         // Pass in the highest possible voting score as a decimal argument.
         'arguments' => [\Drupal::config('vote.settings')->get('score_max')],
       ],
     ];
   }
-  return $data;
 }
 
 /**
@@ -408,8 +405,8 @@ function hook_ranking(): array {
  * @param array &$context
  *   Various aspects of the context in which the node links are going to be
  *   displayed, with the following keys:
- *   - 'view_mode': the view mode in which the node is being viewed.
- *   - 'langcode': the language in which the node is being viewed.
+ *   - 'view_mode': the view mode in which the node is being viewed
+ *   - 'langcode': the language in which the node is being viewed
  *
  * @see \Drupal\node\NodeViewBuilder::renderLinks()
  * @see \Drupal\node\NodeViewBuilder::buildLinks()

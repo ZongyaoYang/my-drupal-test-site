@@ -64,7 +64,7 @@ class D7TaxonomyTermDeriver extends DeriverBase implements ContainerDeriverInter
     try {
       $vocabulary_source_plugin->checkRequirements();
     }
-    catch (RequirementsException) {
+    catch (RequirementsException $e) {
       // If the d7_taxonomy_vocabulary requirements failed, that means we do not
       // have a Drupal source database configured - there is nothing to
       // generate.
@@ -89,7 +89,7 @@ class D7TaxonomyTermDeriver extends DeriverBase implements ContainerDeriverInter
         $this->derivatives[$bundle] = $migration->getPluginDefinition();
       }
     }
-    catch (DatabaseExceptionWrapper) {
+    catch (DatabaseExceptionWrapper $e) {
       // Once we begin iterating the source plugin it is possible that the
       // source tables will not exist. This can happen when the
       // MigrationPluginManager gathers up the migration definitions but we do

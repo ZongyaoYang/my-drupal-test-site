@@ -19,6 +19,13 @@ use Drupal\migrate\Plugin\migrate\process\Substr;
 class SubstrTest extends MigrateProcessTestCase {
 
   /**
+   * {@inheritdoc}
+   */
+  protected function setUp(): void {
+    parent::setUp();
+  }
+
+  /**
    * Tests Substr plugin based on providerTestSubstr() values.
    *
    * @dataProvider providerTestSubstr

@@ -31,7 +31,6 @@ class DefaultValueTest extends MigrateProcessTestCase {
    * Provides data for the successful lookup test.
    *
    * @return array
-   *   An array of test cases.
    */
   public static function defaultValueDataProvider() {
     return [

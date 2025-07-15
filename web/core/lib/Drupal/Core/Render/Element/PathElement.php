@@ -35,10 +35,11 @@ class PathElement extends Textfield {
    */
   public function getInfo() {
     $info = parent::getInfo();
+    $class = static::class;
     $info['#validate_path'] = TRUE;
     $info['#convert_path'] = self::CONVERT_ROUTE;
     $info['#element_validate'] = [
-      [static::class, 'validateMatchedPath'],
+      [$class, 'validateMatchedPath'],
     ];
     return $info;
   }

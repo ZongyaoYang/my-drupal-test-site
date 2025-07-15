@@ -39,7 +39,6 @@ class LayoutBuilderEntityViewDisplayValidationTest extends ConfigEntityValidatio
   protected function setUp(): void {
     parent::setUp();
 
-    $this->installEntitySchema('node');
     $this->installConfig('node');
     $this->createContentType(['type' => 'one']);
     $this->createContentType(['type' => 'two']);

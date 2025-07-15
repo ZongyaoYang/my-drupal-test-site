@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\test_fieldtype_boolean_emoji_normalizer\Normalizer;
 
 use Drupal\Core\Field\Plugin\Field\FieldType\BooleanItem;

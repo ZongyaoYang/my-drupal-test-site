@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\condition_test;
 
 use Drupal\Core\Form\FormInterface;

@@ -15,11 +15,6 @@ use Drupal\KernelTests\KernelTestBase;
  */
 class RecipeConfiguratorTest extends KernelTestBase {
 
-  /**
-   * Tests the listing all the extensions installed by a recipe.
-   *
-   * @covers ::listAllExtensions
-   */
   public function testRecipeConfigurator(): void {
     $recipe_configurator = new RecipeConfigurator(
       ['install_two_modules', 'install_node_with_config', 'recipe_include'],

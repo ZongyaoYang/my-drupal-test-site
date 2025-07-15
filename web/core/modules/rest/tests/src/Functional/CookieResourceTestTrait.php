@@ -27,27 +27,27 @@ trait CookieResourceTestTrait {
   /**
    * The session cookie.
    *
-   * @var string
-   *
    * @see ::initAuthentication
+   *
+   * @var string
    */
   protected $sessionCookie;
 
   /**
    * The CSRF token.
    *
-   * @var string
-   *
    * @see ::initAuthentication
+   *
+   * @var string
    */
   protected $csrfToken;
 
   /**
    * The logout token.
    *
-   * @var string
-   *
    * @see ::initAuthentication
+   *
+   * @var string
    */
   protected $logoutToken;
 

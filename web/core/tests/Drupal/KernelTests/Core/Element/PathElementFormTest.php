@@ -114,7 +114,7 @@ class PathElementFormTest extends KernelTestBase implements FormInterface {
 
     $form['submit'] = [
       '#type' => 'submit',
-      '#value' => 'Submit',
+      '#value' => t('Submit'),
     ];
 
     return $form;

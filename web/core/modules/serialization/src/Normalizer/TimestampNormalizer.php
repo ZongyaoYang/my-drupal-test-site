@@ -15,8 +15,6 @@ use Drupal\Core\TypedData\Plugin\DataType\Timestamp;
  */
 class TimestampNormalizer extends DateTimeNormalizer {
 
-  use SchematicNormalizerTrait;
-
   /**
    * {@inheritdoc}
    */

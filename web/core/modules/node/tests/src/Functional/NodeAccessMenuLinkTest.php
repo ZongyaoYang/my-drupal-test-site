@@ -53,7 +53,7 @@ class NodeAccessMenuLinkTest extends NodeTestBase {
    */
   public function testNodeAccessMenuLink(): void {
 
-    $menu_link_title = 'Test menu link title';
+    $menu_link_title = $this->randomString();
 
     $this->drupalLogin($this->contentAdminUser);
     $edit = [

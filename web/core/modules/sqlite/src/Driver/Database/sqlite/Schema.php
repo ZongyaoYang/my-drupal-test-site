@@ -118,7 +118,7 @@ class Schema extends DatabaseSchema {
   /**
    * Set database-engine specific properties for a field.
    *
-   * @param array $field
+   * @param $field
    *   A field description array, as specified in the schema documentation.
    */
   protected function processField($field) {
@@ -149,14 +149,14 @@ class Schema extends DatabaseSchema {
   }
 
   /**
-   * Create an SQL string for a field to be used in table create or alter.
+   * Create an SQL string for a field to be used in table creation or alteration.
    *
    * Before passing a field out of a schema definition into this function it has
    * to be processed by self::processField().
    *
-   * @param string $name
+   * @param $name
    *   Name of the field.
-   * @param array $spec
+   * @param $spec
    *   The field specification, as per the schema data structure format.
    */
   protected function createFieldSql($name, $spec) {
@@ -249,11 +249,6 @@ class Schema extends DatabaseSchema {
 
       'blob:big'        => 'BLOB',
       'blob:normal'     => 'BLOB',
-
-      // Only the SQLite driver has this field map to due to a fatal error
-      // error caused by this driver's schema on table introspection.
-      // @todo Add support to all drivers in https://drupal.org/i/3343634
-      'json:normal'     => 'JSON',
     ];
     return $map;
   }
@@ -277,7 +272,7 @@ class Schema extends DatabaseSchema {
     // the table with curly braces in case the db_prefix contains a reference
     // to a database outside of our existing database.
     $info = $this->getPrefixInfo($new_name);
-    $this->executeDdlStatement('ALTER TABLE {' . $table . '} RENAME TO [' . $info['table'] . ']');
+    $this->connection->query('ALTER TABLE {' . $table . '} RENAME TO [' . $info['table'] . ']');
 
     // Drop the indexes, there is no RENAME INDEX command in SQLite.
     if (!empty($schema['unique keys'])) {
@@ -294,7 +289,7 @@ class Schema extends DatabaseSchema {
     // Recreate the indexes.
     $statements = $this->createIndexSql($new_name, $schema);
     foreach ($statements as $statement) {
-      $this->executeDdlStatement($statement);
+      $this->connection->query($statement);
     }
   }
 
@@ -306,7 +301,7 @@ class Schema extends DatabaseSchema {
       return FALSE;
     }
     $this->connection->tableDropped = TRUE;
-    $this->executeDdlStatement('DROP TABLE {' . $table . '}');
+    $this->connection->query('DROP TABLE {' . $table . '}');
     return TRUE;
   }
 
@@ -328,10 +323,10 @@ class Schema extends DatabaseSchema {
     // supports adding new fields to a table, in some simple cases. In most
     // cases, we have to create a new table and copy the data over.
     if (empty($keys_new) && (empty($specification['not null']) || isset($specification['default']))) {
-      // When we don't have to create new keys and we are not creating a NOT
-      // NULL column without a default value, we can use the quicker version.
+      // When we don't have to create new keys and we are not creating a
+      // NOT NULL column without a default value, we can use the quicker version.
       $query = 'ALTER TABLE {' . $table . '} ADD ' . $this->createFieldSql($field, $this->processField($specification));
-      $this->executeDdlStatement($query);
+      $this->connection->query($query);
 
       // Apply the initial value if set.
       if (isset($specification['initial_from_field'])) {
@@ -382,8 +377,8 @@ class Schema extends DatabaseSchema {
       elseif (isset($specification['initial'])) {
         // If we have an initial value, copy it over.
         $mapping[$field] = [
-          'expression' => ':new_field_initial',
-          'arguments' => [':new_field_initial' => $specification['initial']],
+          'expression' => ':newfieldinitial',
+          'arguments' => [':newfieldinitial' => $specification['initial']],
         ];
       }
       else {
@@ -404,13 +399,13 @@ class Schema extends DatabaseSchema {
    * As SQLite does not support ALTER TABLE (with a few exceptions) it is
    * necessary to create a new table and copy over the old content.
    *
-   * @param string $table
+   * @param $table
    *   Name of the table to be altered.
-   * @param array $old_schema
+   * @param $old_schema
    *   The old schema array for the table.
-   * @param array $new_schema
+   * @param $new_schema
    *   The new schema array for the table.
-   * @param array $mapping
+   * @param $mapping
    *   An optional mapping between the fields of the old specification and the
    *   fields of the new specification. An associative array, whose keys are
    *   the fields of the new table, and values can take two possible forms:
@@ -469,7 +464,7 @@ class Schema extends DatabaseSchema {
    * create a schema array. This is useful, for example, during update when
    * the old schema is not available.
    *
-   * @param string $table
+   * @param $table
    *   Name of the table.
    *
    * @return array
@@ -652,16 +647,16 @@ class Schema extends DatabaseSchema {
   }
 
   /**
-   * Renames columns in an index definition according to a new mapping.
+   * Utility method: rename columns in an index definition according to a new mapping.
    *
-   * @param array $key_definition
+   * @param $key_definition
    *   The key definition.
-   * @param array $mapping
+   * @param $mapping
    *   The new mapping.
    */
   protected function mapKeyDefinition(array $key_definition, array $mapping) {
     foreach ($key_definition as &$field) {
-      // The key definition can be an array such as [$field, $length].
+      // The key definition can be an array($field, $length).
       if (is_array($field)) {
         $field = &$field[0];
       }
@@ -688,7 +683,7 @@ class Schema extends DatabaseSchema {
     $schema['indexes'][$name] = $fields;
     $statements = $this->createIndexSql($table, $schema);
     foreach ($statements as $statement) {
-      $this->executeDdlStatement($statement);
+      $this->connection->query($statement);
     }
   }
 
@@ -711,7 +706,7 @@ class Schema extends DatabaseSchema {
 
     $info = $this->getPrefixInfo($table);
 
-    $this->executeDdlStatement('DROP INDEX [' . $info['schema'] . '].[' . $info['table'] . '_' . $name . ']');
+    $this->connection->query('DROP INDEX [' . $info['schema'] . '].[' . $info['table'] . '_' . $name . ']');
     return TRUE;
   }
 
@@ -729,7 +724,7 @@ class Schema extends DatabaseSchema {
     $schema['unique keys'][$name] = $fields;
     $statements = $this->createIndexSql($table, $schema);
     foreach ($statements as $statement) {
-      $this->executeDdlStatement($statement);
+      $this->connection->query($statement);
     }
   }
 
@@ -743,7 +738,7 @@ class Schema extends DatabaseSchema {
 
     $info = $this->getPrefixInfo($table);
 
-    $this->executeDdlStatement('DROP INDEX [' . $info['schema'] . '].[' . $info['table'] . '_' . $name . ']');
+    $this->connection->query('DROP INDEX [' . $info['schema'] . '].[' . $info['table'] . '_' . $name . ']');
     return TRUE;
   }
 

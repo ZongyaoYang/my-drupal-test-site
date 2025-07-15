@@ -24,7 +24,7 @@ dependencies:
 id: author
 label: Author
 weight: 3
-is_admin: false
+is_admin: null
 permissions:
   - 'access content overview'
   - 'access contextual links'

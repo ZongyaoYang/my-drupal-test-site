@@ -34,6 +34,14 @@ class EntityStateChangeValidationTest extends KernelTestBase {
   ];
 
   /**
+   * {@inheritdoc}
+   *
+   * @todo Remove and fix test to not rely on super user.
+   * @see https://www.drupal.org/project/drupal/issues/3437620
+   */
+  protected bool $usesSuperUserAccessPolicy = TRUE;
+
+  /**
    * An admin user.
    *
    * @var \Drupal\Core\Session\AccountInterface
@@ -61,6 +69,7 @@ class EntityStateChangeValidationTest extends KernelTestBase {
    * @covers ::validate
    */
   public function testValidTransition(): void {
+    $this->setCurrentUser($this->adminUser);
 
     $node_type = NodeType::create([
       'type' => 'example',
@@ -78,7 +87,6 @@ class EntityStateChangeValidationTest extends KernelTestBase {
     $node->moderation_state->value = 'draft';
     $node->save();
 
-    $this->setCurrentUser($this->createUser(['use editorial transition publish']));
     $node->moderation_state->value = 'published';
     $this->assertCount(0, $node->validate());
     $node->save();
@@ -145,6 +153,7 @@ class EntityStateChangeValidationTest extends KernelTestBase {
    * Tests validation with no initial state or an invalid state.
    */
   public function testInvalidStateWithoutExisting(): void {
+    $this->setCurrentUser($this->adminUser);
     // Create content without moderation enabled for the content type.
     $node_type = NodeType::create([
       'type' => 'example',
@@ -164,7 +173,6 @@ class EntityStateChangeValidationTest extends KernelTestBase {
     $workflow->getTypePlugin()->addEntityTypeAndBundle('node', 'example');
     $workflow->save();
 
-    $this->setCurrentUser($this->createUser(['use editorial transition create_new_draft']));
     // Validate the invalid state.
     $node = Node::load($node->id());
     $node->moderation_state->value = 'invalid_state';
@@ -175,7 +183,7 @@ class EntityStateChangeValidationTest extends KernelTestBase {
     $node->moderation_state->value = 'deleted_state';
     $node->save();
 
-    // Delete the state so the original entity contains an invalid state when
+    // Delete the state so $node->original contains an invalid state when
     // validating.
     $workflow->getTypePlugin()->deleteState('deleted_state');
     $workflow->save();
@@ -195,6 +203,7 @@ class EntityStateChangeValidationTest extends KernelTestBase {
    * Tests state transition validation with multiple languages.
    */
   public function testInvalidStateMultilingual(): void {
+    $this->setCurrentUser($this->adminUser);
 
     ConfigurableLanguage::createFromLangcode('fr')->save();
     $node_type = NodeType::create([
@@ -207,7 +216,6 @@ class EntityStateChangeValidationTest extends KernelTestBase {
     $workflow->getTypePlugin()->addEntityTypeAndBundle('node', 'example');
     $workflow->save();
 
-    $this->setCurrentUser($this->createUser(['use editorial transition archive']));
     $node = Node::create([
       'type' => 'example',
       'title' => 'English Published Node',
@@ -253,6 +261,7 @@ class EntityStateChangeValidationTest extends KernelTestBase {
    * Tests that content without prior moderation information can be moderated.
    */
   public function testExistingContentWithNoModeration(): void {
+    $this->setCurrentUser($this->adminUser);
 
     $node_type = NodeType::create([
       'type' => 'example',
@@ -273,7 +282,6 @@ class EntityStateChangeValidationTest extends KernelTestBase {
     $workflow->getTypePlugin()->addEntityTypeAndBundle('node', 'example');
     $workflow->save();
 
-    $this->setCurrentUser($this->createUser(['use editorial transition publish']));
     $node = Node::load($nid);
 
     // Having no previous state should not break validation.

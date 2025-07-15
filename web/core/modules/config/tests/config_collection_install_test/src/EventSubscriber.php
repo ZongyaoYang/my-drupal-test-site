@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\config_collection_install_test;
 
 use Drupal\Core\Config\ConfigCollectionEvents;
@@ -9,9 +7,6 @@ use Drupal\Core\Config\ConfigCollectionInfo;
 use Drupal\Core\State\StateInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-/**
- * Event subscriber for testing configuration collection.
- */
 class EventSubscriber implements EventSubscriberInterface {
 
   /**

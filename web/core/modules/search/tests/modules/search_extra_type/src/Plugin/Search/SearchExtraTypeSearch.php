@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\search_extra_type\Plugin\Search;
 
 use Drupal\Component\Render\FormattableMarkup;
@@ -61,10 +59,7 @@ class SearchExtraTypeSearch extends ConfigurableSearchPluginBase {
         'link' => Url::fromRoute('test_page_test.test_page')->toString(),
         'type' => 'Dummy result type',
         'title' => 'Dummy title',
-        'snippet' => new FormattableMarkup("Dummy search snippet to display. Keywords: @keywords\n\nConditions: @search_parameters", [
-          '@keywords' => $this->keywords,
-          '@search_parameters' => print_r($this->searchParameters, TRUE),
-        ]),
+        'snippet' => new FormattableMarkup("Dummy search snippet to display. Keywords: @keywords\n\nConditions: @search_parameters", ['@keywords' => $this->keywords, '@search_parameters' => print_r($this->searchParameters, TRUE)]),
       ],
     ];
   }

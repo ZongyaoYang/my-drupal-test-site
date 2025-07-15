@@ -19,7 +19,6 @@ use Twig\Error\Error;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
-use Twig\ExpressionParser\ExpressionParsers;
 use Twig\Extension\CoreExtension;
 use Twig\Extension\EscaperExtension;
 use Twig\Extension\ExtensionInterface;
@@ -28,6 +27,8 @@ use Twig\Extension\YieldNotReadyExtension;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\ChainLoader;
 use Twig\Loader\LoaderInterface;
+use Twig\Node\Expression\Binary\AbstractBinary;
+use Twig\Node\Expression\Unary\AbstractUnary;
 use Twig\Node\ModuleNode;
 use Twig\Node\Node;
 use Twig\NodeVisitor\NodeVisitorInterface;
@@ -43,11 +44,11 @@ use Twig\TokenParser\TokenParserInterface;
  */
 class Environment
 {
-    public const VERSION = '3.21.1';
-    public const VERSION_ID = 32101;
+    public const VERSION = '3.20.0';
+    public const VERSION_ID = 32000;
     public const MAJOR_VERSION = 3;
-    public const MINOR_VERSION = 21;
-    public const RELEASE_VERSION = 1;
+    public const MINOR_VERSION = 20;
+    public const RELEASE_VERSION = 0;
     public const EXTRA_VERSION = '';
 
     private $charset;
@@ -924,10 +925,22 @@ class Environment
 
     /**
      * @internal
+     *
+     * @return array<string, array{precedence: int, precedence_change?: OperatorPrecedenceChange, class: class-string<AbstractUnary>}>
      */
-    public function getExpressionParsers(): ExpressionParsers
+    public function getUnaryOperators(): array
     {
-        return $this->extensionSet->getExpressionParsers();
+        return $this->extensionSet->getUnaryOperators();
+    }
+
+    /**
+     * @internal
+     *
+     * @return array<string, array{precedence: int, precedence_change?: OperatorPrecedenceChange, class: class-string<AbstractBinary>, associativity: ExpressionParser::OPERATOR_*}>
+     */
+    public function getBinaryOperators(): array
+    {
+        return $this->extensionSet->getBinaryOperators();
     }
 
     private function updateOptionsHash(): void

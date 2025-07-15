@@ -5,14 +5,10 @@
  * Install, update and uninstall functions for the hold_test module.
  */
 
-declare(strict_types=1);
-
-use Drupal\hold_test\HoldTestHelper;
-
 /**
  * Implements hook_install().
  */
-function hold_test_install(): void {
-  HoldTestHelper::requestHold(FALSE);
-  HoldTestHelper::responseHold(FALSE);
+function hold_test_install() {
+  hold_test_request(FALSE);
+  hold_test_response(FALSE);
 }

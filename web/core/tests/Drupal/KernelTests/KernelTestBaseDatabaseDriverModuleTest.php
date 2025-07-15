@@ -30,7 +30,7 @@ class KernelTestBaseDatabaseDriverModuleTest extends KernelTestBase {
       if (in_array($database['driver'], ['mysql', 'pgsql'])) {
         // Change the used database driver to the one provided by the module
         // "driver_test".
-        $driver = 'DriverTest' . ucfirst($database['driver']);
+        $driver = 'Drivertest' . ucfirst($database['driver']);
         $database['driver'] = $driver;
         $database['namespace'] = 'Drupal\\driver_test\\Driver\\Database\\' . $driver;
         $database['autoload'] = "core/modules/system/tests/modules/driver_test/src/Driver/Database/$driver/";
@@ -57,7 +57,7 @@ class KernelTestBaseDatabaseDriverModuleTest extends KernelTestBase {
    */
   public function testDatabaseDriverModuleEnabled(): void {
     $driver = Database::getConnection()->driver();
-    if (!in_array($driver, ['DriverTestMysql', 'DriverTestPgsql'])) {
+    if (!in_array($driver, ['DrivertestMysql', 'DrivertestPgsql'])) {
       $this->markTestSkipped("This test does not support the {$driver} database driver.");
     }
 

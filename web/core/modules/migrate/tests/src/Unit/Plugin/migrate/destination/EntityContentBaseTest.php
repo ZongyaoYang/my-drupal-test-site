@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drupal\Tests\migrate\Unit\Plugin\migrate\destination;
 
 use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Field\FieldTypePluginManagerInterface;
 use Drupal\Core\Session\AccountSwitcherInterface;
 use Drupal\migrate\MigrateException;
@@ -35,8 +34,7 @@ class EntityContentBaseTest extends EntityTestBase {
       $bundles,
       $this->entityFieldManager->reveal(),
       $this->prophesize(FieldTypePluginManagerInterface::class)->reveal(),
-      $this->prophesize(AccountSwitcherInterface::class)->reveal(),
-      $this->prophesize(EntityTypeBundleInfoInterface::class)->reveal(),
+      $this->prophesize(AccountSwitcherInterface::class)->reveal()
     );
     $entity = $this->prophesize(ContentEntityInterface::class);
     $entity->isValidationRequired()
@@ -70,8 +68,7 @@ class EntityContentBaseTest extends EntityTestBase {
       $bundles,
       $this->entityFieldManager->reveal(),
       $this->prophesize(FieldTypePluginManagerInterface::class)->reveal(),
-      $this->prophesize(AccountSwitcherInterface::class)->reveal(),
-      $this->prophesize(EntityTypeBundleInfoInterface::class)->reveal(),
+      $this->prophesize(AccountSwitcherInterface::class)->reveal()
     );
     $destination->setEntity(FALSE);
     $this->expectException(MigrateException::class);
@@ -98,8 +95,7 @@ class EntityContentBaseTest extends EntityTestBase {
       [],
       $this->entityFieldManager->reveal(),
       $this->prophesize(FieldTypePluginManagerInterface::class)->reveal(),
-      $this->prophesize(AccountSwitcherInterface::class)->reveal(),
-      $this->prophesize(EntityTypeBundleInfoInterface::class)->reveal(),
+      $this->prophesize(AccountSwitcherInterface::class)->reveal()
     );
     $this->expectException(MigrateException::class);
     $this->expectExceptionMessage('The "foo" entity type does not support translations.');
@@ -115,30 +111,16 @@ class EntityContentBaseTest extends EntityTestBase {
  */
 class EntityTestDestination extends EntityContentBase {
 
-  /**
-   * The test entity.
-   *
-   * @var \Drupal\migrate\Plugin\migrate\destination\EntityContentBase|null
-   */
   private $entity = NULL;
 
-  /**
-   * Sets the test entity.
-   */
-  public function setEntity($entity): void {
+  public function setEntity($entity) {
     $this->entity = $entity;
   }
 
-  /**
-   * Gets the test entity.
-   */
   protected function getEntity(Row $row, array $old_destination_id_values) {
     return $this->entity;
   }
 
-  /**
-   * Gets the test entity ID.
-   */
   public static function getEntityTypeId($plugin_id) {
     return 'foo';
   }

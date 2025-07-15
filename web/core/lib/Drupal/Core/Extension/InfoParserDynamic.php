@@ -12,12 +12,24 @@ use Drupal\Core\Serialization\Yaml;
 class InfoParserDynamic implements InfoParserInterface {
 
   /**
+   * The root directory of the Drupal installation.
+   *
+   * @var string
+   */
+  protected $root;
+
+  /**
    * InfoParserDynamic constructor.
    *
-   * @param string $root
+   * @param string|null $app_root
    *   The root directory of the Drupal installation.
    */
-  public function __construct(protected string $root) {
+  public function __construct(?string $app_root = NULL) {
+    if ($app_root === NULL) {
+      @trigger_error('Calling InfoParserDynamic::__construct() without the $app_root argument is deprecated in drupal:10.1.0 and will be required in drupal:11.0.0. See https://www.drupal.org/node/3293709', E_USER_DEPRECATED);
+      $app_root = \Drupal::hasService('kernel') ? \Drupal::root() : DRUPAL_ROOT;
+    }
+    $this->root = $app_root;
   }
 
   /**
@@ -61,7 +73,7 @@ class InfoParserDynamic implements InfoParserInterface {
     try {
       $parsed_info['core_incompatible'] = !Semver::satisfies(\Drupal::VERSION, $parsed_info['core_version_requirement']);
     }
-    catch (\UnexpectedValueException) {
+    catch (\UnexpectedValueException $exception) {
       throw new InfoParserException("The 'core_version_requirement' constraint ({$parsed_info['core_version_requirement']}) is not a valid value in $filename");
     }
     if (isset($parsed_info['version']) && $parsed_info['version'] === 'VERSION') {

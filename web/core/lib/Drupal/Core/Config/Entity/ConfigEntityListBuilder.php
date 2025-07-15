@@ -42,14 +42,14 @@ class ConfigEntityListBuilder extends EntityListBuilder {
     if ($this->entityType->hasKey('status')) {
       if (!$entity->status() && $entity->hasLinkTemplate('enable')) {
         $operations['enable'] = [
-          'title' => $this->t('Enable'),
+          'title' => t('Enable'),
           'weight' => -10,
           'url' => $this->ensureDestination($entity->toUrl('enable')),
         ];
       }
       elseif ($entity->hasLinkTemplate('disable')) {
         $operations['disable'] = [
-          'title' => $this->t('Disable'),
+          'title' => t('Disable'),
           'weight' => 40,
           'url' => $this->ensureDestination($entity->toUrl('disable')),
         ];

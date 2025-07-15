@@ -5,7 +5,6 @@ namespace Drupal\Core\StreamWrapper;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\DrupalKernel;
 use Drupal\Core\Site\Settings;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -15,8 +14,6 @@ use Symfony\Component\HttpFoundation\Request;
  * interface.
  */
 class PublicStream extends LocalStream {
-
-  use StringTranslationTrait;
 
   /**
    * {@inheritdoc}
@@ -29,14 +26,14 @@ class PublicStream extends LocalStream {
    * {@inheritdoc}
    */
   public function getName() {
-    return $this->t('Public files');
+    return t('Public files');
   }
 
   /**
    * {@inheritdoc}
    */
   public function getDescription() {
-    return $this->t('Public local files served by the webserver.');
+    return t('Public local files served by the webserver.');
   }
 
   /**

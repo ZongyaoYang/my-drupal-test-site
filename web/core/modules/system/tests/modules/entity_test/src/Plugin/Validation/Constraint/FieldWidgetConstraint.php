@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\entity_test\Plugin\Validation\Constraint;
 
 use Drupal\Core\StringTranslation\TranslatableMarkup;
@@ -17,9 +15,6 @@ use Symfony\Component\Validator\Constraint as SymfonyConstraint;
 )]
 class FieldWidgetConstraint extends SymfonyConstraint {
 
-  /**
-   * The default violation message.
-   */
-  public string $message = 'Widget constraint has failed.';
+  public $message = 'Widget constraint has failed.';
 
 }

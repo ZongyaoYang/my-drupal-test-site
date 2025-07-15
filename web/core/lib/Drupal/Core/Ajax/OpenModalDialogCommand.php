@@ -3,7 +3,7 @@
 namespace Drupal\Core\Ajax;
 
 /**
- * An AJAX command to open certain content in a dialog in a modal dialog.
+ * Defines an AJAX command to open certain content in a dialog in a modal dialog.
  *
  * @ingroup ajax
  */

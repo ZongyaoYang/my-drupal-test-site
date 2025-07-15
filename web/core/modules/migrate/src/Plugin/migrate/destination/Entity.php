@@ -23,8 +23,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * Available configuration keys:
  * - default_bundle: (optional) The bundle to use for this row if 'bundle' is
- *   not defined on the row. Setting this also allows the fields() method to
- *   return bundle fields as well as base fields.
+ *   not defined on the row.
  *
  * Examples:
  *
@@ -150,7 +149,7 @@ abstract class Entity extends DestinationBase implements ContainerFactoryPluginI
    * {@inheritdoc}
    */
   public function fields() {
-    return [];
+    // @todo Implement fields() method.
   }
 
   /**

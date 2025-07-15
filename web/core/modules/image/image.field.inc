@@ -2,6 +2,7 @@
 
 /**
  * @file
+ * Implement an image field, based on the file module's file field.
  */
 
 use Drupal\Core\Render\Element;
@@ -15,7 +16,7 @@ use Drupal\Core\Render\Element;
  *   An associative array containing:
  *   - element: A render element representing the image field widget.
  */
-function template_preprocess_image_widget(&$variables): void {
+function template_preprocess_image_widget(&$variables) {
   $element = $variables['element'];
 
   $variables['attributes'] = ['class' => ['image-widget', 'js-form-managed-file', 'form-managed-file', 'clearfix']];
@@ -40,7 +41,7 @@ function template_preprocess_image_widget(&$variables): void {
  *   - image_style: An optional image style.
  *   - url: An optional \Drupal\Core\Url object.
  */
-function template_preprocess_image_formatter(&$variables): void {
+function template_preprocess_image_formatter(&$variables) {
   if ($variables['image_style']) {
     $variables['image'] = [
       '#theme' => 'image_style',

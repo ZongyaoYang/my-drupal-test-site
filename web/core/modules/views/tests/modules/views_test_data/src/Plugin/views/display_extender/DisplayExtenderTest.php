@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\views_test_data\Plugin\views\display_extender;
 
 use Drupal\Component\Utility\Unicode;
@@ -32,7 +30,7 @@ class DisplayExtenderTest extends DisplayExtenderPluginBase {
   protected function defineOptions() {
     $options = parent::defineOptions();
 
-    $options['test_extender_test_option'] = ['default' => 'Empty'];
+    $options['test_extender_test_option'] = ['default' => $this->t('Empty')];
 
     return $options;
   }
@@ -44,7 +42,7 @@ class DisplayExtenderTest extends DisplayExtenderPluginBase {
     parent::optionsSummary($categories, $options);
 
     $categories['display_extender_test'] = [
-      'title' => 'Display extender test settings',
+      'title' => $this->t('Display extender test settings'),
       'column' => 'second',
       'build' => [
         '#weight' => -100,
@@ -53,7 +51,7 @@ class DisplayExtenderTest extends DisplayExtenderPluginBase {
 
     $options['test_extender_test_option'] = [
       'category' => 'display_extender_test',
-      'title' => 'Test option',
+      'title' => $this->t('Test option'),
       'value' => Unicode::truncate($this->options['test_extender_test_option'], 24, FALSE, TRUE),
     ];
   }
@@ -64,11 +62,11 @@ class DisplayExtenderTest extends DisplayExtenderPluginBase {
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     switch ($form_state->get('section')) {
       case 'test_extender_test_option':
-        $form['#title'] .= 'Test option';
+        $form['#title'] .= $this->t('Test option');
         $form['test_extender_test_option'] = [
-          '#title' => 'Test option',
+          '#title' => $this->t('Test option'),
           '#type' => 'textfield',
-          '#description' => 'This is a textfield for test_option.',
+          '#description' => $this->t('This is a textfield for test_option.'),
           '#default_value' => $this->options['test_extender_test_option'],
         ];
     }

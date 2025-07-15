@@ -26,7 +26,7 @@ class AssignNameExpression extends ContextVariable
         }
 
         // All names supported by ExpressionParser::parsePrimaryExpression() should be excluded
-        if (\in_array(strtolower($name), ['true', 'false', 'none', 'null'], true)) {
+        if (\in_array(strtolower($name), ['true', 'false', 'none', 'null'])) {
             throw new SyntaxError(\sprintf('You cannot assign a value to "%s".', $name), $lineno);
         }
 

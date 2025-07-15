@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\KernelTests\Core\Entity;
 
-use Drupal\entity_test\EntityTestHelper;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
@@ -55,7 +54,7 @@ abstract class EntityLanguageTestBase extends EntityKernelTestBase {
 
     $this->languageManager = $this->container->get('language_manager');
 
-    foreach (EntityTestHelper::getEntityTypes() as $entity_type_id) {
+    foreach (entity_test_entity_types() as $entity_type_id) {
       // The entity_test schema is installed by the parent.
       if ($entity_type_id != 'entity_test') {
         $this->installEntitySchema($entity_type_id);
@@ -78,7 +77,7 @@ abstract class EntityLanguageTestBase extends EntityKernelTestBase {
     $this->untranslatableFieldName = $this->randomMachineName() . '_field_name';
 
     // Create field fields in all entity variations.
-    foreach (EntityTestHelper::getEntityTypes() as $entity_type) {
+    foreach (entity_test_entity_types() as $entity_type) {
       FieldStorageConfig::create([
         'field_name' => $this->fieldName,
         'entity_type' => $entity_type,

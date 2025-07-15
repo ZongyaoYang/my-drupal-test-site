@@ -21,7 +21,7 @@ class LocalesLocationAddIndexUpdateTest extends UpdatePathTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setDatabaseDumpFiles(): void {
+  protected function setDatabaseDumpFiles() {
     $this->databaseDumpFiles[] = $this->root . '/core/modules/system/tests/fixtures/update/drupal-10.3.0.filled.standard.php.gz';
   }
 

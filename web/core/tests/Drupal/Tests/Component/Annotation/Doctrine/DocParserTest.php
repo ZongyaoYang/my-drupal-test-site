@@ -7,13 +7,14 @@ namespace Drupal\Tests\Component\Annotation\Doctrine;
 use Drupal\Component\Annotation\Doctrine\DocParser;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\Annotation\Target;
-use Drupal\Tests\Component\Annotation\Doctrine\Fixtures\Annotation\Autoload;
 use Drupal\Tests\Component\Annotation\Doctrine\Fixtures\AnnotationWithConstants;
 use Drupal\Tests\Component\Annotation\Doctrine\Fixtures\ClassWithConstants;
 use Drupal\Tests\Component\Annotation\Doctrine\Fixtures\IntefaceWithConstants;
 use PHPUnit\Framework\TestCase;
 
 /**
+ * @coversDefaultClass \Drupal\Component\Annotation\Doctrine\DocParser
+ *
  * This class is a near-copy of
  * Doctrine\Tests\Common\Annotations\DocParserTest, which is part of the
  * Doctrine project: <http://www.doctrine-project.org>.  It was copied from
@@ -23,12 +24,11 @@ use PHPUnit\Framework\TestCase;
  * core/tests/Drupal/Tests/Component/Annotation/Doctrine/Fixtures were also
  * copied from version 1.2.7.
  *
- * @coversDefaultClass \Drupal\Component\Annotation\Doctrine\DocParser
  * @group Annotation
  */
 class DocParserTest extends TestCase
 {
-    public function testNestedArraysWithNestedAnnotation(): void
+    public function testNestedArraysWithNestedAnnotation()
     {
         $parser = $this->createTestParser();
 
@@ -48,7 +48,7 @@ class DocParserTest extends TestCase
         $this->assertInstanceOf(Name::class, $nestedArray['key']);
     }
 
-    public function testBasicAnnotations(): void
+    public function testBasicAnnotations()
     {
         $parser = $this->createTestParser();
 
@@ -114,7 +114,7 @@ DOCBLOCK;
         $this->assertNull($annot->value);
    }
 
-    public function testDefaultValueAnnotations(): void
+    public function testDefaultValueAnnotations()
     {
         $parser = $this->createTestParser();
 
@@ -136,7 +136,7 @@ DOCBLOCK;
         $this->assertEquals('bar', $annot->foo);
     }
 
-    public function testNamespacedAnnotations(): void
+    public function testNamespacedAnnotations()
     {
         $parser = new DocParser;
         $parser->setIgnoreNotImportedAnnotations(true);
@@ -163,7 +163,7 @@ DOCBLOCK;
     /**
      * @group debug
      */
-    public function testTypicalMethodDocBlock(): void
+    public function testTypicalMethodDocBlock()
     {
         $parser = $this->createTestParser();
 
@@ -193,7 +193,7 @@ DOCBLOCK;
     }
 
 
-    public function testAnnotationWithoutConstructor(): void
+    public function testAnnotationWithoutConstructor()
     {
         $parser = $this->createTestParser();
 
@@ -318,7 +318,7 @@ DOCBLOCK;
         $this->assertInstanceOf(SomeAnnotationClassNameWithoutConstructorAndProperties::class, $result[0]);
     }
 
-    public function testAnnotationTarget(): void
+    public function testAnnotationTarget()
     {
 
         $parser = new DocParser;
@@ -534,7 +534,7 @@ DOCBLOCK;
     /**
      * @dataProvider getAnnotationVarTypeProviderValid
      */
-    public function testAnnotationWithVarType($attribute, $value): void
+    public function testAnnotationWithVarType($attribute, $value)
     {
         $parser     = $this->createTestParser();
         $context    = 'property SomeClassName::$invalidProperty.';
@@ -551,7 +551,7 @@ DOCBLOCK;
     /**
      * @dataProvider getAnnotationVarTypeProviderInvalid
      */
-    public function testAnnotationWithVarTypeError($attribute,$type,$value,$given): void
+    public function testAnnotationWithVarTypeError($attribute,$type,$value,$given)
     {
         $parser     = $this->createTestParser();
         $context    = 'property SomeClassName::invalidProperty.';
@@ -570,7 +570,7 @@ DOCBLOCK;
     /**
      * @dataProvider getAnnotationVarTypeArrayProviderInvalid
      */
-    public function testAnnotationWithVarTypeArrayError($attribute,$type,$value,$given): void
+    public function testAnnotationWithVarTypeArrayError($attribute,$type,$value,$given)
     {
         $parser     = $this->createTestParser();
         $context    = 'property SomeClassName::invalidProperty.';
@@ -588,7 +588,7 @@ DOCBLOCK;
     /**
      * @dataProvider getAnnotationVarTypeProviderValid
      */
-    public function testAnnotationWithAttributes($attribute, $value): void
+    public function testAnnotationWithAttributes($attribute, $value)
     {
         $parser     = $this->createTestParser();
         $context    = 'property SomeClassName::$invalidProperty.';
@@ -606,7 +606,7 @@ DOCBLOCK;
    /**
      * @dataProvider getAnnotationVarTypeProviderInvalid
      */
-    public function testAnnotationWithAttributesError($attribute,$type,$value,$given): void
+    public function testAnnotationWithAttributesError($attribute,$type,$value,$given)
     {
         $parser     = $this->createTestParser();
         $context    = 'property SomeClassName::invalidProperty.';
@@ -625,7 +625,7 @@ DOCBLOCK;
    /**
      * @dataProvider getAnnotationVarTypeArrayProviderInvalid
      */
-    public function testAnnotationWithAttributesWithVarTypeArrayError($attribute,$type,$value,$given): void
+    public function testAnnotationWithAttributesWithVarTypeArrayError($attribute,$type,$value,$given)
     {
         $parser     = $this->createTestParser();
         $context    = 'property SomeClassName::invalidProperty.';
@@ -640,7 +640,7 @@ DOCBLOCK;
         }
     }
 
-    public function testAnnotationWithRequiredAttributes(): void
+    public function testAnnotationWithRequiredAttributes()
     {
         $parser     = $this->createTestParser();
         $context    = 'property SomeClassName::invalidProperty.';
@@ -674,7 +674,7 @@ DOCBLOCK;
 
     }
 
-    public function testAnnotationWithRequiredAttributesWithoutContructor(): void
+    public function testAnnotationWithRequiredAttributesWithoutContructor()
     {
         $parser     = $this->createTestParser();
         $context    = 'property SomeClassName::invalidProperty.';
@@ -708,7 +708,7 @@ DOCBLOCK;
 
     }
 
-    public function testAnnotationEnumeratorException(): void
+    public function testAnnotationEnumeratorException()
     {
         $this->expectException('\Doctrine\Common\Annotations\AnnotationException');
         $this->expectExceptionMessage('Attribute "value" of @Drupal\Tests\Component\Annotation\Doctrine\Fixtures\AnnotationEnum declared on property SomeClassName::invalidProperty. accepts only [ONE, TWO, THREE], but got FOUR.');
@@ -722,7 +722,7 @@ DOCBLOCK;
         $parser->parse($docblock, $context);
     }
 
-    public function testAnnotationEnumeratorLiteralException(): void
+    public function testAnnotationEnumeratorLiteralException()
     {
         $this->expectException('\Doctrine\Common\Annotations\AnnotationException');
         $this->expectExceptionMessage('Attribute "value" of @Drupal\Tests\Component\Annotation\Doctrine\Fixtures\AnnotationEnumLiteral declared on property SomeClassName::invalidProperty. accepts only [AnnotationEnumLiteral::ONE, AnnotationEnumLiteral::TWO, AnnotationEnumLiteral::THREE], but got 4.');
@@ -736,7 +736,7 @@ DOCBLOCK;
         $parser->parse($docblock, $context);
     }
 
-    public function testAnnotationEnumInvalidTypeDeclarationException(): void
+    public function testAnnotationEnumInvalidTypeDeclarationException()
     {
         $this->expectException('\InvalidArgumentException');
         $this->expectExceptionMessage('@Enum supports only scalar values "array" given.');
@@ -748,7 +748,7 @@ DOCBLOCK;
         $parser->parse($docblock);
     }
 
-    public function testAnnotationEnumInvalidLiteralDeclarationException(): void
+    public function testAnnotationEnumInvalidLiteralDeclarationException()
     {
         $this->expectException('\InvalidArgumentException');
         $this->expectExceptionMessage('Undefined enumerator value "3" for literal "AnnotationEnumLiteral::THREE".');
@@ -839,7 +839,7 @@ DOCBLOCK;
                 // Since this class is a near-copy of
                 // Doctrine\Tests\Common\Annotations\DocParserTest, we don't fix
                 // PHPStan errors here.
-                // @phpstan-ignore array.duplicateKey
+                // @phpstan-ignore-next-line
                 ClassWithConstants::SOME_KEY    => ClassWithConstants::SOME_VALUE,
                 ClassWithConstants::SOME_KEY    => IntefaceWithConstants::SOME_VALUE
             )
@@ -866,7 +866,7 @@ DOCBLOCK;
     /**
      * @dataProvider getConstantsProvider
      */
-    public function testSupportClassConstants($docblock, $expected): void
+    public function testSupportClassConstants($docblock, $expected)
     {
         $parser = $this->createTestParser();
         $parser->setImports(array(
@@ -880,7 +880,7 @@ DOCBLOCK;
         $this->assertEquals($expected, $annotation->value);
     }
 
-    public function testWithoutConstructorWhenIsNotDefaultValue(): void
+    public function testWithoutConstructorWhenIsNotDefaultValue()
     {
         $this->expectException('\Doctrine\Common\Annotations\AnnotationException');
         $this->expectExceptionMessage('The annotation @SomeAnnotationClassNameWithoutConstructorAndProperties declared on  does not accept any values, but got {"value":"Foo"}.');
@@ -897,7 +897,7 @@ DOCBLOCK;
         $parser->parse($docblock);
     }
 
-    public function testWithoutConstructorWhenHasNoProperties(): void
+    public function testWithoutConstructorWhenHasNoProperties()
     {
         $this->expectException('\Doctrine\Common\Annotations\AnnotationException');
         $this->expectExceptionMessage('The annotation @SomeAnnotationClassNameWithoutConstructorAndProperties declared on  does not accept any values, but got {"value":"Foo"}.');
@@ -913,7 +913,7 @@ DOCBLOCK;
         $parser->parse($docblock);
     }
 
-    public function testAnnotationTargetSyntaxError(): void
+    public function testAnnotationTargetSyntaxError()
     {
         $this->expectException('\Doctrine\Common\Annotations\AnnotationException');
         $this->expectExceptionMessage('Expected namespace separator or identifier, got \')\' at position 24 in class @Drupal\Tests\Component\Annotation\Doctrine\Fixtures\AnnotationWithTargetSyntaxError.');
@@ -930,7 +930,7 @@ DOCBLOCK;
         $parser->parse($docblock,$context);
     }
 
-    public function testAnnotationWithInvalidTargetDeclarationError(): void
+    public function testAnnotationWithInvalidTargetDeclarationError()
     {
         $this->expectException('\InvalidArgumentException');
         $this->expectExceptionMessage('Invalid Target "Foo". Available targets: [ALL, CLASS, METHOD, PROPERTY, FUNCTION, ANNOTATION]');
@@ -947,7 +947,7 @@ DOCBLOCK;
         $parser->parse($docblock,$context);
     }
 
-    public function testAnnotationWithTargetEmptyError(): void
+    public function testAnnotationWithTargetEmptyError()
     {
         $this->expectException('\InvalidArgumentException');
         $this->expectExceptionMessage('@Target expects either a string value, or an array of strings, "NULL" given.');
@@ -967,7 +967,7 @@ DOCBLOCK;
     /**
      * @group DDC-575
      */
-    public function testRegressionDDC575(): void
+    public function testRegressionDDC575()
     {
         $parser = $this->createTestParser();
 
@@ -1000,7 +1000,7 @@ DOCBLOCK;
     /**
      * @group DDC-77
      */
-    public function testAnnotationWithoutClassIsIgnoredWithoutWarning(): void
+    public function testAnnotationWithoutClassIsIgnoredWithoutWarning()
     {
         $parser = new DocParser();
         $parser->setIgnoreNotImportedAnnotations(true);
@@ -1012,7 +1012,7 @@ DOCBLOCK;
     /**
      * @group DCOM-168
      */
-    public function testNotAnAnnotationClassIsIgnoredWithoutWarning(): void
+    public function testNotAnAnnotationClassIsIgnoredWithoutWarning()
     {
         $parser = new DocParser();
         $parser->setIgnoreNotImportedAnnotations(true);
@@ -1022,7 +1022,7 @@ DOCBLOCK;
         $this->assertCount(0, $result);
     }
 
-    public function testAnnotationDontAcceptSingleQuotes(): void
+    public function testAnnotationDontAcceptSingleQuotes()
     {
         $this->expectException('\Doctrine\Common\Annotations\AnnotationException');
         $this->expectExceptionMessage('Expected PlainValue, got \'\'\' at position 10.');
@@ -1034,7 +1034,7 @@ DOCBLOCK;
     /**
      * @group DCOM-41
      */
-    public function testAnnotationDoesNotThrowExceptionWhenAtSignIsNotFollowedByIdentifier(): void
+    public function testAnnotationDoesNotThrowExceptionWhenAtSignIsNotFollowedByIdentifier()
     {
         $parser = new DocParser();
         $result = $parser->parse("'@'");
@@ -1045,7 +1045,7 @@ DOCBLOCK;
     /**
      * @group DCOM-41
      */
-    public function testAnnotationThrowsExceptionWhenAtSignIsNotFollowedByIdentifierInNestedAnnotation(): void
+    public function testAnnotationThrowsExceptionWhenAtSignIsNotFollowedByIdentifierInNestedAnnotation()
     {
         $this->expectException('\Doctrine\Common\Annotations\AnnotationException');
 
@@ -1056,22 +1056,21 @@ DOCBLOCK;
     /**
      * @group DCOM-56
      */
-    public function testAutoloadAnnotation(): void
+    public function testAutoloadAnnotation()
     {
-        self::assertFalse(
-          class_exists('Drupal\Tests\Component\Annotation\Doctrine\Fixture\Annotation\Autoload', false),
-          'Pre-condition: Drupal\Tests\Component\Annotation\Doctrine\Fixture\Annotation\Autoload not allowed to be loaded.'
-        );
+        $this->assertFalse(class_exists('Drupal\Tests\Component\Annotation\Doctrine\Fixture\Annotation\Autoload', false), 'Pre-condition: Drupal\Tests\Component\Annotation\Doctrine\Fixture\Annotation\Autoload not allowed to be loaded.');
 
         $parser = new DocParser();
 
-        $parser->setImports([
-          'autoload' => Autoload::class,
-        ]);
+        AnnotationRegistry::registerAutoloadNamespace('Drupal\Tests\Component\Annotation\Doctrine\Fixtures\Annotation', __DIR__ . '/../../../../');
+
+        $parser->setImports(array(
+            'autoload' => 'Drupal\Tests\Component\Annotation\Doctrine\Fixtures\Annotation\Autoload',
+        ));
         $annotations = $parser->parse('@Autoload');
 
-        self::assertCount(1, $annotations);
-        self::assertInstanceOf(Autoload::class, $annotations[0]);
+        $this->assertCount(1, $annotations);
+        $this->assertInstanceOf('Drupal\Tests\Component\Annotation\Doctrine\Fixtures\Annotation\Autoload', $annotations[0]);
     }
 
     public function createTestParser()
@@ -1089,7 +1088,7 @@ DOCBLOCK;
     /**
      * @group DDC-78
      */
-    public function testSyntaxErrorWithContextDescription(): void
+    public function testSyntaxErrorWithContextDescription()
     {
         $this->expectException('\Doctrine\Common\Annotations\AnnotationException');
         $this->expectExceptionMessage('Expected PlainValue, got \'\'\' at position 10 in class \Drupal\Tests\Component\Annotation\Doctrine\Name');
@@ -1101,7 +1100,7 @@ DOCBLOCK;
     /**
      * @group DDC-183
      */
-    public function   testSyntaxErrorWithUnknownCharacters(): void
+    public function   testSyntaxErrorWithUnknownCharacters()
     {
         $docblock = <<<DOCBLOCK
 /**
@@ -1128,7 +1127,7 @@ DOCBLOCK;
     /**
      * @group DCOM-14
      */
-    public function testIgnorePHPDocThrowTag(): void
+    public function testIgnorePHPDocThrowTag()
     {
         $docblock = <<<DOCBLOCK
 /**
@@ -1151,7 +1150,7 @@ DOCBLOCK;
     /**
      * @group DCOM-38
      */
-    public function testCastInt(): void
+    public function testCastInt()
     {
         $parser = $this->createTestParser();
 
@@ -1163,7 +1162,7 @@ DOCBLOCK;
     /**
      * @group DCOM-38
      */
-    public function testCastNegativeInt(): void
+    public function testCastNegativeInt()
     {
         $parser = $this->createTestParser();
 
@@ -1175,7 +1174,7 @@ DOCBLOCK;
     /**
      * @group DCOM-38
      */
-    public function testCastFloat(): void
+    public function testCastFloat()
     {
         $parser = $this->createTestParser();
 
@@ -1187,7 +1186,7 @@ DOCBLOCK;
     /**
      * @group DCOM-38
      */
-    public function testCastNegativeFloat(): void
+    public function testCastNegativeFloat()
     {
         $parser = $this->createTestParser();
 
@@ -1200,7 +1199,7 @@ DOCBLOCK;
         $this->assertIsFloat($annot->value);
     }
 
-    public function testSetValuesException(): void
+    public function testSetValuesException()
     {
         $this->expectException('\Doctrine\Common\Annotations\AnnotationException');
         $this->expectExceptionMessage('[Creation Error] The annotation @SomeAnnotationClassNameWithoutConstructor declared on some class does not have a property named "invalidaProperty". Available properties: data, name');
@@ -1214,7 +1213,7 @@ DOCBLOCK;
         $this->createTestParser()->parse($docblock, 'some class');
     }
 
-    public function testInvalidIdentifierInAnnotation(): void
+    public function testInvalidIdentifierInAnnotation()
     {
         $this->expectException('\Doctrine\Common\Annotations\AnnotationException');
         $this->expectExceptionMessage('[Syntax Error] Expected Doctrine\Common\Annotations\DocLexer::T_IDENTIFIER or Doctrine\Common\Annotations\DocLexer::T_TRUE or Doctrine\Common\Annotations\DocLexer::T_FALSE or Doctrine\Common\Annotations\DocLexer::T_NULL, got \'3.42\' at position 5.');
@@ -1223,7 +1222,7 @@ DOCBLOCK;
         $parser->parse('@Foo\3.42');
     }
 
-    public function testTrailingCommaIsAllowed(): void
+    public function testTrailingCommaIsAllowed()
     {
         $parser = $this->createTestParser();
 
@@ -1235,7 +1234,7 @@ DOCBLOCK;
         $this->assertEquals(array('Foo', 'Bar'), $annots[0]->value);
     }
 
-    public function testDefaultAnnotationValueIsNotOverwritten(): void
+    public function testDefaultAnnotationValueIsNotOverwritten()
     {
         $parser = $this->createTestParser();
 
@@ -1244,7 +1243,7 @@ DOCBLOCK;
         $this->assertEquals('bar', $annots[0]->foo);
     }
 
-    public function testArrayWithColon(): void
+    public function testArrayWithColon()
     {
         $parser = $this->createTestParser();
 
@@ -1253,7 +1252,7 @@ DOCBLOCK;
         $this->assertEquals(array('foo' => 'bar'), $annots[0]->value);
     }
 
-    public function testInvalidContantName(): void
+    public function testInvalidContantName()
     {
         $this->expectException('\Doctrine\Common\Annotations\AnnotationException');
         $this->expectExceptionMessage('[Semantical Error] Couldn\'t find constant foo.');
@@ -1265,7 +1264,7 @@ DOCBLOCK;
     /**
      * Tests parsing empty arrays.
      */
-    public function testEmptyArray(): void
+    public function testEmptyArray()
     {
         $parser = $this->createTestParser();
 
@@ -1274,7 +1273,7 @@ DOCBLOCK;
         $this->assertEquals(array('foo' => array()), $annots[0]->value);
     }
 
-    public function testKeyHasNumber(): void
+    public function testKeyHasNumber()
     {
         $parser = $this->createTestParser();
         $annots = $parser->parse('@SettingsAnnotation(foo="test", bar2="test")');
@@ -1286,7 +1285,7 @@ DOCBLOCK;
     /**
      * @group 44
      */
-    public function testSupportsEscapedQuotedValues(): void
+    public function testSupportsEscapedQuotedValues()
     {
         $result = $this->createTestParser()->parse('@Drupal\Tests\Component\Annotation\Doctrine\Name(foo="""bar""")');
 

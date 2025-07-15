@@ -2,7 +2,6 @@
 
 namespace Drupal\migrate\Plugin\migrate\source;
 
-use Drupal\migrate\Attribute\MigrateSource;
 use Drupal\migrate\Plugin\MigrationInterface;
 
 /**
@@ -41,8 +40,12 @@ use Drupal\migrate\Plugin\MigrationInterface;
  *
  * For additional configuration keys, refer to the parent class:
  * @see \Drupal\migrate\Plugin\migrate\source\SourcePluginBase
+ *
+ * @MigrateSource(
+ *   id = "embedded_data",
+ *   source_module = "migrate"
+ * )
  */
-#[MigrateSource('embedded_data')]
 class EmbeddedDataSource extends SourcePluginBase {
 
   /**
@@ -110,7 +113,8 @@ class EmbeddedDataSource extends SourcePluginBase {
   /**
    * {@inheritdoc}
    */
-  public function count($refresh = FALSE): int {
+  #[\ReturnTypeWillChange]
+  public function count($refresh = FALSE) {
     // We do not want this source plugin to have a cacheable count.
     // @see \Drupal\migrate_cache_counts_test\Plugin\migrate\source\CacheableEmbeddedDataSource
     return count($this->dataRows);

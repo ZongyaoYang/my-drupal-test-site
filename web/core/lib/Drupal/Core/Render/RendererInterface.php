@@ -323,7 +323,7 @@ interface RendererInterface {
    *   (Internal use only.) Whether this is a recursive call or not. See
    *   ::renderRoot().
    *
-   * @return \Drupal\Component\Render\MarkupInterface|string
+   * @return \Drupal\Component\Render\MarkupInterface
    *   The rendered HTML.
    *
    * @throws \LogicException

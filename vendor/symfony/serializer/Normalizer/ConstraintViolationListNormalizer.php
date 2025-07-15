@@ -21,8 +21,10 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
  *
  * @author Grégoire Pineau <lyrixx@lyrixx.info>
  * @author Kévin Dunglas <dunglas@gmail.com>
+ *
+ * @final since Symfony 6.3
  */
-final class ConstraintViolationListNormalizer implements NormalizerInterface
+class ConstraintViolationListNormalizer implements NormalizerInterface, CacheableSupportsMethodInterface
 {
     public const INSTANCE = 'instance';
     public const STATUS = 'status';
@@ -39,11 +41,11 @@ final class ConstraintViolationListNormalizer implements NormalizerInterface
     public function getSupportedTypes(?string $format): array
     {
         return [
-            ConstraintViolationListInterface::class => true,
+            ConstraintViolationListInterface::class => __CLASS__ === static::class || $this->hasCacheableSupportsMethod(),
         ];
     }
 
-    public function normalize(mixed $data, ?string $format = null, array $context = []): array
+    public function normalize(mixed $object, ?string $format = null, array $context = []): array
     {
         if (\array_key_exists(self::PAYLOAD_FIELDS, $context)) {
             $payloadFieldsToSerialize = $context[self::PAYLOAD_FIELDS];
@@ -59,7 +61,7 @@ final class ConstraintViolationListNormalizer implements NormalizerInterface
 
         $violations = [];
         $messages = [];
-        foreach ($data as $violation) {
+        foreach ($object as $violation) {
             $propertyPath = $this->nameConverter ? $this->nameConverter->normalize($violation->getPropertyPath(), null, $format, $context) : $violation->getPropertyPath();
 
             $violationEntry = [
@@ -69,7 +71,7 @@ final class ConstraintViolationListNormalizer implements NormalizerInterface
                 'parameters' => $violation->getParameters(),
             ];
             if (null !== $code = $violation->getCode()) {
-                $violationEntry['type'] = \sprintf('urn:uuid:%s', $code);
+                $violationEntry['type'] = sprintf('urn:uuid:%s', $code);
             }
 
             $constraint = $violation->getConstraint();
@@ -85,7 +87,7 @@ final class ConstraintViolationListNormalizer implements NormalizerInterface
 
             $violations[] = $violationEntry;
 
-            $prefix = $propertyPath ? \sprintf('%s: ', $propertyPath) : '';
+            $prefix = $propertyPath ? sprintf('%s: ', $propertyPath) : '';
             $messages[] = $prefix.$violation->getMessage();
         }
 
@@ -106,8 +108,21 @@ final class ConstraintViolationListNormalizer implements NormalizerInterface
         return $result + ['violations' => $violations];
     }
 
-    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
+    /**
+     * @param array $context
+     */
+    public function supportsNormalization(mixed $data, ?string $format = null /* , array $context = [] */): bool
     {
         return $data instanceof ConstraintViolationListInterface;
+    }
+
+    /**
+     * @deprecated since Symfony 6.3, use "getSupportedTypes()" instead
+     */
+    public function hasCacheableSupportsMethod(): bool
+    {
+        trigger_deprecation('symfony/serializer', '6.3', 'The "%s()" method is deprecated, implement "%s::getSupportedTypes()" instead.', __METHOD__, get_debug_type($this));
+
+        return __CLASS__ === static::class;
     }
 }

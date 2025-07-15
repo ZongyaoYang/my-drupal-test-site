@@ -351,15 +351,13 @@ YAML,
     yield 'input definitions are an indexed array' => [
       <<<YAML
 name: Bad input definitions
-input:
-  - data_type: string
-    description: A valid enough input, but in an indexed array.
-    default:
-      source: value
-      value: Here be dragons
+input: false
 YAML,
       [
-        '[input]' => ['This value should be of type associative_array.'],
+        '[input]' => [
+          'This value should be of type array.',
+          'This value should be of type iterable.',
+        ],
       ],
     ];
     yield 'input data type is missing' => [
@@ -413,14 +411,13 @@ input:
   foo:
     data_type: string
     description: 'Constraints need to be associative'
-    constraints:
-      - Type: string
+    constraints: false
     default:
       source: value
       value: Here be dragons
 YAML,
       [
-        '[input][foo][constraints]' => ['This value should be of type associative_array.'],
+        '[input][foo][constraints]' => ['This value should be of type array.'],
       ],
     ];
     yield 'input data type is unknown' => [
@@ -499,96 +496,14 @@ input:
     description: 'Prompt arguments must be associative'
     prompt:
       method: ask
-      arguments: [1, 2]
+      arguments: false
     default:
       source: value
       value: Here be dragons
 YAML,
       [
-        '[input][foo][prompt][arguments]' => ['This value should be of type associative_array.'],
+        '[input][foo][prompt][arguments]' => ['This value should be of type array.'],
       ],
-    ];
-    yield 'form element is not an array' => [
-      <<<YAML
-name: Bad input definitions
-input:
-  foo:
-    data_type: string
-    description: 'Form element must be array'
-    form: true
-    default:
-      source: value
-      value: Here be dragons
-YAML,
-      [
-        '[input][foo][form]' => ['This value should be of type associative_array.'],
-      ],
-    ];
-    yield 'form element is an indexed array' => [
-      <<<YAML
-name: Bad input definitions
-input:
-  foo:
-    data_type: string
-    description: 'Form element must be associative'
-    form: [text]
-    default:
-      source: value
-      value: Here be dragons
-YAML,
-      [
-        '[input][foo][form]' => ['This value should be of type associative_array.'],
-      ],
-    ];
-    yield 'form element is an empty array' => [
-      <<<YAML
-name: Bad input definitions
-input:
-  foo:
-    data_type: string
-    description: 'Form elements cannot be empty'
-    form: []
-    default:
-      source: value
-      value: Here be dragons
-YAML,
-      [
-        '[input][foo][form]' => ['This value should be of type associative_array.'],
-      ],
-    ];
-    yield 'form element has children' => [
-      <<<YAML
-name: Bad input definitions
-input:
-  foo:
-    data_type: string
-    description: 'Form elements cannot have children'
-    form:
-      '#type': textfield
-      child:
-        '#type': select
-    default:
-      source: value
-      value: Here be dragons
-YAML,
-      [
-        '[input][foo][form]' => ['Form elements for recipe inputs cannot have child elements.'],
-      ],
-    ];
-    yield 'Valid form element' => [
-      <<<YAML
-name: Form input definitions
-input:
-  foo:
-    data_type: string
-    description: 'This has a valid form element'
-    form:
-      '#type': textfield
-    default:
-      source: value
-      value: Here be dragons
-YAML,
-      NULL,
     ];
     yield 'input definition without default value' => [
       <<<YAML
@@ -634,7 +549,7 @@ input:
       config: 'system.site:mail'
 YAML,
       [
-        '[input][foo][default][config]' => ['This value should be of type list.'],
+        '[input][foo][default][config]' => ['This value should be of type array.'],
       ],
     ];
     yield 'default value from config has too few values' => [
@@ -665,12 +580,10 @@ input:
       method: ask
     default:
       source: config
-      config:
-        name: system.site
-        key: mail
+      config: false
 YAML,
       [
-        '[input][foo][default][config]' => ['This value should be of type list.'],
+        '[input][foo][default][config]' => ['This value should be of type array.'],
       ],
     ];
     yield 'default value from config has non-string values' => [
@@ -719,45 +632,6 @@ input:
     default:
       source: config
       config: ['system.site', 'mail']
-YAML,
-      NULL,
-    ];
-    yield 'extra is present and not an array' => [
-      <<<YAML
-name: Bad extra
-extra: 'yes!'
-YAML,
-      [
-        '[extra]' => ['This value should be of type associative_array.'],
-      ],
-    ];
-    yield 'extra is an indexed array' => [
-      <<<YAML
-name: Bad extra
-extra:
-  - one
-  - two
-YAML,
-      [
-        '[extra]' => ['This value should be of type associative_array.'],
-      ],
-    ];
-    yield 'invalid key in extra' => [
-      <<<YAML
-name: Bad extra
-extra:
-  'not a valid extension name': true
-YAML,
-      [
-        '[extra]' => ['not a valid extension name is not a valid extension name.'],
-      ],
-    ];
-    yield 'valid extra' => [
-      <<<YAML
-name: Bad extra
-extra:
-  project_browser:
-    yes: sir
 YAML,
       NULL,
     ];

@@ -31,21 +31,21 @@ class MemoryStorageTest extends ConfigStorageTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function insert($name, $data): void {
+  protected function insert($name, $data) {
     $this->storage->write($name, $data);
   }
 
   /**
    * {@inheritdoc}
    */
-  protected function update($name, $data): void {
+  protected function update($name, $data) {
     $this->storage->write($name, $data);
   }
 
   /**
    * {@inheritdoc}
    */
-  protected function delete($name): void {
+  protected function delete($name) {
     $this->storage->delete($name);
   }
 

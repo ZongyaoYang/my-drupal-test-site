@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\field_normalization_test\Normalization;
 
 use Drupal\serialization\Normalizer\FieldItemNormalizer;

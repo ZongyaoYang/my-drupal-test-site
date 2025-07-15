@@ -38,32 +38,20 @@ class FileStorageTest extends ConfigStorageTestBase {
     $this->storage->write('core.extension', ['module' => []]);
   }
 
-  /**
-   * {@inheritdoc}
-   */
   protected function read($name) {
     $data = file_get_contents($this->storage->getFilePath($name));
     return Yaml::decode($data);
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  protected function insert($name, $data): void {
+  protected function insert($name, $data) {
     file_put_contents($this->storage->getFilePath($name), $data);
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  protected function update($name, $data): void {
+  protected function update($name, $data) {
     file_put_contents($this->storage->getFilePath($name), $data);
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  protected function delete($name): void {
+  protected function delete($name) {
     unlink($this->storage->getFilePath($name));
   }
 

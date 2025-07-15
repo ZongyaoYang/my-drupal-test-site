@@ -19,6 +19,8 @@ class UrlTest extends BrowserTestBase {
    */
   protected static $modules = ['form_test'];
 
+  protected $profile = 'testing';
+
   /**
    * {@inheritdoc}
    */

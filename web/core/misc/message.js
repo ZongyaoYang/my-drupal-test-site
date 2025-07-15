@@ -174,11 +174,12 @@
      * @name Drupal.Message~messageDefinition.clear
      */
     clear() {
-      this.messageWrapper
-        .querySelectorAll('[data-drupal-message-id]')
-        .forEach((message) => {
+      Array.prototype.forEach.call(
+        this.messageWrapper.querySelectorAll('[data-drupal-message-id]'),
+        (message) => {
           this.messageWrapper.removeChild(message);
-        });
+        },
+      );
     }
 
     /**

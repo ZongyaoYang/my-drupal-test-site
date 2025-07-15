@@ -10,7 +10,7 @@ class Color {
   /**
    * Validates whether a hexadecimal color value is syntactically correct.
    *
-   * @param string $hex
+   * @param $hex
    *   The hexadecimal string to validate. May contain a leading '#'. May use
    *   the shorthand notation (e.g., '123' for '112233').
    *

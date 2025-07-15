@@ -9,7 +9,7 @@ use Drupal\editor\Entity\Editor;
 use Drupal\filter\Entity\FilterFormat;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\user\Entity\User;
-use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\ConstraintViolation;
 
 /**
  * Tests for CKEditor 5 editor UI with Toolbar module.
@@ -54,13 +54,10 @@ class CKEditor5ToolbarTest extends WebDriverTestBase {
     Editor::create([
       'editor' => 'ckeditor5',
       'format' => 'test_format',
-      'image_upload' => [
-        'status' => FALSE,
-      ],
       'settings' => [],
     ])->save();
     $this->assertSame([], array_map(
-      function (ConstraintViolationInterface $v) {
+      function (ConstraintViolation $v) {
         return (string) $v->getMessage();
       },
       iterator_to_array(CKEditor5::validatePair(

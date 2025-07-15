@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drupal\KernelTests\Core\Common;
 
 use Drupal\Component\Utility\UrlHelper;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
@@ -18,8 +17,6 @@ use Drupal\KernelTests\KernelTestBase;
  * @group Common
  */
 class XssUnitTest extends KernelTestBase {
-
-  use StringTranslationTrait;
 
   /**
    * {@inheritdoc}
@@ -38,11 +35,11 @@ class XssUnitTest extends KernelTestBase {
    * Tests t() functionality.
    */
   public function testT(): void {
-    $text = $this->t('Simple text');
+    $text = t('Simple text');
     $this->assertSame('Simple text', (string) $text, 't leaves simple text alone.');
-    $text = $this->t('Escaped text: @value', ['@value' => '<script>']);
+    $text = t('Escaped text: @value', ['@value' => '<script>']);
     $this->assertSame('Escaped text: &lt;script&gt;', (string) $text, 't replaces and escapes string.');
-    $text = $this->t('Placeholder text: %value', ['%value' => '<script>']);
+    $text = t('Placeholder text: %value', ['%value' => '<script>']);
     $this->assertSame('Placeholder text: <em class="placeholder">&lt;script&gt;</em>', (string) $text, 't replaces, escapes and themes string.');
   }
 

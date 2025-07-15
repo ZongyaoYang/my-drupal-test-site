@@ -10,8 +10,6 @@ use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\UpdatePathTestTrait;
 use Drupal\user\Entity\User;
 
-// cspell:ignore postupdate
-
 /**
  * Tests hook_removed_post_updates().
  *

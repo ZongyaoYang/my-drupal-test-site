@@ -14,14 +14,8 @@ use Drupal\Core\Config\StorageInterface;
  */
 final class ConfigConfigurator {
 
-  /**
-   * The configuration directory for the recipe.
-   */
   public readonly ?string $recipeConfigDirectory;
 
-  /**
-   * Indicates how the shipped and active config are compared.
-   */
   private readonly bool|array $strict;
 
   /**
@@ -59,7 +53,7 @@ final class ConfigConfigurator {
         if (empty($recipe_data['dependencies'])) {
           unset($recipe_data['dependencies']);
         }
-        // Ensure we don't get a false mismatch due to different key order.
+        // Ensure we don't get a false mismatch due to differing key order.
         // @todo When https://www.drupal.org/project/drupal/issues/3230826 is
         //   fixed in core, use that API instead to sort the config data.
         self::recursiveSortByKey($active_data);

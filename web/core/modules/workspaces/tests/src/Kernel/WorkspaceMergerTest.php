@@ -9,8 +9,6 @@ use Drupal\Tests\node\Traits\ContentTypeCreationTrait;
 use Drupal\Tests\node\Traits\NodeCreationTrait;
 use Drupal\Tests\user\Traits\UserCreationTrait;
 
-// cspell:ignore differring
-
 /**
  * Tests workspace merging.
  *

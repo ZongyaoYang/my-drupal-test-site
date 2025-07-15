@@ -26,8 +26,7 @@ interface ImageEffectInterface extends PluginInspectionInterface, ConfigurableIn
    *   An image file object.
    *
    * @return bool
-   *   TRUE on success. FALSE if unable to perform the image effect on the
-   *   image.
+   *   TRUE on success. FALSE if unable to perform the image effect on the image.
    */
   public function applyEffect(ImageInterface $image);
 

@@ -30,12 +30,13 @@ class Actions extends Container {
    * {@inheritdoc}
    */
   public function getInfo() {
+    $class = static::class;
     return [
       '#process' => [
         // @todo Move this to #pre_render.
-        [static::class, 'preRenderActionsDropbutton'],
-        [static::class, 'processActions'],
-        [static::class, 'processContainer'],
+        [$class, 'preRenderActionsDropbutton'],
+        [$class, 'processActions'],
+        [$class, 'processContainer'],
       ],
       '#weight' => 100,
       '#theme_wrappers' => ['container'],
@@ -62,19 +63,17 @@ class Actions extends Container {
   }
 
   /**
-   * Render API callback: Groups the elements with a #dropbutton property.
-   *
-   * This function is assigned as a #pre_render callback.
+   * #pre_render callback for #type 'actions'.
    *
    * This callback iterates over all child elements of the #type 'actions'
    * container to look for elements with a #dropbutton property, so as to group
-   * those elements into dropbuttons. As such, it works similar to #group, but
-   * is specialized for dropbuttons.
+   * those elements into dropbuttons. As such, it works similar to #group, but is
+   * specialized for dropbuttons.
    *
    * The value of #dropbutton denotes the dropbutton to group the child element
-   * into. For example, two different values of 'foo' and 'bar' on child
-   * elements would generate two separate dropbuttons, which each contain the
-   * corresponding buttons.
+   * into. For example, two different values of 'foo' and 'bar' on child elements
+   * would generate two separate dropbuttons, which each contain the corresponding
+   * buttons.
    *
    * @param array $element
    *   The #type 'actions' element to process.
@@ -84,8 +83,8 @@ class Actions extends Container {
    *   The complete form structure.
    *
    * @return array
-   *   The processed #type 'actions' element, including individual buttons
-   *   grouped into new #type 'dropbutton' elements.
+   *   The processed #type 'actions' element, including individual buttons grouped
+   *   into new #type 'dropbutton' elements.
    */
   public static function preRenderActionsDropbutton(&$element, FormStateInterface $form_state, &$complete_form) {
     $dropbuttons = [];

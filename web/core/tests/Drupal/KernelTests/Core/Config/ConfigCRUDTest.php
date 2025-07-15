@@ -22,9 +22,9 @@ class ConfigCRUDTest extends KernelTestBase {
   /**
    * Exempt from strict schema checking.
    *
-   * @var bool
-   *
    * @see \Drupal\Core\Config\Development\ConfigSchemaChecker
+   *
+   * @var bool
    */
   protected $strictConfigSchema = FALSE;
 
@@ -217,7 +217,7 @@ class ConfigCRUDTest extends KernelTestBase {
         $config = $this->config($name);
         $config->save();
       }
-      catch (ConfigNameException) {
+      catch (ConfigNameException $e) {
         unset($test_characters[$i]);
       }
     }
@@ -229,7 +229,7 @@ class ConfigCRUDTest extends KernelTestBase {
       $config = $this->config($name);
       $config->save();
     }
-    catch (ConfigNameException) {
+    catch (ConfigNameException $e) {
       $this->fail('ConfigNameException was not thrown for a valid object name.');
     }
 
@@ -329,7 +329,7 @@ class ConfigCRUDTest extends KernelTestBase {
       $config->set('stream', fopen(__FILE__, 'r'))->save();
       $this->fail('No Exception thrown upon saving invalid data type.');
     }
-    catch (UnsupportedDataTypeConfigException) {
+    catch (UnsupportedDataTypeConfigException $e) {
       // Expected exception; just continue testing.
     }
 
@@ -344,7 +344,7 @@ class ConfigCRUDTest extends KernelTestBase {
       $config->set('stream', fopen(__FILE__, 'r'))->save();
       $this->fail('No Exception thrown upon saving invalid data type.');
     }
-    catch (UnsupportedDataTypeConfigException) {
+    catch (UnsupportedDataTypeConfigException $e) {
       // Expected exception; just continue testing.
     }
   }

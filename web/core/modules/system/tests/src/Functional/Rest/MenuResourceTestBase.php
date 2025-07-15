@@ -7,9 +7,6 @@ namespace Drupal\Tests\system\Functional\Rest;
 use Drupal\system\Entity\Menu;
 use Drupal\Tests\rest\Functional\EntityResource\ConfigEntityResourceTestBase;
 
-/**
- * Resource test base for the menu entity.
- */
 abstract class MenuResourceTestBase extends ConfigEntityResourceTestBase {
 
   /**

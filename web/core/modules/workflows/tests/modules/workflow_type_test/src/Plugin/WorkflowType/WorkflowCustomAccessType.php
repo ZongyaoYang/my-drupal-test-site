@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\workflow_type_test\Plugin\WorkflowType;
 
 use Drupal\Core\Access\AccessResult;

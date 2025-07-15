@@ -50,9 +50,9 @@ class LanguageNegotiationContentEntity extends LanguageNegotiationMethodBase imp
   /**
    * Static cache for the language negotiation order check.
    *
-   * @var bool
-   *
    * @see \Drupal\language\Plugin\LanguageNegotiation\LanguageNegotiationContentEntity::hasLowerLanguageNegotiationWeight()
+   *
+   * @var bool
    */
   protected $hasLowerLanguageNegotiationWeightResult;
 

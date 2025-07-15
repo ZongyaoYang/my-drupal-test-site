@@ -2,6 +2,7 @@
 
 namespace Drupal\Core\Database\Query;
 
+use Drupal\Core\Database\Database;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\IntegrityConstraintViolationException;
 
@@ -103,8 +104,6 @@ class Merge extends Query implements ConditionInterface {
   /**
    * Array of fields to update to an expression in case of a duplicate record.
    *
-   * @var array
-   *
    * This variable is a nested array in the following format:
    * @code
    * <some field> => [
@@ -112,6 +111,8 @@ class Merge extends Query implements ConditionInterface {
    *  'arguments' => <array of arguments for condition, or NULL for none>,
    * ];
    * @endcode
+   *
+   * @var array
    */
   protected $expressionFields = [];
 
@@ -133,6 +134,9 @@ class Merge extends Query implements ConditionInterface {
    *   Array of database options.
    */
   public function __construct(Connection $connection, $table, array $options = []) {
+    // @todo Remove $options['return'] in Drupal 11.
+    // @see https://www.drupal.org/project/drupal/issues/3256524
+    $options['return'] = Database::RETURN_AFFECTED;
     parent::__construct($connection, $options);
     $this->table = $table;
     $this->conditionTable = $table;
@@ -142,7 +146,7 @@ class Merge extends Query implements ConditionInterface {
   /**
    * Sets the table or subquery to be used for the condition.
    *
-   * @param \Drupal\Core\Database\Query\Select|string $table
+   * @param $table
    *   The table name or the subquery to be used. Use a Select query object to
    *   pass in a subquery.
    *
@@ -157,7 +161,7 @@ class Merge extends Query implements ConditionInterface {
   /**
    * Adds a set of field->value pairs to be updated.
    *
-   * @param array $fields
+   * @param $fields
    *   An associative array of fields to write into the database. The array keys
    *   are the field names and the values are the values to which to set them.
    *
@@ -177,12 +181,12 @@ class Merge extends Query implements ConditionInterface {
    * takes precedence over MergeQuery::updateFields() and its wrappers,
    * MergeQuery::key() and MergeQuery::fields().
    *
-   * @param string $field
+   * @param $field
    *   The field to set.
-   * @param string $expression
+   * @param $expression
    *   The field will be set to the value of this expression. This parameter
    *   may include named placeholders.
-   * @param array|null $arguments
+   * @param $arguments
    *   If specified, this is an array of key/value pairs for named placeholders
    *   corresponding to the expression.
    *
@@ -201,13 +205,13 @@ class Merge extends Query implements ConditionInterface {
   /**
    * Adds a set of field->value pairs to be inserted.
    *
-   * @param array $fields
+   * @param $fields
    *   An array of fields on which to insert. This array may be indexed or
    *   associative. If indexed, the array is taken to be the list of fields.
    *   If associative, the keys of the array are taken to be the fields and
    *   the values are taken to be corresponding values to insert. If a
    *   $values argument is provided, $fields must be indexed.
-   * @param array $values
+   * @param $values
    *   An array of fields to insert into the database. The values must be
    *   specified in the same order as the $fields array.
    *
@@ -234,7 +238,7 @@ class Merge extends Query implements ConditionInterface {
    * Specifying a field both in fields() and in useDefaults() is an error
    * and will not execute.
    *
-   * @param array $fields
+   * @param $fields
    *   An array of values for which to use the default values
    *   specified in the table definition.
    *
@@ -256,11 +260,11 @@ class Merge extends Query implements ConditionInterface {
    * If called with two arrays, the first array is taken as the fields
    * and the second array is taken as the corresponding values.
    *
-   * @param array $fields
+   * @param $fields
    *   An array of fields to insert, or an associative array of fields and
    *   values. The keys of the array are taken to be the fields and the values
    *   are taken to be corresponding values to insert.
-   * @param array $values
+   * @param $values
    *   An array of values to set into the database. The values must be
    *   specified in the same order as the $fields array.
    *
@@ -292,9 +296,9 @@ class Merge extends Query implements ConditionInterface {
    * The fields are copied to the condition of the query and the INSERT part.
    * If no other method is called, the UPDATE will become a no-op.
    *
-   * @param array $fields
+   * @param $fields
    *   An array of fields to set, or an associative array of fields and values.
-   * @param array $values
+   * @param $values
    *   An array of values to set into the database. The values must be
    *   specified in the same order as the $fields array.
    *
@@ -327,18 +331,27 @@ class Merge extends Query implements ConditionInterface {
    * @see \Drupal\Core\Database\Query\Merge::keys()
    */
   public function key($field, $value = NULL) {
-    assert(is_string($field));
-    $this->keys([$field => $value]);
+    // @todo D9: Remove this backwards-compatibility shim.
+    if (is_array($field)) {
+      @trigger_error("Passing an array to the \$field argument of " . __METHOD__ . '() is deprecated in drupal:10.2.0 and is removed from drupal:11.0.0. See https://www.drupal.org/node/2205327', E_USER_DEPRECATED);
+      $this->keys($field, $value ?? []);
+    }
+    else {
+      $this->keys([$field => $value]);
+    }
     return $this;
   }
 
   /**
-   * {@inheritdoc}
+   * Implements PHP magic __toString method to convert the query to a string.
+   *
+   * In the degenerate case, there is no string-able query as this operation
+   * is potentially two queries.
+   *
+   * @return string
+   *   The prepared query statement.
    */
   public function __toString() {
-    // In the degenerate case, there is no string-able query as this operation
-    // is potentially two queries.
-    throw new \BadMethodCallException('The merge query can not be converted to a string');
   }
 
   /**

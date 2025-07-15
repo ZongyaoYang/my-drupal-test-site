@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\views_test_data\Plugin\views\style;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -53,9 +51,9 @@ class StyleTest extends StylePluginBase {
     parent::buildOptionsForm($form, $form_state);
 
     $form['test_option'] = [
-      '#title' => 'Test option',
+      '#title' => $this->t('Test option'),
       '#type' => 'textfield',
-      '#description' => 'This is a textfield for test_option.',
+      '#description' => $this->t('This is a textfield for test_option.'),
       '#default_value' => $this->options['test_option'],
     ];
   }
@@ -84,7 +82,6 @@ class StyleTest extends StylePluginBase {
    * Returns the output property.
    *
    * @return string
-   *   The output of the plugin.
    */
   public function getOutput() {
     return $this->output;

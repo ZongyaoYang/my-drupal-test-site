@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\url_alter_test;
 
 use Drupal\Core\PathProcessor\InboundPathProcessorInterface;

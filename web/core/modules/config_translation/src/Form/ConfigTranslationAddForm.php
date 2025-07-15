@@ -31,4 +31,11 @@ class ConfigTranslationAddForm extends ConfigTranslationFormBase {
     return $form;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function submitForm(array &$form, FormStateInterface $form_state) {
+    parent::submitForm($form, $form_state);
+  }
+
 }
